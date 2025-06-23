@@ -1,4 +1,5 @@
 @baseUrl = http://localhost:3333
+@authToken = {{authenticate.response.body.access_token}}
 
 # @name create_professional
 POST {{baseUrl}}/professionals
@@ -57,4 +58,16 @@ Content-Type: application/json
 {
   "email": "jvdsantos@teste.com",
   "password": "112233"
+}
+
+###
+
+# @name create_service
+POST {{baseUrl}}/services
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Novo serviço 2",
+  "content": "Teste"
 }

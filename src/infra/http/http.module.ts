@@ -7,6 +7,8 @@ import { CreateCompanyController } from './controllers/create-company.controller
 import { RegisterCompanyUseCase } from '@/domain/application/use-cases/register-company'
 import { AuthenticateUseCase } from '@/domain/application/use-cases/authenticate'
 import { AuthenticateController } from './controllers/authenticate.controller'
+import { CreateServiceController } from './controllers/create-service.controller'
+import { CreateServiceUseCase } from '@/domain/application/use-cases/create-service'
 
 @Module({
   imports: [CryptographyModule, DatabaseModule],
@@ -14,11 +16,13 @@ import { AuthenticateController } from './controllers/authenticate.controller'
     CreateProfessionalController,
     CreateCompanyController,
     AuthenticateController,
+    CreateServiceController,
   ],
   providers: [
     RegisterProfessionalUseCase,
     RegisterCompanyUseCase,
     AuthenticateUseCase,
+    CreateServiceUseCase,
   ],
 })
 export class HttpModule {}

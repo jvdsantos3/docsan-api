@@ -86,8 +86,8 @@ export class Company extends Entity<CompanyProps> {
   }
 
   static create(props: CompanyProps, id?: UniqueEntityID) {
-    const student = new Company(props, id)
+    const company = new Company(props, id)
 
-    return student
+    return company
   }
 }

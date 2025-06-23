@@ -4,6 +4,8 @@ import { ProfessionalsRepository } from '@/domain/application/repositories/profe
 import { PrismaProfessionalsRepository } from './prisma/repositories/prisma-professionals-repository'
 import { CompaniesRepository } from '@/domain/application/repositories/companies-repository'
 import { PrismaCompaniesRepository } from './prisma/repositories/prisma-companies-repository'
+import { ServicesRepository } from '@/domain/application/repositories/services-repository'
+import { PrismaServicesRepository } from './prisma/repositories/prisma-services-repository'
 
 @Module({
   providers: [
@@ -16,7 +18,16 @@ import { PrismaCompaniesRepository } from './prisma/repositories/prisma-companie
       provide: CompaniesRepository,
       useClass: PrismaCompaniesRepository,
     },
+    {
+      provide: ServicesRepository,
+      useClass: PrismaServicesRepository,
+    },
   ],
-  exports: [PrismaService, ProfessionalsRepository, CompaniesRepository],
+  exports: [
+    PrismaService,
+    ProfessionalsRepository,
+    CompaniesRepository,
+    ServicesRepository,
+  ],
 })
 export class DatabaseModule {}

@@ -51,10 +51,13 @@ model Company {
 }
 
 model Service {
-  id             String @id @default(uuid())
+  id             String    @id @default(uuid())
   title          String
+  slug           String    @unique
   content        String
-  professionalId String @map("professional_id")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime? @updatedAt @map("updated_at")
+  professionalId String    @map("professional_id")
 
   professional Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
 }

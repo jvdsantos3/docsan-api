@@ -91,8 +91,8 @@ export class Professional extends Entity<ProfessionalProps> {
   }
 
   static create(props: ProfessionalProps, id?: UniqueEntityID) {
-    const student = new Professional(props, id)
+    const professional = new Professional(props, id)
 
-    return student
+    return professional
   }
 }
