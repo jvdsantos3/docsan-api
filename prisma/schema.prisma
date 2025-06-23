@@ -6,3 +6,55 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Professional {
+  id                   String   @id @default(uuid())
+  name                 String
+  cpf                  String   @unique
+  birthDate            DateTime @map("birth_date")
+  email                String   @unique
+  password             String
+  phone                String
+  fieldExpertise       String   @map("field_expertise")
+  professionalRegistry String   @map("professional_registry")
+  registryUf           String   @map("registry_uf")
+  cnae                 String
+  zipCode              String   @map("zip_code")
+  uf                   String
+  city                 String
+  street               String
+  number               String
+  neighborhood         String
+  complement           String?
+
+  services Service[]
+}
+
+model Company {
+  id              String  @id @default(uuid())
+  name            String
+  tradeName       String  @map("trade_name")
+  cnpj            String  @unique
+  email           String  @unique
+  password        String
+  cnae            String
+  phone           String
+  responsibleName String  @map("responsible_name")
+  responsibleCpf  String  @unique @map("responsible_cpf")
+  zipCode         String  @map("zip_code")
+  uf              String
+  city            String
+  street          String
+  number          String
+  neighborhood    String
+  complement      String?
+}
+
+model Service {
+  id             String @id @default(uuid())
+  title          String
+  content        String
+  professionalId String @map("professional_id")
+
+  professional Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+}

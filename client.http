@@ -1,5 +1,24 @@
 @baseUrl = http://localhost:3333
 
-# @name test
-GET {{baseUrl}}/
+# @name create_professional
+POST {{baseUrl}}/professionals
 Content-Type: application/json
+
+{
+  "name": "João Vitor",
+  "cpf": "03808164310",
+  "birthDate": "2002-01-02",
+  "email": "jvdsantos@teste.com",
+  "password": "112233",
+  "phone": "85986744016",
+  "fieldExpertise": "Desenvolvimento de software",
+  "professionalRegistry": "Desenvolvedor",
+  "registryUf": "CE",
+  "cnae": "112233",
+  "zipCode": "60181170",
+  "uf": "CE",
+  "city": "Fortaleza",
+  "street": "Av. Areia Branca",
+  "number": "524",
+  "neighborhood": "Vicente Pinzon"
+}
