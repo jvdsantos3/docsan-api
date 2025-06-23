@@ -22,3 +22,39 @@ Content-Type: application/json
   "number": "524",
   "neighborhood": "Vicente Pinzon"
 }
+
+###
+
+# @name create_company
+POST {{baseUrl}}/companies
+Content-Type: application/json
+
+{
+  "name": "Teste Company LTDA",
+  "tradeName": "Teste Company",
+  "cnpj": "77.488.944/0001-84",
+  "email": "teste@company.com",
+  "password": "112233",
+  "cnae": "112233",
+  "phone": "85986744016",
+  "responsibleName": "Dono Teste",
+  "responsibleCpf": "03808164310",
+  "zipCode": "60181170",
+  "uf": "CE",
+  "city": "Fortaleza",
+  "street": "Av. Areia Branca",
+  "number": "524",
+  "neighborhood": "Vicente Pinzon",
+  "complement": "Casa"
+}
+
+###
+
+# @name authenticate
+POST {{baseUrl}}/sessions
+Content-Type: application/json
+
+{
+  "email": "jvdsantos@teste.com",
+  "password": "112233"
+}

@@ -1,26 +1,22 @@
 import { faker } from '@faker-js/faker'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import {
-  Professional,
-  ProfessionalProps,
-} from '@/domain/enterprise/entities/professional'
+import { Company, CompanyProps } from '@/domain/enterprise/entities/company'
 
-export function makeProfessional(
-  override: Partial<ProfessionalProps> = {},
+export function makeCompany(
+  override: Partial<CompanyProps> = {},
   id?: UniqueEntityID,
 ) {
-  const professional = Professional.create(
+  const company = Company.create(
     {
-      name: faker.person.fullName(),
-      cpf: '85741611010',
-      birthDate: faker.date.birthdate(),
+      name: faker.company.name(),
+      tradeName: faker.person.fullName(),
+      cnpj: '77.488.944/0001-84',
       email: faker.internet.email(),
       password: faker.internet.password(),
-      phone: faker.phone.number(),
-      fieldExpertise: 'teste',
-      professionalRegistry: 'teste',
-      registryUf: 'teste',
       cnae: '112233',
+      phone: faker.phone.number(),
+      responsibleName: faker.person.fullName(),
+      responsibleCpf: '85741611010',
       zipCode: faker.location.zipCode(),
       uf: faker.location.state(),
       city: faker.location.city(),
@@ -32,5 +28,5 @@ export function makeProfessional(
     id,
   )
 
-  return professional
+  return company
 }

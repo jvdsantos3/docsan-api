@@ -17,6 +17,6 @@ import { PrismaCompaniesRepository } from './prisma/repositories/prisma-companie
       useClass: PrismaCompaniesRepository,
     },
   ],
-  exports: [PrismaService, ProfessionalsRepository],
+  exports: [PrismaService, ProfessionalsRepository, CompaniesRepository],
 })
 export class DatabaseModule {}

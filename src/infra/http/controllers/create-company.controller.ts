@@ -14,18 +14,14 @@ import { CompanyAlreadyExistsError } from '@/domain/application/use-cases/errors
 
 const createCompanyBodySchema = z.object({
   name: z.string(),
+  tradeName: z.string(),
   cnpj: z.string(),
-  birthDate: z
-    .string()
-    .date()
-    .transform((val) => new Date(val)),
   email: z.string().email(),
   password: z.string(),
-  phone: z.string(),
-  fieldExpertise: z.string(),
-  companyRegistry: z.string(),
-  registryUf: z.string(),
   cnae: z.string(),
+  phone: z.string(),
+  responsibleName: z.string(),
+  responsibleCpf: z.string(),
   zipCode: z.string(),
   uf: z.string(),
   city: z.string(),
@@ -39,7 +35,7 @@ const bodyValidationPipe = new ZodValidationPipe(createCompanyBodySchema)
 
 type CreateCompanyBodySchema = z.infer<typeof createCompanyBodySchema>
 
-@Controller('/companys')
+@Controller('/companies')
 @Public()
 export class CreateCompanyController {
   constructor(private registerCompany: RegisterCompanyUseCase) {}
