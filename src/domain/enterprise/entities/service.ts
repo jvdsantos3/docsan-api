@@ -3,9 +3,11 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Slug } from './value-objects/slug'
 import { Optional } from '@/core/types/optional'
 import dayjs from 'dayjs'
+import { Professional } from './professional'
 
 export interface ServiceProps {
   professionalId: UniqueEntityID
+  professional?: Professional
   title: string
   slug: Slug
   content: string
@@ -16,6 +18,16 @@ export interface ServiceProps {
 export class Service extends Entity<ServiceProps> {
   get professionalId() {
     return this.props.professionalId
+  }
+
+  get professional() {
+    return this.props.professional
+  }
+
+  set professional(professional: Professional | undefined) {
+    this.props.professional = professional
+
+    this.touch()
   }
 
   get title() {

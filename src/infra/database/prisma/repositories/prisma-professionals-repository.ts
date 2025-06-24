@@ -8,6 +8,20 @@ import { Injectable } from '@nestjs/common'
 export class PrismaProfessionalsRepository implements ProfessionalsRepository {
   constructor(private prisma: PrismaService) {}
 
+  async findById(id: string): Promise<Professional | null> {
+    const professional = await this.prisma.professional.findUnique({
+      where: {
+        id,
+      },
+    })
+
+    if (!professional) {
+      return null
+    }
+
+    return PrismaProfessionalMapper.toDomain(professional)
+  }
+
   async findByEmail(email: string): Promise<Professional | null> {
     const professional = await this.prisma.professional.findUnique({
       where: {

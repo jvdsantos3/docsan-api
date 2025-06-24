@@ -71,3 +71,10 @@ Authorization: Bearer {{authToken}}
   "title": "Novo serviço 2",
   "content": "Teste"
 }
+
+###
+
+# @name fetch_recent_services
+GET {{baseUrl}}/services?page=1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}

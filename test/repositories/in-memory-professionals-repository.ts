@@ -6,6 +6,16 @@ export class InMemoryProfessionalsRepository
 {
   public items: Professional[] = []
 
+  async findById(id: string) {
+    const professional = this.items.find((item) => item.id.toString() === id)
+
+    if (!professional) {
+      return null
+    }
+
+    return professional
+  }
+
   async findByEmail(email: string) {
     const professional = this.items.find((item) => item.email === email)
 

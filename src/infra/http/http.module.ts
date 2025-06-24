@@ -9,6 +9,8 @@ import { AuthenticateUseCase } from '@/domain/application/use-cases/authenticate
 import { AuthenticateController } from './controllers/authenticate.controller'
 import { CreateServiceController } from './controllers/create-service.controller'
 import { CreateServiceUseCase } from '@/domain/application/use-cases/create-service'
+import { FetchRecentServicesController } from './controllers/fetch-recent-services.controller'
+import { FetchRecentServicesUseCase } from '@/domain/application/use-cases/fetch-recent-services'
 
 @Module({
   imports: [CryptographyModule, DatabaseModule],
@@ -17,12 +19,14 @@ import { CreateServiceUseCase } from '@/domain/application/use-cases/create-serv
     CreateCompanyController,
     AuthenticateController,
     CreateServiceController,
+    FetchRecentServicesController,
   ],
   providers: [
     RegisterProfessionalUseCase,
     RegisterCompanyUseCase,
     AuthenticateUseCase,
     CreateServiceUseCase,
+    FetchRecentServicesUseCase,
   ],
 })
 export class HttpModule {}

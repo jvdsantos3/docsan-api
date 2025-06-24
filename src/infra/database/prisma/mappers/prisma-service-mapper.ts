@@ -1,7 +1,12 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { Professional } from '@/domain/enterprise/entities/professional'
 import { Service } from '@/domain/enterprise/entities/service'
 import { Slug } from '@/domain/enterprise/entities/value-objects/slug'
 import { Service as PrismaService, Prisma } from '@prisma/client'
+
+type ServiceWithProfessional = Prisma.ServiceGetPayload<{
+  include: { professional: true }
+}>
 
 export class PrismaServiceMapper {
   static toDomain(raw: PrismaService): Service {
@@ -11,6 +16,21 @@ export class PrismaServiceMapper {
         content: raw.content,
         professionalId: new UniqueEntityID(raw.professionalId),
         slug: Slug.create(raw.slug),
+        createdAt: raw.createdAt,
+        updatedAt: raw.updatedAt,
+      },
+      new UniqueEntityID(raw.id),
+    )
+  }
+
+  static toDomainWithRelations(raw: ServiceWithProfessional): Service {
+    return Service.create(
+      {
+        title: raw.title,
+        content: raw.content,
+        professionalId: new UniqueEntityID(raw.professionalId),
+        slug: Slug.create(raw.slug),
+        professional: Professional.create(raw.professional),
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,
       },

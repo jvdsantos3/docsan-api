@@ -49,6 +49,17 @@ export class PrismaServicesRepository implements ServicesRepository {
     return services.map(PrismaServiceMapper.toDomain)
   }
 
+  async findManyRecentWithProfessional({ page }: PaginationParams) {
+    const services = await this.prisma.service.findMany({
+      include: { professional: true },
+      orderBy: { createdAt: 'desc' },
+      take: 10,
+      skip: (page - 1) * 10,
+    })
+
+    return services.map(PrismaServiceMapper.toDomainWithRelations)
+  }
+
   async create(service: Service): Promise<void> {
     const data = PrismaServiceMapper.toPrisma(service)
 
