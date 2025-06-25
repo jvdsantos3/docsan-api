@@ -7,6 +7,7 @@ import { Injectable } from '@nestjs/common'
 interface CreateServiceUseCaseRequest {
   professionalId: string
   title: string
+  description: string
   content: string
 }
 
@@ -24,11 +25,13 @@ export class CreateServiceUseCase {
   async execute({
     professionalId,
     title,
+    description,
     content,
   }: CreateServiceUseCaseRequest): Promise<CreateServiceUseCaseResponse> {
     const service = Service.create({
       professionalId: new UniqueEntityID(professionalId),
       title,
+      description,
       content,
     })
 

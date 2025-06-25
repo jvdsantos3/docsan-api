@@ -62,6 +62,7 @@ export class PrismaServicesRepository implements ServicesRepository {
 
   async create(service: Service): Promise<void> {
     const data = PrismaServiceMapper.toPrisma(service)
+    console.log(data)
 
     await this.prisma.service.create({
       data,

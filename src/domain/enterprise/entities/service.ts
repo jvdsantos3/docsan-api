@@ -10,6 +10,7 @@ export interface ServiceProps {
   professional?: Professional
   title: string
   slug: Slug
+  description: string
   content: string
   createdAt: Date
   updatedAt?: Date | null
@@ -43,6 +44,16 @@ export class Service extends Entity<ServiceProps> {
 
   get slug() {
     return this.props.slug
+  }
+
+  get description() {
+    return this.props.content
+  }
+
+  set description(description: string) {
+    this.props.description = description
+
+    this.touch()
   }
 
   get content() {

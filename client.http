@@ -7,8 +7,8 @@ Content-Type: application/json
 
 {
   "name": "João Vitor",
-  "cpf": "03808164310",
-  "birthDate": "2002-01-02",
+  "cpf": "891.070.770-41",
+  "birthDate": "2002-01-02T02:00:00.000Z",
   "email": "jvdsantos@teste.com",
   "password": "112233",
   "phone": "85986744016",
@@ -68,7 +68,8 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-  "title": "Novo serviço 2",
+  "title": "Novo serviço 1",
+  "description": "Teste",
   "content": "Teste"
 }
 

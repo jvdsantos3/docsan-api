@@ -14,7 +14,8 @@ export function makeService(
     {
       professionalId: new UniqueEntityID(),
       title: faker.lorem.sentence(),
-      content: faker.lorem.text(),
+      description: faker.lorem.text(),
+      content: faker.lorem.paragraphs(),
       ...override,
     },
     id,

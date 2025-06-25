@@ -7,6 +7,7 @@ import { CreateServiceUseCase } from '@/domain/application/use-cases/create-serv
 
 const createServiceBodySchema = z.object({
   title: z.string(),
+  description: z.string(),
   content: z.string(),
 })
 
@@ -23,13 +24,14 @@ export class CreateServiceController {
     @Body(bodyValidationPipe) body: CreateServiceBodySchema,
     @CurrentUser() user: UserPayload,
   ) {
-    const { title, content } = body
+    const { title, description, content } = body
 
     const userId = user.sub
 
     const result = await this.createService.execute({
       title,
       content,
+      description,
       professionalId: userId,
     })
 

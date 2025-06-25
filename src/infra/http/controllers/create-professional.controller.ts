@@ -18,7 +18,7 @@ const createProfessionalBodySchema = z.object({
   cpf: cpfSchema,
   birthDate: z
     .string()
-    .date()
+    .datetime()
     .transform((val) => new Date(val)),
   email: z.string().email(),
   password: z.string(),

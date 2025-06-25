@@ -12,10 +12,11 @@ export class PrismaServiceMapper {
   static toDomain(raw: PrismaService): Service {
     return Service.create(
       {
-        title: raw.title,
-        content: raw.content,
         professionalId: new UniqueEntityID(raw.professionalId),
+        title: raw.title,
         slug: Slug.create(raw.slug),
+        content: raw.content,
+        description: raw.description,
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,
       },
@@ -26,10 +27,11 @@ export class PrismaServiceMapper {
   static toDomainWithRelations(raw: ServiceWithProfessional): Service {
     return Service.create(
       {
-        title: raw.title,
-        content: raw.content,
         professionalId: new UniqueEntityID(raw.professionalId),
+        title: raw.title,
         slug: Slug.create(raw.slug),
+        content: raw.content,
+        description: raw.description,
         professional: Professional.create(raw.professional),
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,
@@ -40,11 +42,12 @@ export class PrismaServiceMapper {
 
   static toPrisma(service: Service): Prisma.ServiceUncheckedCreateInput {
     return {
-      id: service.id.toString(),
       professionalId: service.professionalId.toString(),
+      id: service.id.toString(),
       title: service.title,
-      content: service.content,
       slug: service.slug.value,
+      content: service.content,
+      description: service.description,
       createdAt: service.createdAt,
       updatedAt: service.updatedAt,
     }
