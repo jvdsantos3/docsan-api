@@ -1,5 +1,6 @@
 services:
   app:
+    container_name: docsan-api
     build:
       context: .
       dockerfile: Dockerfile
@@ -19,6 +20,7 @@ services:
     restart: unless-stopped
 
   db:
+    container_name: docsan-pg
     image: postgres:17
     environment:
       - POSTGRES_USER=${DB_USER}
@@ -31,6 +33,7 @@ services:
     restart: unless-stopped
 
   prisma-studio:
+    container_name: docsan-prisma-studio
     image: node:22-alpine
     ports:
       - "5555:5555"
