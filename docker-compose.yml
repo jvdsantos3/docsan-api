@@ -1,16 +1,48 @@
 services:
-  postgres:
-    image: postgres:latest
-    container_name: docsan-pg
-    environment:
-      POSTGRES_USER: docsan
-      POSTGRES_PASSWORD: 112233
-      POSTGRES_DB: docsan
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - '5432:5432'
+      - "${APP_PORT}:${APP_PORT}"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - APP_PORT=${APP_PORT}
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}?schema=public
+      - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY}
+      - JWT_PUBLIC_KEY=${JWT_PUBLIC_KEY}
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:17
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  prisma-studio:
+    image: node:22-alpine
+    ports:
+      - "5555:5555"
+    working_dir: /app
+    command: sh -c "npm install -g pnpm && pnpm install && pnpm prisma studio"
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}?schema=public
+    depends_on:
+      - db
+    restart: unless-stopped
 
 volumes:
-  postgres_data:
-    name: postgres_data
+  db-data:
