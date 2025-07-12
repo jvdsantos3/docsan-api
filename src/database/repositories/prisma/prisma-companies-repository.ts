@@ -15,8 +15,11 @@ export class PrismaCompaniesRepository implements CompaniesRepository {
     })
   }
 
-  async create(data: Prisma.CompanyUncheckedCreateInput) {
-    return await this.prisma.company.create({
+  async create(
+    data: Prisma.CompanyUncheckedCreateInput,
+    prisma: Prisma.TransactionClient = this.prisma,
+  ) {
+    return await prisma.company.create({
       data,
     })
   }

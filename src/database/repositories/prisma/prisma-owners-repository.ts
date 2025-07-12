@@ -23,8 +23,11 @@ export class PrismaOwnersRepository implements OwnersRepository {
     })
   }
 
-  async create(data: Prisma.OwnerCreateInput) {
-    return await this.prisma.owner.create({
+  async create(
+    data: Prisma.OwnerCreateInput,
+    prisma: Prisma.TransactionClient = this.prisma,
+  ) {
+    return await prisma.owner.create({
       data,
     })
   }

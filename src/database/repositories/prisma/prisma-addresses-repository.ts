@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../../prisma.service'
 import { Prisma } from '@prisma/client'
-import { AddressesRepository } from '../address-repository'
+import { AddressesRepository } from '../addresses-repository'
 
 @Injectable()
 export class PrismaAddressesRepository implements AddressesRepository {
@@ -15,8 +15,11 @@ export class PrismaAddressesRepository implements AddressesRepository {
     })
   }
 
-  async create(data: Prisma.AddressCreateInput) {
-    return await this.prisma.address.create({
+  async create(
+    data: Prisma.AddressCreateInput,
+    prisma: Prisma.TransactionClient = this.prisma,
+  ) {
+    return await prisma.address.create({
       data,
     })
   }

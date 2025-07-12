@@ -3,8 +3,9 @@ import { CompaniesRepository } from '@/database/repositories/companies-repositor
 import { Injectable } from '@nestjs/common'
 import { Company } from '@prisma/client'
 import { OwnerAlreadyExistsError } from './errors/owner-already-exists-error'
-import { AddressesRepository } from '@/database/repositories/address-repository'
+import { AddressesRepository } from '@/database/repositories/addresses-repository'
 import { OwnersRepository } from '@/database/repositories/owners-repository'
+import { PrismaService } from '@/database/prisma.service'
 
 interface RegisterCompanyUseCaseRequest {
   name: string
@@ -13,10 +14,9 @@ interface RegisterCompanyUseCaseRequest {
   cnae: string
   ownerName: string
   ownerCpf: string
+  phone: string
   ownerEmail: string
   password: string
-  email: string
-  phone: string
   zipCode: string
   uf: string
   city: string
@@ -37,6 +37,7 @@ export class RegisterCompanyUseCase {
     private ownersRepository: OwnersRepository,
     private companiesRepository: CompaniesRepository,
     private hashGenerator: HashGenerator,
+    private prisma: PrismaService,
   ) {}
 
   async execute({
@@ -46,10 +47,9 @@ export class RegisterCompanyUseCase {
     cnae,
     ownerName,
     ownerCpf,
+    phone,
     ownerEmail,
     password,
-    email,
-    phone,
     zipCode,
     uf,
     city,
@@ -58,39 +58,53 @@ export class RegisterCompanyUseCase {
     neighborhood,
     complement,
   }: RegisterCompanyUseCaseRequest): Promise<RegisterCompanyUseCaseResponse> {
-    const ownerWithSameEmail = await this.ownersRepository.findByEmail(email)
+    const ownerWithSameEmail =
+      await this.ownersRepository.findByEmail(ownerEmail)
 
     if (ownerWithSameEmail) {
-      throw new OwnerAlreadyExistsError(email)
+      throw new OwnerAlreadyExistsError(ownerEmail)
     }
 
     const hashedPassword = await this.hashGenerator.hash(password)
 
-    const address = await this.addressRepository.create({
-      zipCode,
-      uf,
-      city,
-      street,
-      number,
-      neighborhood,
-      complement,
-    })
+    const company = await this.prisma.$transaction(async (prisma) => {
+      const address = await this.addressRepository.create(
+        {
+          zipCode,
+          uf,
+          city,
+          street,
+          number,
+          neighborhood,
+          complement,
+        },
+        prisma,
+      )
 
-    const owner = await this.ownersRepository.create({
-      name: ownerName,
-      cpf: ownerCpf,
-      phone: phone,
-      email: ownerEmail,
-      password: hashedPassword,
-    })
+      const owner = await this.ownersRepository.create(
+        {
+          name: ownerName,
+          cpf: ownerCpf,
+          phone: phone,
+          email: ownerEmail,
+          password: hashedPassword,
+        },
+        prisma,
+      )
 
-    const company = await this.companiesRepository.create({
-      name,
-      tradeName,
-      cnpj,
-      cnae,
-      addressId: address.id,
-      ownerId: owner.id,
+      const company = await this.companiesRepository.create(
+        {
+          name,
+          tradeName,
+          cnpj,
+          cnae,
+          addressId: address.id,
+          ownerId: owner.id,
+        },
+        prisma,
+      )
+
+      return company
     })
 
     return {
