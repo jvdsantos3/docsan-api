@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3333
-# @authToken = {{authenticate.response.body.access_token}}
+@authToken = {{authenticate.response.body.access_token}}
 
 # @name create_company
 POST {{baseUrl}}/companies
@@ -22,4 +22,15 @@ Content-Type: application/json
   "number": "524",
   "neighborhood": "Vicente Pinzon",
   "complement": "Casa"
+}
+
+###
+
+# @name authenticate
+POST {{baseUrl}}/sessions
+Content-Type: application/json
+
+{
+  "email": "teste@company.com",
+  "password": "112233"
 }

@@ -7,6 +7,7 @@ import {
   Controller,
   HttpCode,
   Post,
+  UsePipes,
 } from '@nestjs/common'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
 import { z } from 'zod'
@@ -31,8 +32,6 @@ const createCompanyBodySchema = z.object({
   complement: z.string().optional(),
 })
 
-const bodyValidationPipe = new ZodValidationPipe(createCompanyBodySchema)
-
 type CreateCompanyBodySchema = z.infer<typeof createCompanyBodySchema>
 
 @Controller('/companies')
@@ -42,7 +41,8 @@ export class CreateCompanyController {
 
   @Post()
   @HttpCode(201)
-  async handle(@Body(bodyValidationPipe) body: CreateCompanyBodySchema) {
+  @UsePipes(new ZodValidationPipe(createCompanyBodySchema))
+  async handle(@Body() body: CreateCompanyBodySchema) {
     try {
       await this.registerCompanyUseCase.execute(body)
     } catch (err) {
