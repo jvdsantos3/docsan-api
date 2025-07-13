@@ -1,30 +1,5 @@
 @baseUrl = http://localhost:3333
-@authToken = {{authenticate.response.body.access_token}}
-
-# @name create_professional
-POST {{baseUrl}}/professionals
-Content-Type: application/json
-
-{
-  "name": "João Vitor",
-  "cpf": "891.070.770-41",
-  "birthDate": "2002-01-02T02:00:00.000Z",
-  "email": "jvdsantos@teste.com",
-  "password": "112233",
-  "phone": "85986744016",
-  "fieldExpertise": "Desenvolvimento de software",
-  "professionalRegistry": "Desenvolvedor",
-  "registryUf": "CE",
-  "cnae": "112233",
-  "zipCode": "60181170",
-  "uf": "CE",
-  "city": "Fortaleza",
-  "street": "Av. Areia Branca",
-  "number": "524",
-  "neighborhood": "Vicente Pinzon"
-}
-
-###
+# @authToken = {{authenticate.response.body.access_token}}
 
 # @name create_company
 POST {{baseUrl}}/companies
@@ -34,12 +9,12 @@ Content-Type: application/json
   "name": "Teste Company LTDA",
   "tradeName": "Teste Company",
   "cnpj": "77.488.944/0001-84",
-  "email": "teste@company.com",
-  "password": "112233",
   "cnae": "112233",
+  "ownerName": "Dono Teste",
+  "ownerCpf": "03808164310",
   "phone": "85986744016",
-  "responsibleName": "Dono Teste",
-  "responsibleCpf": "03808164310",
+  "ownerEmail": "teste@company.com",
+  "password": "112233",
   "zipCode": "60181170",
   "uf": "CE",
   "city": "Fortaleza",
@@ -48,34 +23,3 @@ Content-Type: application/json
   "neighborhood": "Vicente Pinzon",
   "complement": "Casa"
 }
-
-###
-
-# @name authenticate
-POST {{baseUrl}}/sessions
-Content-Type: application/json
-
-{
-  "email": "jvdsantos@teste.com",
-  "password": "112233"
-}
-
-###
-
-# @name create_service
-POST {{baseUrl}}/services
-Content-Type: application/json
-Authorization: Bearer {{authToken}}
-
-{
-  "title": "Novo serviço 1",
-  "description": "Teste",
-  "content": "Teste"
-}
-
-###
-
-# @name fetch_recent_services
-GET {{baseUrl}}/services?page=1
-Content-Type: application/json
-Authorization: Bearer {{authToken}}

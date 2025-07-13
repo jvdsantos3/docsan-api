@@ -2,10 +2,11 @@ import { HashGenerator } from '@/cryptography/hash-generator'
 import { CompaniesRepository } from '@/database/repositories/companies-repository'
 import { Injectable } from '@nestjs/common'
 import { Company } from '@prisma/client'
-import { OwnerAlreadyExistsError } from './errors/owner-already-exists-error'
+import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 import { AddressesRepository } from '@/database/repositories/addresses-repository'
 import { OwnersRepository } from '@/database/repositories/owners-repository'
 import { PrismaService } from '@/database/prisma.service'
+import { ProfessionalsRepository } from '@/database/repositories/professionals-repository'
 
 interface RegisterCompanyUseCaseRequest {
   name: string
@@ -36,6 +37,7 @@ export class RegisterCompanyUseCase {
     private addressRepository: AddressesRepository,
     private ownersRepository: OwnersRepository,
     private companiesRepository: CompaniesRepository,
+    private professionalsRepository: ProfessionalsRepository,
     private hashGenerator: HashGenerator,
     private prisma: PrismaService,
   ) {}
@@ -62,7 +64,14 @@ export class RegisterCompanyUseCase {
       await this.ownersRepository.findByEmail(ownerEmail)
 
     if (ownerWithSameEmail) {
-      throw new OwnerAlreadyExistsError(ownerEmail)
+      throw new UserAlreadyExistsError(ownerEmail)
+    }
+
+    const professionalWithSameEmail =
+      await this.professionalsRepository.findByEmail(ownerEmail)
+
+    if (professionalWithSameEmail) {
+      throw new UserAlreadyExistsError(ownerEmail)
     }
 
     const hashedPassword = await this.hashGenerator.hash(password)

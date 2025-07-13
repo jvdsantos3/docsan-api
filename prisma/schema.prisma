@@ -72,34 +72,34 @@ model Company {
   ownerId String @unique @map("owner_id")
   owner   Owner  @relation(fields: [ownerId], references: [id])
 
-  companyProfessional CompanyProfessional[]
-  invitation          Invitation[]
-  document            Document[]
-  documentType        DocumentType[]
+  companyProfessionals CompanyProfessional[]
+  invitations          Invitation[]
+  documents            Document[]
+  documentTypes        DocumentType[]
 
   @@map("companies")
 }
 
 model Professional {
-  id            String    @id @default(uuid())
+  id            String   @id @default(uuid())
   name          String
-  cpf           String    @unique
-  birthDate     DateTime? @map("birth_date")
-  email         String    @unique
+  cpf           String   @unique
+  birthDate     DateTime @map("birth_date")
+  email         String   @unique
   password      String
   phone         String
-  fieldActivity String?   @map("field_activity")
-  registry      String?
-  registryUf    String?   @map("registry_uf")
-  cnae          String?
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
+  fieldActivity String   @map("field_activity")
+  registry      String
+  registryUf    String   @map("registry_uf")
+  cnae          String
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 
   addressId String  @unique
   address   Address @relation(fields: [addressId], references: [id])
 
-  CompanyProfessional CompanyProfessional[]
-  Invitation          Invitation[]
+  CompanyProfessionals CompanyProfessional[]
+  Invitations          Invitation[]
 
   @@map("professionals")
 }
@@ -180,9 +180,9 @@ model DocumentType {
   metadata  Json
   companyId String @map("company_id")
 
-  company    Company      @relation(fields: [companyId], references: [id])
-  documents  Document[]
-  Indexation Indexation[]
+  company     Company      @relation(fields: [companyId], references: [id])
+  documents   Document[]
+  Indexations Indexation[]
 
   @@map("document_types")
 }
