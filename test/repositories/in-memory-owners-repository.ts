@@ -1,9 +1,14 @@
+import { InMemoryCompaniesRepository } from './in-memory-companies-repository'
 import { OwnersRepository } from '@/database/repositories/owners-repository'
 import { Owner, Prisma } from '@prisma/client'
 import { randomUUID } from 'node:crypto'
 
 export class InMemoryOwnersRepository implements OwnersRepository {
   public items: Owner[] = []
+
+  constructor(
+    private inMemoryCompaniesRepository: InMemoryCompaniesRepository,
+  ) {}
 
   async findById(id: string) {
     const owners = this.items.find((item) => item.id === id)
@@ -13,6 +18,23 @@ export class InMemoryOwnersRepository implements OwnersRepository {
     }
 
     return owners
+  }
+
+  async findByIdWithCompany(id: string) {
+    const owners = this.items.find((item) => item.id === id)
+
+    if (!owners) {
+      return null
+    }
+
+    const company =
+      (await this.inMemoryCompaniesRepository.findById(owners.companyId)) ??
+      null
+
+    return {
+      ...owners,
+      company,
+    }
   }
 
   async findByEmail(email: string) {
@@ -25,9 +47,10 @@ export class InMemoryOwnersRepository implements OwnersRepository {
     return owners
   }
 
-  async create(data: Prisma.OwnerCreateInput) {
+  async create(data: Prisma.OwnerUncheckedCreateInput) {
     const owners = {
       id: randomUUID(),
+      companyId: data.companyId,
       name: data.name,
       cpf: data.cpf,
       phone: data.phone,

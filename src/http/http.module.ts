@@ -6,10 +6,25 @@ import { CreateCompanyController } from './controllers/create-company.controller
 import { AuthenticateUseCase } from '@/use-cases/authenticate'
 import { AuthenticateController } from './controllers/authenticate.controller'
 import { DocumentService } from '@/document/document.service'
+import { CreateDocumentTypeUseCase } from '@/use-cases/create-document-type'
+import { CreateDocumentTypeController } from './controllers/create-document-type.controller'
+import { FetchDocumentTypesUseCase } from '@/use-cases/fetch-document-types'
+import { FetchDocumentTypesController } from './controllers/fetch-document-types.controller'
 
 @Module({
   imports: [CryptographyModule, DatabaseModule],
-  controllers: [CreateCompanyController, AuthenticateController],
-  providers: [DocumentService, RegisterCompanyUseCase, AuthenticateUseCase],
+  controllers: [
+    CreateCompanyController,
+    AuthenticateController,
+    CreateDocumentTypeController,
+    FetchDocumentTypesController,
+  ],
+  providers: [
+    DocumentService,
+    RegisterCompanyUseCase,
+    AuthenticateUseCase,
+    CreateDocumentTypeUseCase,
+    FetchDocumentTypesUseCase,
+  ],
 })
 export class HttpModule {}

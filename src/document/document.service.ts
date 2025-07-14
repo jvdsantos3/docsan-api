@@ -24,7 +24,6 @@ export class DocumentService {
     filePath: string,
     keys: string[],
   ): Promise<Record<string, string | null>> {
-    // Validações
     if (
       !filePath ||
       !(await fs
@@ -43,18 +42,12 @@ export class DocumentService {
     }
 
     try {
-      // Lê o arquivo PDF
       const dataBuffer = await fs.readFile(filePath)
       const pdfData = await pdfParse(dataBuffer)
-      console.log(pdfData)
-      // Extrai os dados com base nas chaves
+
       const extractedData = this.extractDataFromPDF(pdfData.text, keys)
 
-      // Exclui o arquivo temporário
       await fs.unlink(filePath)
-
-      // Opcional: Salvar os dados extraídos no banco usando Prisma
-      // Exemplo: await this.prisma.document.create({ data: { ... } });
 
       return extractedData
     } catch (error: any) {
@@ -76,7 +69,6 @@ export class DocumentService {
         const match = text.match(dateRegex)
         result[key] = match ? match[1] : null
       } else {
-        // Lógica genérica para outras chaves
         const regex = new RegExp(`${key}\\s*[:=]\\s*(.+?)(\\n|$)`, 'i')
         const match = text.match(regex)
         result[key] = match ? match[1].trim() : null

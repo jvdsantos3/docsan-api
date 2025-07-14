@@ -1,4 +1,4 @@
-import { OwnersRepository } from '@/database/repositories/owners-repository';
+import { OwnersRepository } from '@/database/repositories/owners-repository'
 import { CompaniesRepository } from './repositories/companies-repository'
 import { Module } from '@nestjs/common'
 import { PrismaService } from './prisma.service'
@@ -7,7 +7,9 @@ import { AddressesRepository } from './repositories/addresses-repository'
 import { PrismaAddressesRepository } from './repositories/prisma/prisma-addresses-repository'
 import { ProfessionalsRepository } from './repositories/professionals-repository'
 import { PrismaProfessionalsRepository } from './repositories/prisma/prisma-professionals-repository'
-import { PrismaOwnersRepository } from './repositories/prisma/prisma-owners-repository';
+import { PrismaOwnersRepository } from './repositories/prisma/prisma-owners-repository'
+import { DocumentTypesRepository } from './repositories/document-types-repository'
+import { PrismaDocumentTypesRepository } from './repositories/prisma/prisma-document-types-repository'
 
 @Module({
   providers: [
@@ -28,6 +30,10 @@ import { PrismaOwnersRepository } from './repositories/prisma/prisma-owners-repo
       provide: ProfessionalsRepository,
       useClass: PrismaProfessionalsRepository,
     },
+    {
+      provide: DocumentTypesRepository,
+      useClass: PrismaDocumentTypesRepository,
+    },
   ],
   exports: [
     PrismaService,
@@ -35,6 +41,7 @@ import { PrismaOwnersRepository } from './repositories/prisma/prisma-owners-repo
     OwnersRepository,
     CompaniesRepository,
     ProfessionalsRepository,
+    DocumentTypesRepository,
   ],
 })
 export class DatabaseModule {}

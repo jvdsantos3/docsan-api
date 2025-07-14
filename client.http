@@ -34,3 +34,24 @@ Content-Type: application/json
   "email": "teste@company.com",
   "password": "112233"
 }
+
+###
+
+# @name create_document_type
+POST {{baseUrl}}/document-types
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Teste 2",
+  "fields": [
+    { "name": "Data de vencimento", "type": "Date", "required": true }
+  ]
+}
+
+###
+
+# @name fetch_document_types
+GET {{baseUrl}}/document-types?page=1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}

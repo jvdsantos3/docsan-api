@@ -90,17 +90,6 @@ export class RegisterCompanyUseCase {
         prisma,
       )
 
-      const owner = await this.ownersRepository.create(
-        {
-          name: ownerName,
-          cpf: ownerCpf,
-          phone: phone,
-          email: ownerEmail,
-          password: hashedPassword,
-        },
-        prisma,
-      )
-
       const company = await this.companiesRepository.create(
         {
           name,
@@ -108,7 +97,18 @@ export class RegisterCompanyUseCase {
           cnpj,
           cnae,
           addressId: address.id,
-          ownerId: owner.id,
+        },
+        prisma,
+      )
+
+      await this.ownersRepository.create(
+        {
+          name: ownerName,
+          cpf: ownerCpf,
+          phone: phone,
+          email: ownerEmail,
+          password: hashedPassword,
+          companyId: company.id,
         },
         prisma,
       )

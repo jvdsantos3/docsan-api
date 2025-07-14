@@ -20,7 +20,9 @@ describe('Register Company', () => {
   beforeEach(() => {
     inMemoryCompaniesRepository = new InMemoryCompaniesRepository()
     inMemoryAddressRepository = new InMemoryAddressRepository()
-    inMemoryOwnersRepository = new InMemoryOwnersRepository()
+    inMemoryOwnersRepository = new InMemoryOwnersRepository(
+      inMemoryCompaniesRepository,
+    )
     inMemoryProfessionalsRepository = new InMemoryProfessionalsRepository()
     fakeHasher = new FakeHasher()
     prisma = new PrismaService()
@@ -56,8 +58,12 @@ describe('Register Company', () => {
     })
 
     expect(result.company).toBeTruthy()
-    expect(inMemoryAddressRepository.items[0].zipCode).toEqual('14403415')
-    expect(inMemoryOwnersRepository.items[0].name).toEqual('Owner Teste')
+    expect(inMemoryAddressRepository.items[0].id).toEqual(
+      result.company.addressId,
+    )
+    expect(inMemoryOwnersRepository.items[0].companyId).toEqual(
+      result.company.id,
+    )
   })
 
   it('should hash owner password upon registration', async () => {

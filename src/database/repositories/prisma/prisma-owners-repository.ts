@@ -7,14 +7,6 @@ import { OwnersRepository } from '../owners-repository'
 export class PrismaOwnersRepository implements OwnersRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findByEmail(email: string) {
-    return await this.prisma.owner.findUnique({
-      where: {
-        email,
-      },
-    })
-  }
-
   async findById(id: string) {
     return await this.prisma.owner.findUnique({
       where: {
@@ -23,8 +15,27 @@ export class PrismaOwnersRepository implements OwnersRepository {
     })
   }
 
+  async findByIdWithCompany(id: string) {
+    return await this.prisma.owner.findUnique({
+      include: {
+        company: true,
+      },
+      where: {
+        id,
+      },
+    })
+  }
+
+  async findByEmail(email: string) {
+    return await this.prisma.owner.findUnique({
+      where: {
+        email,
+      },
+    })
+  }
+
   async create(
-    data: Prisma.OwnerCreateInput,
+    data: Prisma.OwnerUncheckedCreateInput,
     prisma: Prisma.TransactionClient = this.prisma,
   ) {
     return await prisma.owner.create({
