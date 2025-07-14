@@ -38,8 +38,7 @@ export class AuthenticateController {
       return {
         access_token: accessToken,
       }
-    } catch (err) {
-      console.error(err)
+    } catch (err: any) {
       switch (err.constructor) {
         case WrongCredentialsError:
           throw new UnauthorizedException(err.message)

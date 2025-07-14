@@ -45,7 +45,7 @@ export class CreateCompanyController {
   async handle(@Body() body: CreateCompanyBodySchema) {
     try {
       await this.registerCompanyUseCase.execute(body)
-    } catch (err) {
+    } catch (err: any) {
       switch (err.constructor) {
         case UserAlreadyExistsError:
           throw new ConflictException(err.message)

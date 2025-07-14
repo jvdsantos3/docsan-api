@@ -5,10 +5,11 @@ import { Module } from '@nestjs/common'
 import { CreateCompanyController } from './controllers/create-company.controller'
 import { AuthenticateUseCase } from '@/use-cases/authenticate'
 import { AuthenticateController } from './controllers/authenticate.controller'
+import { DocumentService } from '@/document/document.service'
 
 @Module({
   imports: [CryptographyModule, DatabaseModule],
   controllers: [CreateCompanyController, AuthenticateController],
-  providers: [RegisterCompanyUseCase, AuthenticateUseCase],
+  providers: [DocumentService, RegisterCompanyUseCase, AuthenticateUseCase],
 })
 export class HttpModule {}

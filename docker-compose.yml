@@ -1,23 +1,23 @@
 services:
-  app:
-    container_name: docsan-api
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "${APP_PORT}:${APP_PORT}"
-    volumes:
-      - .:/app
-      - /app/node_modules
-    environment:
-      - NODE_ENV=${NODE_ENV}
-      - APP_PORT=${APP_PORT}
-      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}?schema=public
-      - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY}
-      - JWT_PUBLIC_KEY=${JWT_PUBLIC_KEY}
-    depends_on:
-      - db
-    restart: unless-stopped
+  # app:
+  #   container_name: docsan-api
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "${APP_PORT}:${APP_PORT}"
+  #   volumes:
+  #     - .:/app
+  #     - /app/node_modules
+  #   environment:
+  #     - NODE_ENV=${NODE_ENV}
+  #     - APP_PORT=${APP_PORT}
+  #     - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}?schema=public
+  #     - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY}
+  #     - JWT_PUBLIC_KEY=${JWT_PUBLIC_KEY}
+  #   depends_on:
+  #     - db
+  #   restart: unless-stopped
 
   db:
     container_name: docsan-pg

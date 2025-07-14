@@ -1,14 +1,16 @@
 FROM node:22-alpine
 
-RUN npm install -g pnpm
+RUN npm install -g pnpm@latest-10
 
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json ./
 
 RUN pnpm install
 
 COPY . .
+
+RUN mkdir -p /app/uploads && chmod -R 777 /app/uploads
 
 RUN pnpm prisma:generate
 
