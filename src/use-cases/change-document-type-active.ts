@@ -2,11 +2,11 @@ import { DocumentTypesRepository } from '@/database/repositories/document-types-
 import { Injectable } from '@nestjs/common'
 import { DocumentType } from '@prisma/client'
 
-interface FetchDocumentTypesUseCaseRequest {
+interface ChangeDocumentTypeUseCaseRequest {
   documentTypeId: string
 }
 
-interface FetchDocumentTypesUseCaseResponse {
+interface ChangeDocumentTypeUseCaseResponse {
   documentType: DocumentType
 }
 
@@ -16,7 +16,7 @@ export class ChangeDocumentTypeActiveUseCase {
 
   async execute({
     documentTypeId,
-  }: FetchDocumentTypesUseCaseRequest): Promise<FetchDocumentTypesUseCaseResponse> {
+  }: ChangeDocumentTypeUseCaseRequest): Promise<ChangeDocumentTypeUseCaseResponse> {
     const documentType =
       await this.documentTypesRepository.findById(documentTypeId)
 

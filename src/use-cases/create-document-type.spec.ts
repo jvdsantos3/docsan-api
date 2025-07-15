@@ -3,16 +3,21 @@ import { InMemoryOwnersRepository } from 'test/repositories/in-memory-owners-rep
 import { CreateDocumentTypeUseCase } from './create-document-type'
 import { InMemoryDocumentTypesRepository } from 'test/repositories/in-memory-document-types-repository'
 import { randomUUID } from 'node:crypto'
+import { InMemoryDocumentsRepository } from 'test/repositories/in-memory-document-types-repository copy'
 
 let inMemoryCompaniesRepository: InMemoryCompaniesRepository
 let inMemoryOwnersRepository: InMemoryOwnersRepository
+let inMemoryDocumentsRepository: InMemoryDocumentsRepository
 let inMemoryDocumentTypesRepository: InMemoryDocumentTypesRepository
 let sut: CreateDocumentTypeUseCase
 
 describe('Create a document type', () => {
   beforeEach(() => {
     inMemoryCompaniesRepository = new InMemoryCompaniesRepository()
-    inMemoryDocumentTypesRepository = new InMemoryDocumentTypesRepository()
+    inMemoryDocumentsRepository = new InMemoryDocumentsRepository()
+    inMemoryDocumentTypesRepository = new InMemoryDocumentTypesRepository(
+      inMemoryDocumentsRepository,
+    )
     inMemoryOwnersRepository = new InMemoryOwnersRepository(
       inMemoryCompaniesRepository,
     )

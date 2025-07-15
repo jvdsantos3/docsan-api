@@ -1,13 +1,18 @@
 import { InMemoryDocumentTypesRepository } from 'test/repositories/in-memory-document-types-repository'
 import { randomUUID } from 'node:crypto'
 import { FetchDocumentTypesUseCase } from './fetch-document-types'
+import { InMemoryDocumentsRepository } from 'test/repositories/in-memory-document-types-repository copy'
 
+let inMemoryDocumentsRepository: InMemoryDocumentsRepository
 let inMemoryDocumentTypesRepository: InMemoryDocumentTypesRepository
 let sut: FetchDocumentTypesUseCase
 
 describe('Fetch document types', () => {
   beforeEach(() => {
-    inMemoryDocumentTypesRepository = new InMemoryDocumentTypesRepository()
+    inMemoryDocumentsRepository = new InMemoryDocumentsRepository()
+    inMemoryDocumentTypesRepository = new InMemoryDocumentTypesRepository(
+      inMemoryDocumentsRepository,
+    )
 
     sut = new FetchDocumentTypesUseCase(inMemoryDocumentTypesRepository)
   })

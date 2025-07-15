@@ -1,17 +1,22 @@
 import { DocumentTypesRepository } from '@/database/repositories/document-types-repository'
 import { Injectable } from '@nestjs/common'
+import { DocumentType } from '@prisma/client'
 
-interface DeleteDocumentTypeUseCaseRequest {
+interface GetDocumentTypeByIdUseCaseRequest {
   documentTypeId: string
 }
 
+interface GetDocumentTypeByIdUseCaseResponse {
+  documentType: DocumentType
+}
+
 @Injectable()
-export class DeleteDocumentTypeUseCase {
+export class GetDocumentTypeByIdUseCase {
   constructor(private documentTypesRepository: DocumentTypesRepository) {}
 
   async execute({
     documentTypeId,
-  }: DeleteDocumentTypeUseCaseRequest): Promise<void> {
+  }: GetDocumentTypeByIdUseCaseRequest): Promise<GetDocumentTypeByIdUseCaseResponse> {
     const documentType =
       await this.documentTypesRepository.findByIdWithDocuments(documentTypeId)
 
@@ -20,12 +25,8 @@ export class DeleteDocumentTypeUseCase {
       throw new Error('Document type not found.')
     }
 
-    if (documentType.documents.length) {
-      throw new Error(
-        'It is not possible to delete a document type with linked documents',
-      )
+    return {
+      documentType,
     }
-
-    await this.documentTypesRepository.delete(documentType)
   }
 }

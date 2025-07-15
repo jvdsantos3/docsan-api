@@ -51,6 +51,13 @@ Authorization: Bearer {{authToken}}
 
 ###
 
+# @name get_document_by_id
+GET {{baseUrl}}/document-types/97ac517b-5abc-4339-bd56-d92ce731c599
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
 # @name fetch_document_types
 GET {{baseUrl}}/document-types?page=1
 Content-Type: application/json

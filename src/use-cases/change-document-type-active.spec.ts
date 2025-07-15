@@ -1,13 +1,16 @@
 import { InMemoryDocumentTypesRepository } from 'test/repositories/in-memory-document-types-repository'
 import { ChangeDocumentTypeActiveUseCase } from './change-document-type-active'
 import { randomUUID } from 'node:crypto'
+import { InMemoryDocumentsRepository } from 'test/repositories/in-memory-document-types-repository copy'
 
+let inMemoryDocumentsRepository: InMemoryDocumentsRepository
 let inMemoryDocumentTypesRepository: InMemoryDocumentTypesRepository
 let sut: ChangeDocumentTypeActiveUseCase
 
 describe('Change document type active', () => {
   beforeEach(() => {
-    inMemoryDocumentTypesRepository = new InMemoryDocumentTypesRepository()
+    inMemoryDocumentsRepository = new InMemoryDocumentsRepository()
+    inMemoryDocumentTypesRepository = new InMemoryDocumentTypesRepository(inMemoryDocumentsRepository)
 
     sut = new ChangeDocumentTypeActiveUseCase(inMemoryDocumentTypesRepository)
   })
