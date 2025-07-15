@@ -9,7 +9,7 @@ let inMemoryOwnersRepository: InMemoryOwnersRepository
 let inMemoryDocumentTypesRepository: InMemoryDocumentTypesRepository
 let sut: CreateDocumentTypeUseCase
 
-describe('Register Company', () => {
+describe('Create a document type', () => {
   beforeEach(() => {
     inMemoryCompaniesRepository = new InMemoryCompaniesRepository()
     inMemoryDocumentTypesRepository = new InMemoryDocumentTypesRepository()

@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../../prisma.service'
-import { Prisma } from '@prisma/client'
-import { DocumentTypesRepository } from '../document-types-repository'
+import { DocumentType, Prisma } from '@prisma/client'
+import {
+  DocumentTypesRepository,
+  FindManyFilters,
+} from '../document-types-repository'
 import { PaginationParams } from '../interfaces/pagination-params'
 
 @Injectable()
@@ -24,10 +27,30 @@ export class PrismaDocumentTypesRepository implements DocumentTypesRepository {
     })
   }
 
-  async findMany({ page, limit = 10, order = 'desc' }: PaginationParams) {
+  async findMany({
+    page,
+    limit = 10,
+    order = 'desc',
+    active,
+    filter,
+  }: PaginationParams & FindManyFilters) {
+    const where: any = {}
+
+    if (typeof active === 'boolean') {
+      where.active = active
+    }
+
+    if (filter) {
+      where.name = {
+        contains: filter,
+        mode: 'insensitive',
+      }
+    }
+
     return await this.prisma.documentType.findMany({
+      where,
       orderBy: {
-        createdAt: order,
+        name: order,
       },
       take: limit,
       skip: (page - 1) * limit,
@@ -40,6 +63,19 @@ export class PrismaDocumentTypesRepository implements DocumentTypesRepository {
   ) {
     return await prisma.documentType.create({
       data,
+    })
+  }
+
+  async save(data: DocumentType) {
+    return await this.prisma.documentType.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        ...data,
+        metadata: data.metadata as Prisma.InputJsonValue,
+        createdAt: new Date(),
+      },
     })
   }
 }

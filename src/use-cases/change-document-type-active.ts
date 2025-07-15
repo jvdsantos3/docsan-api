@@ -3,38 +3,35 @@ import { Injectable } from '@nestjs/common'
 import { DocumentType } from '@prisma/client'
 
 interface FetchDocumentTypesUseCaseRequest {
-  page: number
-  limit?: number
-  order?: 'desc' | 'asc'
-  active?: boolean
-  filter?: string
+  documentTypeId: string
 }
 
 interface FetchDocumentTypesUseCaseResponse {
-  documentTypes: DocumentType[]
+  documentType: DocumentType
 }
 
 @Injectable()
-export class FetchDocumentTypesUseCase {
+export class ChangeDocumentTypeActiveUseCase {
   constructor(private documentTypesRepository: DocumentTypesRepository) {}
 
   async execute({
-    page,
-    limit,
-    order,
-    active,
-    filter,
+    documentTypeId,
   }: FetchDocumentTypesUseCaseRequest): Promise<FetchDocumentTypesUseCaseResponse> {
-    const documentTypes = await this.documentTypesRepository.findMany({
-      page,
-      limit,
-      order,
-      active,
-      filter,
-    })
+    const documentType =
+      await this.documentTypesRepository.findById(documentTypeId)
+
+    if (!documentType) {
+      // TODO
+      throw new Error('Document type not found.')
+    }
+
+    documentType.active = !documentType.active
+
+    const newDocumentType =
+      await this.documentTypesRepository.save(documentType)
 
     return {
-      documentTypes,
+      documentType: newDocumentType,
     }
   }
 }

@@ -52,6 +52,13 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name fetch_document_types
-GET {{baseUrl}}/document-types?page=1
+GET {{baseUrl}}/document-types?page=1&filter=data
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name change_document_type_active
+PATCH {{baseUrl}}/document-types/32565b7a-3188-47fb-89f9-c19b31b1206f/active
 Content-Type: application/json
 Authorization: Bearer {{authToken}}

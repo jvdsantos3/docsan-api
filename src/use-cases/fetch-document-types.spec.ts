@@ -5,7 +5,7 @@ import { FetchDocumentTypesUseCase } from './fetch-document-types'
 let inMemoryDocumentTypesRepository: InMemoryDocumentTypesRepository
 let sut: FetchDocumentTypesUseCase
 
-describe('Register Company', () => {
+describe('Fetch document types', () => {
   beforeEach(() => {
     inMemoryDocumentTypesRepository = new InMemoryDocumentTypesRepository()
 

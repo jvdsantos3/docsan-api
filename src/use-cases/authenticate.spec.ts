@@ -4,8 +4,10 @@ import { AuthenticateUseCase } from './authenticate'
 import { InMemoryProfessionalsRepository } from 'test/repositories/in-memory-professionals-repository'
 import { InMemoryOwnersRepository } from 'test/repositories/in-memory-owners-repository'
 import { randomUUID } from 'node:crypto'
+import { InMemoryCompaniesRepository } from 'test/repositories/in-memory-companies-repository'
 
 let inMemoryProfessionalsRepository: InMemoryProfessionalsRepository
+let inMemoryCompaniesRepository: InMemoryCompaniesRepository
 let inMemoryOwnersRepository: InMemoryOwnersRepository
 let fakeHasher: FakeHasher
 let encrypter: FakeEncrypter
@@ -14,8 +16,11 @@ let sut: AuthenticateUseCase
 
 describe('Authenticate', () => {
   beforeEach(() => {
-    inMemoryOwnersRepository = new InMemoryOwnersRepository()
     inMemoryProfessionalsRepository = new InMemoryProfessionalsRepository()
+    inMemoryCompaniesRepository = new InMemoryCompaniesRepository()
+    inMemoryOwnersRepository = new InMemoryOwnersRepository(
+      inMemoryCompaniesRepository,
+    )
     fakeHasher = new FakeHasher()
     encrypter = new FakeEncrypter()
 
@@ -35,6 +40,7 @@ describe('Authenticate', () => {
       phone: '85986744016',
       email: 'teste@company.com',
       password: await fakeHasher.hash('123456'),
+      companyId: randomUUID(),
       createdAt: new Date(),
       updatedAt: new Date(),
     })

@@ -41,6 +41,7 @@ export class InMemoryDocumentTypesRepository
       id: randomUUID(),
       name: data.name,
       metadata: JSON.stringify(data.metadata),
+      active: data.active ?? true,
       companyId: data.companyId,
       professionalId: data.professionalId ?? null,
       createdAt: new Date(),
@@ -50,5 +51,15 @@ export class InMemoryDocumentTypesRepository
     this.items.push(documentType)
 
     return documentType
+  }
+
+  async save(data: DocumentType) {
+    const checkInIndex = this.items.findIndex((item) => item.id === data.id)
+
+    if (checkInIndex >= 0) {
+      this.items[checkInIndex] = data
+    }
+
+    return data
   }
 }

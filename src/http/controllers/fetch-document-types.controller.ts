@@ -17,6 +17,12 @@ const fetchDocumentTypesParamSchema = z.object({
     .transform(Number)
     .pipe(z.number().min(1)),
   order: z.enum(['desc', 'asc']).optional(),
+  active: z.preprocess((val) => {
+    if (val === 'true') return true
+    if (val === 'false') return false
+    return val
+  }, z.boolean().optional()),
+  filter: z.string().optional(),
 })
 
 const queryValidationPipe = new ZodValidationPipe(fetchDocumentTypesParamSchema)
@@ -32,13 +38,15 @@ export class FetchDocumentTypesController {
   @Get()
   async handle(
     @Query(queryValidationPipe)
-    { page, limit, order }: FetchDocumentTypesParamSchema,
+    { page, limit, order, active, filter }: FetchDocumentTypesParamSchema,
   ) {
     try {
       const { documentTypes } = await this.fetchDocumentTypesUseCase.execute({
         page,
         limit,
         order,
+        active,
+        filter,
       })
 
       return documentTypes
