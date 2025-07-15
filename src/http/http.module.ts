@@ -12,6 +12,8 @@ import { FetchDocumentTypesUseCase } from '@/use-cases/fetch-document-types'
 import { FetchDocumentTypesController } from './controllers/fetch-document-types.controller'
 import { ChangeDocumentTypeActiveUseCase } from '@/use-cases/change-document-type-active'
 import { ChangeDocumentTypeActiveController } from './controllers/change-document-type-active.controller'
+import { DeleteDocumentTypeUseCase } from '@/use-cases/delete-document-type'
+import { DeleteDocumentTypeController } from './controllers/delete-document-type.controller'
 
 @Module({
   imports: [CryptographyModule, DatabaseModule],
@@ -21,6 +23,7 @@ import { ChangeDocumentTypeActiveController } from './controllers/change-documen
     CreateDocumentTypeController,
     FetchDocumentTypesController,
     ChangeDocumentTypeActiveController,
+    DeleteDocumentTypeController,
   ],
   providers: [
     DocumentService,
@@ -29,6 +32,7 @@ import { ChangeDocumentTypeActiveController } from './controllers/change-documen
     CreateDocumentTypeUseCase,
     FetchDocumentTypesUseCase,
     ChangeDocumentTypeActiveUseCase,
+    DeleteDocumentTypeUseCase,
   ],
 })
 export class HttpModule {}

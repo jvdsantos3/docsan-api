@@ -2,11 +2,16 @@ import { DocumentTypesRepository } from '@/database/repositories/document-types-
 import { PaginationParams } from '@/database/repositories/interfaces/pagination-params'
 import { DocumentType, Prisma } from '@prisma/client'
 import { randomUUID } from 'node:crypto'
+import { InMemoryDocumentsRepository } from './in-memory-document-types-repository copy'
 
 export class InMemoryDocumentTypesRepository
   implements DocumentTypesRepository
 {
   public items: DocumentType[] = []
+
+  constructor(
+    private inMemoryDocumentsRepository: InMemoryDocumentsRepository,
+  ) {}
 
   async findById(id: string) {
     const documentType = this.items.find((item) => item.id === id)
@@ -16,6 +21,21 @@ export class InMemoryDocumentTypesRepository
     }
 
     return documentType
+  }
+
+  async findByIdWithDocuments(id: string) {
+    const documentType = this.items.find((item) => item.id === id)
+
+    if (!documentType) {
+      return null
+    }
+
+    const documents = this.inMemoryDocumentsRepository.items.filter(item => item.documentTypeId === documentType.id)
+
+    return {
+      ...documentType,
+      documents,
+    }
   }
 
   async findByName(name: string) {
@@ -41,7 +61,7 @@ export class InMemoryDocumentTypesRepository
       id: randomUUID(),
       name: data.name,
       metadata: JSON.stringify(data.metadata),
-      active: data.active ?? true,
+      isActive: data.isActive ?? true,
       companyId: data.companyId,
       professionalId: data.professionalId ?? null,
       createdAt: new Date(),
@@ -61,5 +81,11 @@ export class InMemoryDocumentTypesRepository
     }
 
     return data
+  }
+
+  async delete(data: DocumentType) {
+    const itemIndex = this.items.findIndex((item) => item.id === data.id)
+
+    this.items.splice(itemIndex, 1)
   }
 }

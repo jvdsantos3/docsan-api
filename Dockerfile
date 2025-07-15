@@ -10,8 +10,6 @@ RUN pnpm install
 
 COPY . .
 
-RUN mkdir -p /app/uploads && chmod -R 777 /app/uploads
-
 RUN pnpm prisma:generate
 
 EXPOSE 3000

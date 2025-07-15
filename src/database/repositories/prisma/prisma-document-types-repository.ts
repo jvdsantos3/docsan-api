@@ -19,6 +19,17 @@ export class PrismaDocumentTypesRepository implements DocumentTypesRepository {
     })
   }
 
+  async findByIdWithDocuments(id: string) {
+    return await this.prisma.documentType.findUnique({
+      include: {
+        documents: true,
+      },
+      where: {
+        id,
+      },
+    })
+  }
+
   async findByName(name: string) {
     return await this.prisma.documentType.findUnique({
       where: {
@@ -75,6 +86,14 @@ export class PrismaDocumentTypesRepository implements DocumentTypesRepository {
         ...data,
         metadata: data.metadata as Prisma.InputJsonValue,
         createdAt: new Date(),
+      },
+    })
+  }
+
+  async delete(documentType: DocumentType) {
+    await this.prisma.documentType.delete({
+      where: {
+        id: documentType.id,
       },
     })
   }

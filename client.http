@@ -43,7 +43,7 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-  "name": "Teste 2",
+  "name": "Teste 1",
   "fields": [
     { "name": "Data de vencimento", "type": "Date", "required": true }
   ]
@@ -52,7 +52,7 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name fetch_document_types
-GET {{baseUrl}}/document-types?page=1&filter=data
+GET {{baseUrl}}/document-types?page=1
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
@@ -60,5 +60,12 @@ Authorization: Bearer {{authToken}}
 
 # @name change_document_type_active
 PATCH {{baseUrl}}/document-types/32565b7a-3188-47fb-89f9-c19b31b1206f/active
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name delete_document_type
+DELETE {{baseUrl}}/document-types/77960c3b-4dad-4e81-8ef0-7bfcfa834a8b
 Content-Type: application/json
 Authorization: Bearer {{authToken}}

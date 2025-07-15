@@ -25,7 +25,7 @@ export class ChangeDocumentTypeActiveUseCase {
       throw new Error('Document type not found.')
     }
 
-    documentType.active = !documentType.active
+    documentType.isActive = !documentType.isActive
 
     const newDocumentType =
       await this.documentTypesRepository.save(documentType)

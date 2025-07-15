@@ -5,7 +5,7 @@ import { randomUUID } from 'node:crypto'
 let inMemoryDocumentTypesRepository: InMemoryDocumentTypesRepository
 let sut: ChangeDocumentTypeActiveUseCase
 
-describe('Register Company', () => {
+describe('Change document type active', () => {
   beforeEach(() => {
     inMemoryDocumentTypesRepository = new InMemoryDocumentTypesRepository()
 
@@ -24,14 +24,14 @@ describe('Register Company', () => {
     })
 
     expect(result.documentType).toBeTruthy()
-    expect(result.documentType.active).toEqual(false)
+    expect(result.documentType.isActive).toEqual(false)
   })
 
   it('should be able to change the active field to true for a document type', async () => {
     const type = await inMemoryDocumentTypesRepository.create({
       name: 'Teste 1',
       metadata: '[]',
-      active: false,
+      isActive: false,
       companyId: randomUUID(),
     })
 
@@ -40,6 +40,6 @@ describe('Register Company', () => {
     })
 
     expect(result.documentType).toBeTruthy()
-    expect(result.documentType.active).toEqual(true)
+    expect(result.documentType.isActive).toEqual(true)
   })
 })
