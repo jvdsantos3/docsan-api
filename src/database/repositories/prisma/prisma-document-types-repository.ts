@@ -65,6 +65,13 @@ export class PrismaDocumentTypesRepository implements DocumentTypesRepository {
       },
       take: limit,
       skip: (page - 1) * limit,
+      include: {
+        _count: {
+          select: {
+            documents: true,
+          },
+        },
+      },
     })
   }
 
