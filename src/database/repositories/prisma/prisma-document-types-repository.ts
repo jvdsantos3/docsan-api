@@ -101,15 +101,19 @@ export class PrismaDocumentTypesRepository implements DocumentTypesRepository {
     })
   }
 
-  async save(data: DocumentType) {
-    return await this.prisma.documentType.update({
+  async save(
+    data: DocumentType,
+    prisma: Prisma.TransactionClient = this.prisma,
+  ) {
+    return await prisma.documentType.update({
       where: {
         id: data.id,
       },
       data: {
-        ...data,
+        name: data.name,
         metadata: data.metadata as Prisma.InputJsonValue,
-        createdAt: new Date(),
+        isActive: data.isActive,
+        updatedAt: data.updatedAt,
       },
     })
   }

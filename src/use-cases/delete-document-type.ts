@@ -21,6 +21,7 @@ export class DeleteDocumentTypeUseCase {
     }
 
     if (documentType.documents.length) {
+      // TODO
       throw new Error(
         'It is not possible to delete a document type with linked documents',
       )

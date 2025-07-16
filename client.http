@@ -72,6 +72,20 @@ Authorization: Bearer {{authToken}}
 
 ###
 
+# @name edit_document_type
+PUT {{baseUrl}}/document-types/32565b7a-3188-47fb-89f9-c19b31b1206f
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Teste 1",
+  "fields": [
+    { "name": "Destinatario", "type": "String", "required": true }
+  ]
+}
+
+###
+
 # @name delete_document_type
 DELETE {{baseUrl}}/document-types/77960c3b-4dad-4e81-8ef0-7bfcfa834a8b
 Content-Type: application/json

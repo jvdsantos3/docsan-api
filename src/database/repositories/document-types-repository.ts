@@ -22,6 +22,9 @@ export abstract class DocumentTypesRepository {
     data: Prisma.DocumentTypeUncheckedCreateInput,
     prisma?: Prisma.TransactionClient,
   ): Promise<DocumentType>
-  abstract save(documentType: DocumentType): Promise<DocumentType>
+  abstract save(
+    documentType: DocumentType,
+    prisma?: Prisma.TransactionClient,
+  ): Promise<DocumentType>
   abstract delete(documentType: DocumentType): Promise<void>
 }
