@@ -113,7 +113,6 @@ export class PrismaDocumentTypesRepository implements DocumentTypesRepository {
         name: data.name,
         metadata: data.metadata as Prisma.InputJsonValue,
         isActive: data.isActive,
-        updatedAt: data.updatedAt,
       },
     })
   }
