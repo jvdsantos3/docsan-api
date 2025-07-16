@@ -20,7 +20,7 @@ describe('Edit document type', () => {
   it('should be able to edit a document type', async () => {
     const type = await inMemoryDocumentTypesRepository.create({
       name: 'Teste 1',
-      metadata: '[]',
+      metadata: [],
       companyId: randomUUID(),
     })
 
@@ -46,7 +46,13 @@ describe('Edit document type', () => {
   it('should not be able to edit the metadata of a document type with linked documents', async () => {
     const type = await inMemoryDocumentTypesRepository.create({
       name: 'Teste 1',
-      metadata: '[]',
+      metadata: [
+        {
+          name: 'Data de vencimento',
+          type: 'Date',
+          required: true,
+        },
+      ],
       companyId: randomUUID(),
     })
 
@@ -62,7 +68,18 @@ describe('Edit document type', () => {
       sut.execute({
         documentTypeId: type.id,
         name: 'Teste 2',
-        fields: [],
+        fields: [
+          {
+            name: 'Data de vencimento',
+            type: 'Date',
+            required: true,
+          },
+          {
+            name: 'Nome',
+            type: 'String',
+            required: false,
+          },
+        ],
       }),
     ).rejects.toBeInstanceOf(Error)
   })
@@ -70,7 +87,13 @@ describe('Edit document type', () => {
   it('should be able to edit the name of a document type with linked documents', async () => {
     const type = await inMemoryDocumentTypesRepository.create({
       name: 'Teste 1',
-      metadata: '[]',
+      metadata: [
+        {
+          name: 'Data de vencimento',
+          type: 'Date',
+          required: true,
+        },
+      ],
       companyId: randomUUID(),
     })
 
@@ -85,6 +108,13 @@ describe('Edit document type', () => {
     const result = await sut.execute({
       documentTypeId: type.id,
       name: 'Teste 2',
+      fields: [
+        {
+          name: 'Data de vencimento',
+          type: 'Date',
+          required: true,
+        },
+      ],
     })
 
     expect(result.documentType).toBeTruthy()

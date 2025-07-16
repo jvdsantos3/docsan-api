@@ -7,7 +7,7 @@ import { DocumetTypeAlreadyExistsError } from './errors/document-type-already-ex
 interface EditDocumentTypeUseCaseRequest {
   documentTypeId: string
   name: string
-  fields?: Field[] | Prisma.JsonArray
+  fields: Field[] | Prisma.JsonArray
 }
 
 interface EditDocumentTypeUseCaseResponse {
@@ -41,10 +41,12 @@ export class EditDocumentTypeUseCase {
       throw new DocumetTypeAlreadyExistsError(name)
     }
 
-    if (documentType.documents.length && fields) {
+    const fieldsChanged = documentType.metadata !== JSON.stringify(fields)
+
+    if (documentType.documents.length && fieldsChanged) {
       // TODO
       throw new Error(
-        'It is not possible to delete a document type with linked documents',
+        'It is not possible to edit a document type with linked documents',
       )
     }
 

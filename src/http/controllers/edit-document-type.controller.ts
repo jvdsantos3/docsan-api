@@ -17,15 +17,13 @@ type IdRouteParamSchema = z.infer<typeof idRouteParamSchema>
 
 const editDocumentTypeBodySchema = z.object({
   name: z.string(),
-  fields: z
-    .array(
-      z.object({
-        name: z.string(),
-        type: z.string(),
-        required: z.boolean(),
-      }),
-    )
-    .optional(),
+  fields: z.array(
+    z.object({
+      name: z.string(),
+      type: z.string(),
+      required: z.boolean(),
+    }),
+  ),
 })
 
 const bodyValidationPipe = new ZodValidationPipe(editDocumentTypeBodySchema)
