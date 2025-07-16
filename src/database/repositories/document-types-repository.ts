@@ -1,5 +1,8 @@
 import { Document, DocumentType, Prisma } from '@prisma/client'
-import { PaginationParams } from './interfaces/pagination-params'
+import {
+  PaginationParams,
+  PaginationResponse,
+} from './interfaces/pagination-params'
 
 export interface FindManyFilters {
   filter?: string
@@ -8,11 +11,13 @@ export interface FindManyFilters {
 
 export abstract class DocumentTypesRepository {
   abstract findById(id: string): Promise<DocumentType | null>
-  abstract findByIdWithDocuments(id: string): Promise<DocumentType & { documents: Document[] } | null>
+  abstract findByIdWithDocuments(
+    id: string,
+  ): Promise<(DocumentType & { documents: Document[] }) | null>
   abstract findByName(name: string): Promise<DocumentType | null>
   abstract findMany(
     params: PaginationParams & FindManyFilters,
-  ): Promise<DocumentType[]>
+  ): Promise<PaginationResponse & { data: DocumentType[] }>
   abstract create(
     data: Prisma.DocumentTypeUncheckedCreateInput,
     prisma?: Prisma.TransactionClient,

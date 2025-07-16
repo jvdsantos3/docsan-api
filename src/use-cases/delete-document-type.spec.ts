@@ -1,7 +1,7 @@
 import { InMemoryDocumentTypesRepository } from 'test/repositories/in-memory-document-types-repository'
 import { randomUUID } from 'node:crypto'
 import { DeleteDocumentTypeUseCase } from './delete-document-type'
-import { InMemoryDocumentsRepository } from 'test/repositories/in-memory-document-types-repository copy'
+import { InMemoryDocumentsRepository } from 'test/repositories/in-memory-documents-repository'
 
 let inMemoryDocumentsRepository: InMemoryDocumentsRepository
 let inMemoryDocumentTypesRepository: InMemoryDocumentTypesRepository
@@ -10,7 +10,9 @@ let sut: DeleteDocumentTypeUseCase
 describe('Delete document type', () => {
   beforeEach(() => {
     inMemoryDocumentsRepository = new InMemoryDocumentsRepository()
-    inMemoryDocumentTypesRepository = new InMemoryDocumentTypesRepository(inMemoryDocumentsRepository)
+    inMemoryDocumentTypesRepository = new InMemoryDocumentTypesRepository(
+      inMemoryDocumentsRepository,
+    )
 
     sut = new DeleteDocumentTypeUseCase(inMemoryDocumentTypesRepository)
   })
@@ -24,7 +26,7 @@ describe('Delete document type', () => {
 
     await sut.execute({
       documentTypeId: type.id,
-    }) 
+    })
 
     expect(inMemoryDocumentTypesRepository.items.length).toEqual(0)
   })
@@ -41,13 +43,13 @@ describe('Delete document type', () => {
       url: 'teste.pdf',
       companyId: randomUUID(),
       documentTypeId: type.id,
-      indexationId: randomUUID()
+      indexationId: randomUUID(),
     })
 
-    await expect(() => 
+    await expect(() =>
       sut.execute({
-      documentTypeId: type.id,
-      })
+        documentTypeId: type.id,
+      }),
     ).rejects.toBeInstanceOf(Error)
   })
 })

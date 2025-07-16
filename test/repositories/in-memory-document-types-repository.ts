@@ -2,7 +2,7 @@ import { DocumentTypesRepository } from '@/database/repositories/document-types-
 import { PaginationParams } from '@/database/repositories/interfaces/pagination-params'
 import { DocumentType, Prisma } from '@prisma/client'
 import { randomUUID } from 'node:crypto'
-import { InMemoryDocumentsRepository } from './in-memory-document-types-repository copy'
+import { InMemoryDocumentsRepository } from './in-memory-documents-repository'
 
 export class InMemoryDocumentTypesRepository
   implements DocumentTypesRepository
@@ -30,7 +30,9 @@ export class InMemoryDocumentTypesRepository
       return null
     }
 
-    const documents = this.inMemoryDocumentsRepository.items.filter(item => item.documentTypeId === documentType.id)
+    const documents = this.inMemoryDocumentsRepository.items.filter(
+      (item) => item.documentTypeId === documentType.id,
+    )
 
     return {
       ...documentType,
@@ -48,12 +50,27 @@ export class InMemoryDocumentTypesRepository
     return documentType
   }
 
-  async findMany({ page }: PaginationParams) {
+  async findMany({ page, limit = 15 }: PaginationParams) {
+    const total = this.items.length
+    const last = Math.ceil(total / limit)
+    const current = page
+    const next = total > 0 && page < last ? page + 1 : null
+    const prev = page > 1 ? page - 1 : null
+    const first = total > 0 ? 1 : null
+
     const documentTypes = this.items
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice((page - 1) * 10, page * 10)
 
-    return documentTypes
+    return {
+      data: documentTypes,
+      first,
+      last,
+      current,
+      next,
+      prev,
+      total,
+    }
   }
 
   async create(data: Prisma.DocumentTypeUncheckedCreateInput) {

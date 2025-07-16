@@ -40,7 +40,7 @@ export class PrismaDocumentTypesRepository implements DocumentTypesRepository {
 
   async findMany({
     page,
-    limit = 10,
+    limit = 15,
     order = 'desc',
     active,
     filter,
@@ -58,7 +58,14 @@ export class PrismaDocumentTypesRepository implements DocumentTypesRepository {
       }
     }
 
-    return await this.prisma.documentType.findMany({
+    const total = await this.prisma.documentType.count({ where })
+    const current = page
+    const first = total > 0 ? 1 : null
+    const last = Math.ceil(total / limit)
+    const next = page < last ? page + 1 : null
+    const prev = page > 1 ? page - 1 : null
+
+    const documentTypes = await this.prisma.documentType.findMany({
       where,
       orderBy: {
         name: order,
@@ -73,6 +80,16 @@ export class PrismaDocumentTypesRepository implements DocumentTypesRepository {
         },
       },
     })
+
+    return {
+      data: documentTypes,
+      first,
+      last,
+      current,
+      next,
+      prev,
+      total,
+    }
   }
 
   async create(

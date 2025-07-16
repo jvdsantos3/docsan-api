@@ -1,7 +1,7 @@
 import { InMemoryDocumentTypesRepository } from 'test/repositories/in-memory-document-types-repository'
 import { randomUUID } from 'node:crypto'
 import { FetchDocumentTypesUseCase } from './fetch-document-types'
-import { InMemoryDocumentsRepository } from 'test/repositories/in-memory-document-types-repository copy'
+import { InMemoryDocumentsRepository } from 'test/repositories/in-memory-documents-repository'
 
 let inMemoryDocumentsRepository: InMemoryDocumentsRepository
 let inMemoryDocumentTypesRepository: InMemoryDocumentTypesRepository
@@ -30,7 +30,7 @@ describe('Fetch document types', () => {
       page: 1,
     })
 
-    expect(result.documentTypes).toEqual([
+    expect(result.data).toEqual([
       expect.objectContaining({ name: 'Teste 1' }),
       expect.objectContaining({ name: 'Teste 2' }),
       expect.objectContaining({ name: 'Teste 3' }),
@@ -50,6 +50,6 @@ describe('Fetch document types', () => {
       page: 2,
     })
 
-    expect(result.documentTypes).toHaveLength(2)
+    expect(result.data).toHaveLength(2)
   })
 })

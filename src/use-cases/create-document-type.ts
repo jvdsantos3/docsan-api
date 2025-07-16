@@ -4,16 +4,11 @@ import { DocumentType, Prisma } from '@prisma/client'
 import { DocumetTypeAlreadyExistsError } from './errors/document-type-already-exists-error'
 import { DocumetTypeLimitError } from './errors/document-type-limit-error'
 import { OwnersRepository } from '@/database/repositories/owners-repository'
+import { Field } from './interfaces/document-type'
 
 interface User {
   sub: string
   role: 'PROFESSIONAL' | 'OWNER'
-}
-
-interface Field {
-  name: string
-  type: string
-  required: boolean
 }
 
 interface CreateDocumentTypeUseCaseRequest {

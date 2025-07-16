@@ -3,7 +3,7 @@ import { InMemoryOwnersRepository } from 'test/repositories/in-memory-owners-rep
 import { CreateDocumentTypeUseCase } from './create-document-type'
 import { InMemoryDocumentTypesRepository } from 'test/repositories/in-memory-document-types-repository'
 import { randomUUID } from 'node:crypto'
-import { InMemoryDocumentsRepository } from 'test/repositories/in-memory-document-types-repository copy'
+import { InMemoryDocumentsRepository } from 'test/repositories/in-memory-documents-repository'
 
 let inMemoryCompaniesRepository: InMemoryCompaniesRepository
 let inMemoryOwnersRepository: InMemoryOwnersRepository

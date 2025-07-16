@@ -1,3 +1,4 @@
+import { PaginationResponse } from './../database/repositories/interfaces/pagination-params'
 import { DocumentTypesRepository } from '@/database/repositories/document-types-repository'
 import { Injectable } from '@nestjs/common'
 import { DocumentType } from '@prisma/client'
@@ -10,8 +11,8 @@ interface FetchDocumentTypesUseCaseRequest {
   filter?: string
 }
 
-interface FetchDocumentTypesUseCaseResponse {
-  documentTypes: DocumentType[]
+interface FetchDocumentTypesUseCaseResponse extends PaginationResponse {
+  data: DocumentType[]
 }
 
 @Injectable()
@@ -33,8 +34,6 @@ export class FetchDocumentTypesUseCase {
       filter,
     })
 
-    return {
-      documentTypes,
-    }
+    return documentTypes
   }
 }

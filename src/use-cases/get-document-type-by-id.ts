@@ -18,7 +18,7 @@ export class GetDocumentTypeByIdUseCase {
     documentTypeId,
   }: GetDocumentTypeByIdUseCaseRequest): Promise<GetDocumentTypeByIdUseCaseResponse> {
     const documentType =
-      await this.documentTypesRepository.findByIdWithDocuments(documentTypeId)
+      await this.documentTypesRepository.findById(documentTypeId)
 
     if (!documentType) {
       // TODO

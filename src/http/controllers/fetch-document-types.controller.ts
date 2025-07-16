@@ -41,7 +41,7 @@ export class FetchDocumentTypesController {
     { page, limit, order, active, filter }: FetchDocumentTypesParamSchema,
   ) {
     try {
-      const { documentTypes } = await this.fetchDocumentTypesUseCase.execute({
+      const documentTypes = await this.fetchDocumentTypesUseCase.execute({
         page,
         limit,
         order,
