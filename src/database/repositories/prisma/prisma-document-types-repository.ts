@@ -41,7 +41,7 @@ export class PrismaDocumentTypesRepository implements DocumentTypesRepository {
   async findMany({
     page,
     limit = 15,
-    order = 'desc',
+    order = 'asc',
     active,
     filter,
   }: PaginationParams & FindManyFilters) {
