@@ -60,7 +60,7 @@ export class InMemoryDocumentTypesRepository
 
     const documentTypes = this.items
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-      .slice((page - 1) * 10, page * 10)
+      .slice((page - 1) * limit, page * limit)
 
     return {
       data: documentTypes,

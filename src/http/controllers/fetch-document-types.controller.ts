@@ -13,7 +13,7 @@ const fetchDocumentTypesParamSchema = z.object({
   limit: z
     .string()
     .optional()
-    .default('10')
+    .default('15')
     .transform(Number)
     .pipe(z.number().min(1)),
   order: z.enum(['desc', 'asc']).optional(),

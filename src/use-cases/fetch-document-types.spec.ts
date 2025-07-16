@@ -38,7 +38,7 @@ describe('Fetch document types', () => {
   })
 
   it('should be able to fetch paginated document types', async () => {
-    for (let i = 1; i <= 12; i++) {
+    for (let i = 1; i <= 17; i++) {
       await inMemoryDocumentTypesRepository.create({
         name: `Teste ${i}`,
         metadata: '[]',
