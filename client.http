@@ -59,14 +59,14 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name fetch_document_types
-GET {{baseUrl}}/document-types?page=1
+GET {{baseUrl}}/document-types?page=1&active=false
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 ###
 
 # @name change_document_type_active
-PATCH {{baseUrl}}/document-types/32565b7a-3188-47fb-89f9-c19b31b1206f/active
+PATCH {{baseUrl}}/document-types/bc5bc344-165d-40f4-973e-f17c0ad251c2/active
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
