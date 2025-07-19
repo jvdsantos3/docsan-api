@@ -48,7 +48,7 @@ export class PrismaDocumentTypesRepository implements DocumentTypesRepository {
     const where: any = {}
 
     if (typeof active === 'boolean') {
-      where.active = active
+      where.isActive = active
     }
 
     if (filter) {
