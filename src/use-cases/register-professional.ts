@@ -1,23 +1,24 @@
 import { HashGenerator } from '@/cryptography/hash-generator'
-import { CompaniesRepository } from '@/database/repositories/companies-repository'
 import { Injectable } from '@nestjs/common'
-import { Company } from '@prisma/client'
+import { Professional } from '@prisma/client'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 import { AddressesRepository } from '@/database/repositories/addresses-repository'
 import { OwnersRepository } from '@/database/repositories/owners-repository'
 import { PrismaService } from '@/database/prisma.service'
 import { ProfessionalsRepository } from '@/database/repositories/professionals-repository'
 
-interface RegisterCompanyUseCaseRequest {
+interface RegisterProfessionalUseCaseRequest {
   name: string
-  tradeName: string
-  cnpj: string
-  cnae: string
-  ownerName: string
-  ownerCpf: string
-  phone: string
-  ownerEmail: string
+  cpf: string
+  birthDate: Date
+  email: string
   password: string
+  phone: string
+  fieldActivity: string
+  registry: string
+  registryUf: string
+  cnae: string
+  // TODO
   zipCode: string
   uf: string
   city: string
@@ -27,16 +28,15 @@ interface RegisterCompanyUseCaseRequest {
   complement?: string
 }
 
-interface RegisterCompanyUseCaseResponse {
-  company: Company
+interface RegisterProfessionalUseCaseResponse {
+  professional: Professional
 }
 
 @Injectable()
-export class RegisterCompanyUseCase {
+export class RegisterProfessionalUseCase {
   constructor(
     private addressRepository: AddressesRepository,
     private ownersRepository: OwnersRepository,
-    private companiesRepository: CompaniesRepository,
     private professionalsRepository: ProfessionalsRepository,
     private hashGenerator: HashGenerator,
     private prisma: PrismaService,
@@ -44,14 +44,15 @@ export class RegisterCompanyUseCase {
 
   async execute({
     name,
-    tradeName,
-    cnpj,
-    cnae,
-    ownerName,
-    ownerCpf,
-    phone,
-    ownerEmail,
+    cpf,
+    birthDate,
+    email,
     password,
+    phone,
+    fieldActivity,
+    registry,
+    registryUf,
+    cnae,
     zipCode,
     uf,
     city,
@@ -59,30 +60,30 @@ export class RegisterCompanyUseCase {
     number,
     neighborhood,
     complement,
-  }: RegisterCompanyUseCaseRequest): Promise<RegisterCompanyUseCaseResponse> {
-    const ownerWithSameEmail =
-      await this.ownersRepository.findByEmail(ownerEmail)
+  }: RegisterProfessionalUseCaseRequest): Promise<RegisterProfessionalUseCaseResponse> {
+    const ownerWithSameEmail = await this.ownersRepository.findByEmail(email)
 
     if (ownerWithSameEmail) {
-      throw new UserAlreadyExistsError(ownerEmail)
+      throw new UserAlreadyExistsError(email)
     }
 
     const professionalWithSameEmail =
-      await this.professionalsRepository.findByEmail(ownerEmail)
+      await this.professionalsRepository.findByEmail(email)
 
     if (professionalWithSameEmail) {
-      throw new UserAlreadyExistsError(ownerEmail)
+      throw new UserAlreadyExistsError(email)
     }
 
-    const ownerWithSameCpf = await this.ownersRepository.findByCpf(ownerCpf)
+    const professionalWithSameCpf =
+      await this.professionalsRepository.findByCpf(cpf)
 
-    if (ownerWithSameCpf) {
+    if (professionalWithSameCpf) {
       throw new UserAlreadyExistsError()
     }
 
     const hashedPassword = await this.hashGenerator.hash(password)
 
-    const company = await this.prisma.$transaction(async (prisma) => {
+    const professional = await this.prisma.$transaction(async (prisma) => {
       const address = await this.addressRepository.create(
         {
           zipCode,
@@ -96,34 +97,28 @@ export class RegisterCompanyUseCase {
         prisma,
       )
 
-      const company = await this.companiesRepository.create(
+      const professional = await this.professionalsRepository.create(
         {
           name,
-          tradeName,
-          cnpj,
+          cpf,
+          birthDate,
+          email,
+          password: hashedPassword,
+          phone,
+          fieldActivity,
+          registry,
+          registryUf,
           cnae,
           addressId: address.id,
         },
         prisma,
       )
 
-      await this.ownersRepository.create(
-        {
-          name: ownerName,
-          cpf: ownerCpf,
-          phone: phone,
-          email: ownerEmail,
-          password: hashedPassword,
-          companyId: company.id,
-        },
-        prisma,
-      )
-
-      return company
+      return professional
     })
 
     return {
-      company,
+      professional,
     }
   }
 }

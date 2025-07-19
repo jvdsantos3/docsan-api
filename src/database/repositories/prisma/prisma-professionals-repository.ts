@@ -23,6 +23,14 @@ export class PrismaProfessionalsRepository implements ProfessionalsRepository {
     })
   }
 
+  async findByCpf(cpf: string): Promise<Professional | null> {
+    return await this.prisma.professional.findUnique({
+      where: {
+        cpf,
+      },
+    })
+  }
+
   async create(
     data: Prisma.ProfessionalUncheckedCreateInput,
     prisma: Prisma.TransactionClient = this.prisma,

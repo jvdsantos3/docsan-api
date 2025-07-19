@@ -18,11 +18,14 @@ import { GetDocumentTypeByIdUseCase } from '@/use-cases/get-document-type-by-id'
 import { GetDocumentTypeByIdController } from './controllers/get-document-type-by-id.controller'
 import { EditDocumentTypeUseCase } from '@/use-cases/edit-document-type'
 import { EditDocumentTypeController } from './controllers/edit-document-type.controller'
+import { RegisterProfessionalUseCase } from '@/use-cases/register-professional'
+import { CreateProfessionalController } from './controllers/create-professional.controller'
 
 @Module({
   imports: [CryptographyModule, DatabaseModule],
   controllers: [
     CreateCompanyController,
+    CreateProfessionalController,
     AuthenticateController,
     CreateDocumentTypeController,
     FetchDocumentTypesController,
@@ -34,6 +37,7 @@ import { EditDocumentTypeController } from './controllers/edit-document-type.con
   providers: [
     DocumentService,
     RegisterCompanyUseCase,
+    RegisterProfessionalUseCase,
     AuthenticateUseCase,
     CreateDocumentTypeUseCase,
     FetchDocumentTypesUseCase,

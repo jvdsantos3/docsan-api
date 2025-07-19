@@ -34,6 +34,14 @@ export class PrismaOwnersRepository implements OwnersRepository {
     })
   }
 
+  async findByCpf(cpf: string) {
+    return await this.prisma.owner.findUnique({
+      where: {
+        cpf,
+      },
+    })
+  }
+
   async create(
     data: Prisma.OwnerUncheckedCreateInput,
     prisma: Prisma.TransactionClient = this.prisma,

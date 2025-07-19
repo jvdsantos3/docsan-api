@@ -26,6 +26,32 @@ Content-Type: application/json
 
 ###
 
+# @name create_professional
+POST {{baseUrl}}/professionals
+Content-Type: application/json
+
+{
+  "name": "Teste Company LTDA",
+  "cpf": "19413695024",
+  "birthDate": "2002-01-02",
+  "email": "teste@professional.com",
+  "password": "112233",
+  "phone": "85986744016",
+  "fieldActivity": "Desenvolvedor de software",
+  "registry": "1122334455",
+  "registryUf": "CE",
+  "cnae": "112233",
+  "zipCode": "14403415",
+  "uf": "SP",
+  "city": "Franca",
+  "street": "Rua Doutor José Carvalho Rosa",
+  "number": "524",
+  "neighborhood": "São José",
+  "complement": "Apto 101"
+}
+
+###
+
 # @name authenticate
 POST {{baseUrl}}/sessions
 Content-Type: application/json

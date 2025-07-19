@@ -27,6 +27,16 @@ export class InMemoryProfessionalsRepository
     return professionals
   }
 
+  async findByCpf(cpf: string) {
+    const professionals = this.items.find((item) => item.cpf === cpf)
+
+    if (!professionals) {
+      return null
+    }
+
+    return professionals
+  }
+
   async create(data: Prisma.ProfessionalUncheckedCreateInput) {
     const professional = {
       id: randomUUID(),

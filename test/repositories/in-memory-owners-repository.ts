@@ -47,6 +47,16 @@ export class InMemoryOwnersRepository implements OwnersRepository {
     return owners
   }
 
+  async findByCpf(cpf: string) {
+    const owners = this.items.find((item) => item.cpf === cpf)
+
+    if (!owners) {
+      return null
+    }
+
+    return owners
+  }
+
   async create(data: Prisma.OwnerUncheckedCreateInput) {
     const owners = {
       id: randomUUID(),

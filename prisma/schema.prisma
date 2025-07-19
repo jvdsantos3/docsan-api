@@ -78,10 +78,6 @@ model Professional {
   addressId String  @unique
   address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
 
-  documents     Document[]
-  documentTypes DocumentType[]
-  indexations   Indexation[]
-
   @@map("professionals")
 }
 
@@ -107,10 +103,9 @@ model Document {
   indexationId   String   @unique @map("indexation_id")
   professionalId String?  @map("professional_id")
 
-  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  documentType DocumentType  @relation(fields: [documentTypeId], references: [id], onDelete: Cascade)
-  indexation   Indexation?   @relation(fields: [indexationId], references: [id])
-  professional Professional? @relation(fields: [professionalId], references: [id])
+  company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  documentType DocumentType @relation(fields: [documentTypeId], references: [id], onDelete: Cascade)
+  indexation   Indexation?  @relation(fields: [indexationId], references: [id])
 
   @@map("documents")
 }
@@ -125,10 +120,9 @@ model DocumentType {
   companyId      String   @map("company_id")
   professionalId String?  @map("professional_id")
 
-  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  documents    Document[]
-  indexations  Indexation[]
-  professional Professional? @relation(fields: [professionalId], references: [id])
+  company     Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  documents   Document[]
+  indexations Indexation[]
 
   @@map("document_types")
 }
@@ -141,9 +135,8 @@ model Indexation {
   documentTypeId String   @map("document_type_id")
   professionalId String?  @map("professional_id")
 
-  documentType DocumentType  @relation(fields: [documentTypeId], references: [id], onDelete: Cascade)
+  documentType DocumentType @relation(fields: [documentTypeId], references: [id], onDelete: Cascade)
   document     Document?
-  professional Professional? @relation(fields: [professionalId], references: [id])
 
   @@map("indexations")
 }
