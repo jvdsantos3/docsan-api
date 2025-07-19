@@ -20,9 +20,10 @@ import { EditDocumentTypeUseCase } from '@/use-cases/edit-document-type'
 import { EditDocumentTypeController } from './controllers/edit-document-type.controller'
 import { RegisterProfessionalUseCase } from '@/use-cases/register-professional'
 import { CreateProfessionalController } from './controllers/create-professional.controller'
+import { StorageModule } from '@/storage/storage.module'
 
 @Module({
-  imports: [CryptographyModule, DatabaseModule],
+  imports: [CryptographyModule, DatabaseModule, StorageModule],
   controllers: [
     CreateCompanyController,
     CreateProfessionalController,

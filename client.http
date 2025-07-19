@@ -53,7 +53,7 @@ Content-Type: application/json
 ###
 
 # @name authenticate
-POST {{baseUrl}}/sessions
+sPOST {{baseUrl}}/sessions
 Content-Type: application/json
 
 {

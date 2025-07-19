@@ -96,6 +96,7 @@ model Document {
   id             String   @id @default(uuid())
   name           String
   url            String
+  version        Int
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
   companyId      String   @map("company_id")
@@ -107,6 +108,7 @@ model Document {
   documentType DocumentType @relation(fields: [documentTypeId], references: [id], onDelete: Cascade)
   indexation   Indexation?  @relation(fields: [indexationId], references: [id])
 
+  @@unique([documentTypeId, version])
   @@map("documents")
 }
 
@@ -133,7 +135,6 @@ model Indexation {
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
   documentTypeId String   @map("document_type_id")
-  professionalId String?  @map("professional_id")
 
   documentType DocumentType @relation(fields: [documentTypeId], references: [id], onDelete: Cascade)
   document     Document?
