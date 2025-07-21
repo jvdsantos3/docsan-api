@@ -21,6 +21,8 @@ import { EditDocumentTypeController } from './controllers/edit-document-type.con
 import { RegisterProfessionalUseCase } from '@/use-cases/register-professional'
 import { CreateProfessionalController } from './controllers/create-professional.controller'
 import { StorageModule } from '@/storage/storage.module'
+import { ExtractDataController } from './controllers/extract-data.controller'
+import { ExtractDataUseCase } from '@/use-cases/extract-data'
 
 @Module({
   imports: [CryptographyModule, DatabaseModule, StorageModule],
@@ -34,6 +36,7 @@ import { StorageModule } from '@/storage/storage.module'
     DeleteDocumentTypeController,
     GetDocumentTypeByIdController,
     EditDocumentTypeController,
+    ExtractDataController,
   ],
   providers: [
     DocumentService,
@@ -46,6 +49,7 @@ import { StorageModule } from '@/storage/storage.module'
     DeleteDocumentTypeUseCase,
     GetDocumentTypeByIdUseCase,
     EditDocumentTypeUseCase,
+    ExtractDataUseCase,
   ],
 })
 export class HttpModule {}

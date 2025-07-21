@@ -59,6 +59,7 @@ describe('Edit document type', () => {
     await inMemoryDocumentsRepository.create({
       name: 'Document test',
       url: 'teste.pdf',
+      version: 1,
       companyId: randomUUID(),
       documentTypeId: type.id,
       indexationId: randomUUID(),
@@ -100,6 +101,7 @@ describe('Edit document type', () => {
     await inMemoryDocumentsRepository.create({
       name: 'Document test',
       url: 'teste.pdf',
+      version: 1,
       companyId: randomUUID(),
       documentTypeId: type.id,
       indexationId: randomUUID(),
