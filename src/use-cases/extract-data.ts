@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InvalidDocumentTypeError } from './errors/invalid-document-type-error'
 import { DocumentTypesRepository } from '@/database/repositories/document-types-repository'
-import { Field } from './interfaces/document-type'
+import { Field } from './interfaces/document'
 import * as pdfParse from 'pdf-parse'
 
 interface ExtractDataUseCaseRequest {

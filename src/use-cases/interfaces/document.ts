@@ -3,3 +3,8 @@ export interface Field {
   type: string
   required: boolean
 }
+
+export interface Indexation {
+  name: string
+  value: string
+}

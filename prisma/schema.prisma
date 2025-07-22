@@ -92,6 +92,21 @@ model Admin {
   @@map("admins")
 }
 
+model DocumentType {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  metadata  Json
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  companyId String   @map("company_id")
+
+  company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  documents Document[]
+
+  @@map("document_types")
+}
+
 model Document {
   id             String   @id @default(uuid())
   name           String
@@ -101,43 +116,23 @@ model Document {
   updatedAt      DateTime @updatedAt @map("updated_at")
   companyId      String   @map("company_id")
   documentTypeId String   @map("document_type_id")
-  indexationId   String   @unique @map("indexation_id")
-  professionalId String?  @map("professional_id")
 
   company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
   documentType DocumentType @relation(fields: [documentTypeId], references: [id], onDelete: Cascade)
-  indexation   Indexation?  @relation(fields: [indexationId], references: [id])
+  indexation   Indexation?
 
   @@unique([documentTypeId, version])
   @@map("documents")
 }
 
-model DocumentType {
-  id             String   @id @default(uuid())
-  name           String   @unique
-  metadata       Json
-  isActive       Boolean  @default(true) @map("is_active")
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
-  companyId      String   @map("company_id")
-  professionalId String?  @map("professional_id")
-
-  company     Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  documents   Document[]
-  indexations Indexation[]
-
-  @@map("document_types")
-}
-
 model Indexation {
-  id             String   @id @default(uuid())
-  values         Json     @map("metadata_values")
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
-  documentTypeId String   @map("document_type_id")
+  id         String   @id @default(uuid())
+  values     Json     @map("metadata_values")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  documentId String   @unique @map("document_id")
 
-  documentType DocumentType @relation(fields: [documentTypeId], references: [id], onDelete: Cascade)
-  document     Document?
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
 
   @@map("indexations")
 }

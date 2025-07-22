@@ -71,7 +71,7 @@ Authorization: Bearer {{authToken}}
 {
   "name": "Teste 1",
   "fields": [
-    { "name": "Data de vencimento", "type": "Date", "required": true }
+    { "name": "Data de vencimento", "type": "date", "required": true }
   ]
 }
 

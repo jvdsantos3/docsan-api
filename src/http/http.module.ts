@@ -5,7 +5,6 @@ import { Module } from '@nestjs/common'
 import { CreateCompanyController } from './controllers/create-company.controller'
 import { AuthenticateUseCase } from '@/use-cases/authenticate'
 import { AuthenticateController } from './controllers/authenticate.controller'
-import { DocumentService } from '@/document/document.service'
 import { CreateDocumentTypeUseCase } from '@/use-cases/create-document-type'
 import { CreateDocumentTypeController } from './controllers/create-document-type.controller'
 import { FetchDocumentTypesUseCase } from '@/use-cases/fetch-document-types'
@@ -23,6 +22,8 @@ import { CreateProfessionalController } from './controllers/create-professional.
 import { StorageModule } from '@/storage/storage.module'
 import { ExtractDataController } from './controllers/extract-data.controller'
 import { ExtractDataUseCase } from '@/use-cases/extract-data'
+import { CreateDocumentUseCase } from '@/use-cases/create-document'
+import { CreateDocumentController } from './controllers/create-document.controller'
 
 @Module({
   imports: [CryptographyModule, DatabaseModule, StorageModule],
@@ -37,9 +38,9 @@ import { ExtractDataUseCase } from '@/use-cases/extract-data'
     GetDocumentTypeByIdController,
     EditDocumentTypeController,
     ExtractDataController,
+    CreateDocumentController,
   ],
   providers: [
-    DocumentService,
     RegisterCompanyUseCase,
     RegisterProfessionalUseCase,
     AuthenticateUseCase,
@@ -50,6 +51,7 @@ import { ExtractDataUseCase } from '@/use-cases/extract-data'
     GetDocumentTypeByIdUseCase,
     EditDocumentTypeUseCase,
     ExtractDataUseCase,
+    CreateDocumentUseCase,
   ],
 })
 export class HttpModule {}

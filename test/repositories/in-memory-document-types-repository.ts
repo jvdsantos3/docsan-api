@@ -80,7 +80,6 @@ export class InMemoryDocumentTypesRepository
       metadata: JSON.stringify(data.metadata),
       isActive: data.isActive ?? true,
       companyId: data.companyId,
-      professionalId: data.professionalId ?? null,
       createdAt: new Date(),
       updatedAt: new Date(),
     }

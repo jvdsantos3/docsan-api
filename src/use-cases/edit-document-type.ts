@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { Field } from './interfaces/document-type'
 import { DocumentType, Prisma } from '@prisma/client'
 import { DocumentTypesRepository } from '@/database/repositories/document-types-repository'
 import { DocumetTypeAlreadyExistsError } from './errors/document-type-already-exists-error'
+import { Field } from './interfaces/document'
 
 interface EditDocumentTypeUseCaseRequest {
   documentTypeId: string

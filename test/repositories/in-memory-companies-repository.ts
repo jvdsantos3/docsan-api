@@ -23,7 +23,6 @@ export class InMemoryCompaniesRepository implements CompaniesRepository {
       cnpj: data.cnpj,
       cnae: data.cnae,
       addressId: data.addressId,
-      ownerId: data.ownerId,
       createdAt: new Date(),
       updatedAt: new Date(),
     }

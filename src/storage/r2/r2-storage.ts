@@ -1,7 +1,6 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { Injectable } from '@nestjs/common'
 import { EnvService } from '../../env/env.service'
-import { randomUUID } from 'node:crypto'
 import { Uploader, UploadParams } from '../upload'
 
 @Injectable()
@@ -26,8 +25,7 @@ export class R2Storage implements Uploader {
     fileType,
     body,
   }: UploadParams): Promise<{ url: string }> {
-    const uploadId = randomUUID()
-    const uniqueFileName = `${uploadId}-${fileName}`
+    const uniqueFileName = `${fileName}`
 
     await this.client.send(
       new PutObjectCommand({

@@ -10,6 +10,10 @@ import { PrismaProfessionalsRepository } from './repositories/prisma/prisma-prof
 import { PrismaOwnersRepository } from './repositories/prisma/prisma-owners-repository'
 import { DocumentTypesRepository } from './repositories/document-types-repository'
 import { PrismaDocumentTypesRepository } from './repositories/prisma/prisma-document-types-repository'
+import { DocumentsRepository } from './repositories/documents-repository'
+import { PrismaDocumentsRepository } from './repositories/prisma/prisma-documents-repository'
+import { IndexationsRepository } from './repositories/indexations-repository'
+import { PrismaIndexationsRepository } from './repositories/prisma/prisma-indexations-repository'
 
 @Module({
   providers: [
@@ -34,6 +38,14 @@ import { PrismaDocumentTypesRepository } from './repositories/prisma/prisma-docu
       provide: DocumentTypesRepository,
       useClass: PrismaDocumentTypesRepository,
     },
+    {
+      provide: DocumentsRepository,
+      useClass: PrismaDocumentsRepository,
+    },
+    {
+      provide: IndexationsRepository,
+      useClass: PrismaIndexationsRepository,
+    },
   ],
   exports: [
     PrismaService,
@@ -42,6 +54,8 @@ import { PrismaDocumentTypesRepository } from './repositories/prisma/prisma-docu
     CompaniesRepository,
     ProfessionalsRepository,
     DocumentTypesRepository,
+    DocumentsRepository,
+    IndexationsRepository,
   ],
 })
 export class DatabaseModule {}

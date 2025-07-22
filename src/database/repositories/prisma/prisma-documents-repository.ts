@@ -15,6 +15,22 @@ export class PrismaDocumentsRepository implements DocumentsRepository {
     })
   }
 
+  async findFirstByDocumentId(id: string) {
+    return await this.prisma.document.findFirst({
+      where: { documentTypeId: id },
+      orderBy: { version: 'desc' },
+    })
+  }
+
+  async fetchByDocumentTypeId(id: string) {
+    return await this.prisma.document.findMany({
+      where: {
+        documentTypeId: id,
+      },
+      orderBy: { version: 'desc' },
+    })
+  }
+
   async create(
     data: Prisma.DocumentUncheckedCreateInput,
     prisma: Prisma.TransactionClient = this.prisma,

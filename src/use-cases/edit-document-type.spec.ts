@@ -62,7 +62,6 @@ describe('Edit document type', () => {
       version: 1,
       companyId: randomUUID(),
       documentTypeId: type.id,
-      indexationId: randomUUID(),
     })
 
     await expect(() =>
@@ -104,7 +103,6 @@ describe('Edit document type', () => {
       version: 1,
       companyId: randomUUID(),
       documentTypeId: type.id,
-      indexationId: randomUUID(),
     })
 
     const result = await sut.execute({
