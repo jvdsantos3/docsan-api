@@ -24,9 +24,17 @@ import { ExtractDataController } from './controllers/extract-data.controller'
 import { ExtractDataUseCase } from '@/use-cases/extract-data'
 import { CreateDocumentUseCase } from '@/use-cases/create-document'
 import { CreateDocumentController } from './controllers/create-document.controller'
+import { AuthzModule } from '@/authz/authz.module'
+import { EventsModule } from '@/events/events.module'
 
 @Module({
-  imports: [CryptographyModule, DatabaseModule, StorageModule],
+  imports: [
+    AuthzModule,
+    CryptographyModule,
+    DatabaseModule,
+    StorageModule,
+    EventsModule,
+  ],
   controllers: [
     CreateCompanyController,
     CreateProfessionalController,

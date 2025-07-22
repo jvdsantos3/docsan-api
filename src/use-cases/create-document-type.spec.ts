@@ -24,7 +24,6 @@ describe('Create a document type', () => {
 
     sut = new CreateDocumentTypeUseCase(
       inMemoryDocumentTypesRepository,
-      inMemoryOwnersRepository,
     )
   })
 
