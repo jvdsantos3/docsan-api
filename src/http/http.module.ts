@@ -24,16 +24,14 @@ import { ExtractDataController } from './controllers/extract-data.controller'
 import { ExtractDataUseCase } from '@/use-cases/extract-data'
 import { CreateDocumentUseCase } from '@/use-cases/create-document'
 import { CreateDocumentController } from './controllers/create-document.controller'
-import { AuthzModule } from '@/authz/authz.module'
-import { EventsModule } from '@/events/events.module'
+import { CaslAbilityModule } from '@/casl/casl.module'
 
 @Module({
   imports: [
-    AuthzModule,
+    CaslAbilityModule,
     CryptographyModule,
     DatabaseModule,
     StorageModule,
-    EventsModule,
   ],
   controllers: [
     CreateCompanyController,

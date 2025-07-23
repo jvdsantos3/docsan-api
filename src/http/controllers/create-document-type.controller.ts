@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  ForbiddenException,
   HttpCode,
   Param,
   Post,
@@ -12,10 +13,9 @@ import { UserPayload } from '@/auth/jwt.strategy'
 import z from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { CreateDocumentTypeUseCase } from '@/use-cases/create-document-type'
-import { AuthzGuard } from '@/authz/authz.guard'
-import { JwtAuthGuard } from '@/auth/jwt-auth.guard'
-import { RequiredPermission } from '@/authz/permission'
-import { Company } from '@/authz/company'
+import { CheckPolicies } from '@/casl/check-policies.decorator'
+import { CreateDocumentTypePolicyHandler } from '@/casl/policies/create-document-type.policy'
+import { PoliciesGuard } from '@/casl/policies.guard'
 
 const createDocumentTypeBodySchema = z.object({
   name: z.string(),
@@ -38,11 +38,10 @@ type CreateDocumentTypeBodySchema = z.infer<typeof createDocumentTypeBodySchema>
 export class CreateDocumentTypeController {
   constructor(private createDocumentTypeUseCase: CreateDocumentTypeUseCase) {}
 
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies(new CreateDocumentTypePolicyHandler())
   @Post(':companyId')
   @HttpCode(201)
-  @RequiredPermission('document-type.create')
-  @Company('companyId')
-  @UseGuards(JwtAuthGuard, AuthzGuard)
   async handle(
     @CurrentUser() user: UserPayload,
     @Param('companyId') companyId: string,
@@ -57,6 +56,8 @@ export class CreateDocumentTypeController {
       })
     } catch (err: any) {
       switch (err.constructor) {
+        case ForbiddenException:
+          throw err
         default:
           throw new BadRequestException(err.message)
       }

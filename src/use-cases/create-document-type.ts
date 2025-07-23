@@ -5,9 +5,6 @@ import { DocumetTypeAlreadyExistsError } from './errors/document-type-already-ex
 import { DocumetTypeLimitError } from './errors/document-type-limit-error'
 import { Field } from './interfaces/document'
 import { User } from './interfaces/use'
-import { AuthzService } from '@/authz/authz.service'
-import { EventEmitter2 } from '@nestjs/event-emitter'
-import { DocumentTypeCreatedEvent } from '@/events/document-type-created.event'
 interface CreateDocumentTypeUseCaseRequest {
   user: User
   companyId: string
@@ -23,22 +20,13 @@ interface CreateDocumentTypeUseCaseResponse {
 export class CreateDocumentTypeUseCase {
   constructor(
     private documentTypesRepository: DocumentTypesRepository,
-    private authzService: AuthzService,
-    private eventEmitter: EventEmitter2,
   ) {}
 
   async execute({
-    user,
     companyId,
     name,
     fields,
   }: CreateDocumentTypeUseCaseRequest): Promise<CreateDocumentTypeUseCaseResponse> {
-    await this.authzService.checkPermission(
-      user,
-      companyId,
-      'document-type.create',
-    )
-
     const documentTypeWithSameName =
       await this.documentTypesRepository.findByName(name)
 
@@ -57,11 +45,6 @@ export class CreateDocumentTypeUseCase {
     }
 
     const documentType = await this.documentTypesRepository.create(data)
-
-    this.eventEmitter.emit(
-      'document-type.created',
-      new DocumentTypeCreatedEvent(user, companyId, documentType.id),
-    )
 
     return {
       documentType,
