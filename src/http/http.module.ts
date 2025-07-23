@@ -24,13 +24,22 @@ import { ExtractDataController } from './controllers/extract-data.controller'
 import { ExtractDataUseCase } from '@/use-cases/extract-data'
 import { CreateDocumentUseCase } from '@/use-cases/create-document'
 import { CreateDocumentController } from './controllers/create-document.controller'
+import { CaslAbilityModule } from '@/casl/casl.module'
+import { ProfileController } from './controllers/profile.controller'
+import { GetProfileUseCase } from '@/use-cases/get-profile'
 
 @Module({
-  imports: [CryptographyModule, DatabaseModule, StorageModule],
+  imports: [
+    CaslAbilityModule,
+    CryptographyModule,
+    DatabaseModule,
+    StorageModule,
+  ],
   controllers: [
     CreateCompanyController,
     CreateProfessionalController,
     AuthenticateController,
+    ProfileController,
     CreateDocumentTypeController,
     FetchDocumentTypesController,
     ChangeDocumentTypeActiveController,
@@ -44,6 +53,7 @@ import { CreateDocumentController } from './controllers/create-document.controll
     RegisterCompanyUseCase,
     RegisterProfessionalUseCase,
     AuthenticateUseCase,
+    GetProfileUseCase,
     CreateDocumentTypeUseCase,
     FetchDocumentTypesUseCase,
     ChangeDocumentTypeActiveUseCase,

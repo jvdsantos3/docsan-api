@@ -9,6 +9,15 @@ export class PrismaProfessionalsRepository implements ProfessionalsRepository {
 
   async findById(id: string): Promise<Professional | null> {
     return await this.prisma.professional.findUnique({
+      include: {
+        address: {
+          omit: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+      },
       where: {
         id,
       },

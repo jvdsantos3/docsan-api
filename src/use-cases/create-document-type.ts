@@ -3,11 +3,11 @@ import { Injectable } from '@nestjs/common'
 import { DocumentType, Prisma } from '@prisma/client'
 import { DocumetTypeAlreadyExistsError } from './errors/document-type-already-exists-error'
 import { DocumetTypeLimitError } from './errors/document-type-limit-error'
-import { OwnersRepository } from '@/database/repositories/owners-repository'
 import { Field } from './interfaces/document'
 import { User } from './interfaces/use'
 interface CreateDocumentTypeUseCaseRequest {
   user: User
+  companyId: string
   name: string
   fields: Field[] | Prisma.JsonArray
 }
@@ -18,13 +18,10 @@ interface CreateDocumentTypeUseCaseResponse {
 
 @Injectable()
 export class CreateDocumentTypeUseCase {
-  constructor(
-    private documentTypesRepository: DocumentTypesRepository,
-    private ownersRepository: OwnersRepository,
-  ) {}
+  constructor(private documentTypesRepository: DocumentTypesRepository) {}
 
   async execute({
-    user,
+    companyId,
     name,
     fields,
   }: CreateDocumentTypeUseCaseRequest): Promise<CreateDocumentTypeUseCaseResponse> {
@@ -37,22 +34,6 @@ export class CreateDocumentTypeUseCase {
 
     if (fields.length > 7) {
       throw new DocumetTypeLimitError(7)
-    }
-
-    const userId = user.sub
-    let companyId: string
-
-    if (user.role === 'OWNER') {
-      const owner = await this.ownersRepository.findById(userId)
-
-      // TODO
-      if (!owner) {
-        throw new Error('User not found')
-      }
-
-      companyId = owner?.companyId
-    } else {
-      companyId = '1'
     }
 
     const data = {
