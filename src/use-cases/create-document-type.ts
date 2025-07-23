@@ -18,9 +18,7 @@ interface CreateDocumentTypeUseCaseResponse {
 
 @Injectable()
 export class CreateDocumentTypeUseCase {
-  constructor(
-    private documentTypesRepository: DocumentTypesRepository,
-  ) {}
+  constructor(private documentTypesRepository: DocumentTypesRepository) {}
 
   async execute({
     companyId,

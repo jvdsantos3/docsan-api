@@ -18,7 +18,17 @@ export class PrismaOwnersRepository implements OwnersRepository {
   async findByIdWithCompany(id: string) {
     return await this.prisma.owner.findUnique({
       include: {
-        company: true,
+        company: {
+          include: {
+            address: {
+              omit: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+              },
+            },
+          },
+        },
       },
       where: {
         id,

@@ -38,9 +38,9 @@ type CreateDocumentTypeBodySchema = z.infer<typeof createDocumentTypeBodySchema>
 export class CreateDocumentTypeController {
   constructor(private createDocumentTypeUseCase: CreateDocumentTypeUseCase) {}
 
+  @Post(':companyId')
   @UseGuards(PoliciesGuard)
   @CheckPolicies(new CreateDocumentTypePolicyHandler())
-  @Post(':companyId')
   @HttpCode(201)
   async handle(
     @CurrentUser() user: UserPayload,

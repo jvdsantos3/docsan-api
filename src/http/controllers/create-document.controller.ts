@@ -7,6 +7,7 @@ import {
   ParseFilePipe,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
@@ -15,6 +16,9 @@ import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { CreateDocumentUseCase } from '@/use-cases/create-document'
 import { CurrentUser } from '@/auth/current-user-decorator'
 import { UserPayload } from '@/auth/jwt.strategy'
+import { PoliciesGuard } from '@/casl/policies.guard'
+import { CheckPolicies } from '@/casl/check-policies.decorator'
+import { CreateDocumentPolicyHandler } from '@/casl/policies/create-document.policy'
 
 const createDocumentBodySchema = z.object({
   documentTypeId: z.string(),
@@ -47,7 +51,9 @@ type CreateDocumentBodySchema = z.infer<typeof createDocumentBodySchema>
 export class CreateDocumentController {
   constructor(private createDocument: CreateDocumentUseCase) {}
 
-  @Post()
+  @Post(':companyId')
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies(new CreateDocumentPolicyHandler())
   @UseInterceptors(FileInterceptor('file'))
   async handle(
     @CurrentUser() user: UserPayload,
