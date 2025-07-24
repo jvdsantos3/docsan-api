@@ -11,9 +11,7 @@ interface FetchDocumentTypesUseCaseRequest {
   filter?: string
 }
 
-interface FetchDocumentTypesUseCaseResponse extends PaginationResponse {
-  data: DocumentType[]
-}
+type FetchDocumentTypesUseCaseResponse = PaginationResponse<DocumentType>
 
 @Injectable()
 export class FetchDocumentTypesUseCase {

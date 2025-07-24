@@ -44,6 +44,7 @@ export class CreateDocumentTypeController {
   @HttpCode(201)
   async handle(
     @CurrentUser() user: UserPayload,
+    // TODO
     @Param('companyId') companyId: string,
     @Body(bodyValidationPipe) { name, fields }: CreateDocumentTypeBodySchema,
   ) {

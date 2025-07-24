@@ -27,6 +27,8 @@ import { CreateDocumentController } from './controllers/create-document.controll
 import { CaslAbilityModule } from '@/casl/casl.module'
 import { ProfileController } from './controllers/profile.controller'
 import { GetProfileUseCase } from '@/use-cases/get-profile'
+import { FetchDocumentsController } from './controllers/fetch-documents.controller'
+import { FetchDocumentsUseCase } from '@/use-cases/fetch-documents'
 
 @Module({
   imports: [
@@ -48,6 +50,7 @@ import { GetProfileUseCase } from '@/use-cases/get-profile'
     EditDocumentTypeController,
     ExtractDataController,
     CreateDocumentController,
+    FetchDocumentsController,
   ],
   providers: [
     RegisterCompanyUseCase,
@@ -62,6 +65,7 @@ import { GetProfileUseCase } from '@/use-cases/get-profile'
     EditDocumentTypeUseCase,
     ExtractDataUseCase,
     CreateDocumentUseCase,
+    FetchDocumentsUseCase,
   ],
 })
 export class HttpModule {}

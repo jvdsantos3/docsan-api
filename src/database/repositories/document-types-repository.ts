@@ -17,7 +17,7 @@ export abstract class DocumentTypesRepository {
   abstract findByName(name: string): Promise<DocumentType | null>
   abstract findMany(
     params: PaginationParams & FindManyFilters,
-  ): Promise<PaginationResponse & { data: DocumentType[] }>
+  ): Promise<PaginationResponse<DocumentType>>
   abstract create(
     data: Prisma.DocumentTypeUncheckedCreateInput,
     prisma?: Prisma.TransactionClient,
