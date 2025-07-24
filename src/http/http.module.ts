@@ -29,8 +29,10 @@ import { ProfileController } from './controllers/profile.controller'
 import { GetProfileUseCase } from '@/use-cases/get-profile'
 import { FetchDocumentsController } from './controllers/fetch-documents.controller'
 import { FetchDocumentsUseCase } from '@/use-cases/fetch-documents'
-import { GetDocumentsSummary } from './controllers/get-documents-summary.controller'
+import { GetDocumentsSummaryController } from './controllers/get-documents-summary.controller'
 import { GetDocumentsSummaryUseCase } from '@/use-cases/get-documents-summary'
+import { GetDocumentController } from './controllers/get-document.controller'
+import { GetDocumentUseCase } from '@/use-cases/get-document'
 
 @Module({
   imports: [
@@ -53,7 +55,8 @@ import { GetDocumentsSummaryUseCase } from '@/use-cases/get-documents-summary'
     ExtractDataController,
     CreateDocumentController,
     FetchDocumentsController,
-    GetDocumentsSummary,
+    GetDocumentsSummaryController,
+    GetDocumentController,
   ],
   providers: [
     RegisterCompanyUseCase,
@@ -70,6 +73,7 @@ import { GetDocumentsSummaryUseCase } from '@/use-cases/get-documents-summary'
     CreateDocumentUseCase,
     FetchDocumentsUseCase,
     GetDocumentsSummaryUseCase,
+    GetDocumentUseCase,
   ],
 })
 export class HttpModule {}

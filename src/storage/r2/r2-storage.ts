@@ -1,4 +1,4 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { Injectable } from '@nestjs/common'
 import { EnvService } from '../../env/env.service'
 import { Uploader, UploadParams } from '../upload'
@@ -38,6 +38,26 @@ export class R2Storage implements Uploader {
 
     return {
       url: uniqueFileName,
+    }
+  }
+
+  async get(url: string): Promise<{ body: Buffer; contentType: string }> {
+    const command = new GetObjectCommand({
+      Bucket: this.envService.get('AWS_BUCKET_NAME'),
+      Key: url,
+    })
+
+    const { Body, ContentType } = await this.client.send(command)
+
+    if (!Body) {
+      throw new Error('File not found or empty')
+    }
+
+    const body = Buffer.from(await Body.transformToByteArray())
+
+    return {
+      body,
+      contentType: ContentType || 'application/octet-stream',
     }
   }
 }

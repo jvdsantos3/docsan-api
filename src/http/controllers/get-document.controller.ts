@@ -7,35 +7,36 @@ import {
   Get,
   Param,
   UseGuards,
+  UsePipes,
 } from '@nestjs/common'
 import z from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
-import { GetDocumentsSummaryUseCase } from '@/use-cases/get-documents-summary'
+import { GetDocumentUseCase } from '@/use-cases/get-document'
 
-const companyIdRouteParamSchema = z.string()
+const getDocumentParamsSchema = z.object({
+  companyId: z.string(),
+  documentId: z.string(),
+})
 
-const paramValidationPipe = new ZodValidationPipe(companyIdRouteParamSchema)
+type GetDocumentBodySchema = z.infer<typeof getDocumentParamsSchema>
 
-type CompanyIdRouteParamSchema = z.infer<typeof companyIdRouteParamSchema>
-
-@Controller('/company/:companyId/documents/summary')
-export class GetDocumentsSummaryController {
-  constructor(private getDocumentsSummary: GetDocumentsSummaryUseCase) {}
+@Controller('/company/:companyId/documents/:documentId')
+export class GetDocumentController {
+  constructor(private getDocument: GetDocumentUseCase) {}
 
   @Get()
   @UseGuards(PoliciesGuard)
   @CheckPolicies(new ReadDocumentPolicyHandler())
-  async handle(
-    @Param('companyId', paramValidationPipe)
-    companyId: CompanyIdRouteParamSchema,
-  ) {
+  @UsePipes(new ZodValidationPipe(getDocumentParamsSchema))
+  async handle(@Param() { companyId, documentId }: GetDocumentBodySchema) {
     try {
-      const summary = await this.getDocumentsSummary.execute({
+      const document = await this.getDocument.execute({
         companyId,
+        documentId,
       })
 
       return {
-        summary,
+        document,
       }
     } catch (err: any) {
       switch (err.constructor) {

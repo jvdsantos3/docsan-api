@@ -134,7 +134,7 @@ model Document {
   company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
   documentType DocumentType @relation(fields: [documentTypeId], references: [id], onDelete: Cascade)
   indexation   Indexation?
-  ActionLog    ActionLog[]
+  actionLog    ActionLog[]
 
   @@unique([documentTypeId, version])
   @@map("documents")

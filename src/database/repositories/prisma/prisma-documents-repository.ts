@@ -18,6 +18,23 @@ export class PrismaDocumentsRepository implements DocumentsRepository {
     })
   }
 
+  async findByIdWithComputed(id: string, companyId: string) {
+    const where: Prisma.DocumentWhereUniqueInput = {
+      id,
+    }
+
+    if (companyId) where.companyId = companyId
+
+    return await this.prisma.document.findUnique({
+      include: {
+        documentType: true,
+        indexation: true,
+        actionLog: true,
+      },
+      where,
+    })
+  }
+
   async findFirstByDocumentId(id: string) {
     return await this.prisma.document.findFirst({
       where: { documentTypeId: id },

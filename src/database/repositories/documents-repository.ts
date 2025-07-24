@@ -13,6 +13,13 @@ export interface FindManyFilters {
 
 export abstract class DocumentsRepository {
   abstract findById(id: string): Promise<Document | null>
+  abstract findByIdWithComputed(id: string, companyId?: string): Promise<Prisma.DocumentGetPayload<{
+    include: {
+      indexation: true
+      documentType: true
+      actionLog: true
+    }
+  }> | null>
   abstract findFirstByDocumentId(id: string): Promise<Document | null>
   abstract fetch(companyId?: string): Promise<
     Prisma.DocumentGetPayload<{
