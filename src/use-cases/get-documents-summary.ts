@@ -72,6 +72,8 @@ export class GetDocumentsSummaryUseCase {
     )
     const dueDate = dueDateEntry ? dueDateEntry.value : null
 
+    if (!dueDate) return null
+
     const [day, month, year] = dueDate.split('/')
 
     if (!day || !month || !year) return null
