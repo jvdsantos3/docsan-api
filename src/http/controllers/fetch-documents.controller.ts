@@ -4,10 +4,14 @@ import {
   Get,
   Param,
   Query,
+  UseGuards,
 } from '@nestjs/common'
 import z from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { FetchDocumentsUseCase } from '@/use-cases/fetch-documents'
+import { PoliciesGuard } from '@/casl/policies.guard'
+import { CheckPolicies } from '@/casl/check-policies.decorator'
+import { ReadDocumentPolicyHandler } from '@/casl/policies/read-document.policy'
 
 const companyIdRouteParamSchema = z.string()
 
@@ -46,6 +50,8 @@ export class FetchDocumentsController {
   constructor(private fetchDocuments: FetchDocumentsUseCase) {}
 
   @Get(':companyId')
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies(new ReadDocumentPolicyHandler())
   async handle(
     @Param('companyId', paramValidationPipe)
     companyId: CompanyIdRouteParamSchema,

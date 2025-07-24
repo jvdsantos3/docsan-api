@@ -14,6 +14,14 @@ export interface FindManyFilters {
 export abstract class DocumentsRepository {
   abstract findById(id: string): Promise<Document | null>
   abstract findFirstByDocumentId(id: string): Promise<Document | null>
+  abstract fetch(companyId?: string): Promise<
+    Prisma.DocumentGetPayload<{
+      include: {
+        indexation: true
+        documentType: true
+      }
+    }>[]
+  >
   abstract findMany(
     params: PaginationParams & FindManyFilters,
   ): Promise<PaginationResponse<Document>>

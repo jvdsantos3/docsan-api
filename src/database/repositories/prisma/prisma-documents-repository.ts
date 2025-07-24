@@ -25,6 +25,21 @@ export class PrismaDocumentsRepository implements DocumentsRepository {
     })
   }
 
+  async fetch(companyId: string) {
+    const where: Prisma.DocumentWhereInput = {}
+
+    if (companyId) where.companyId = companyId
+
+    return await this.prisma.document.findMany({
+      include: {
+        documentType: true,
+        indexation: true,
+      },
+      where,
+      orderBy: { version: 'desc' },
+    })
+  }
+
   async fetchByDocumentTypeId(id: string) {
     return await this.prisma.document.findMany({
       where: {
