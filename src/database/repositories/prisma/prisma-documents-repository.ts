@@ -137,6 +137,14 @@ export class PrismaDocumentsRepository implements DocumentsRepository {
       skip: (page - 1) * limit,
     })
 
+    documents = documents
+      .sort((a, b) => b.version - a.version)
+      .filter(
+        (doc, index, self) =>
+          self.findIndex((d) => d.documentType.id === doc.documentType.id) ===
+          index,
+      )
+
     documents = documents.map((doc) => {
       const indexationValues = doc.indexation?.values as Prisma.JsonArray
 

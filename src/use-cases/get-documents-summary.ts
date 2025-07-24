@@ -21,7 +21,15 @@ export class GetDocumentsSummaryUseCase {
   async execute({
     companyId,
   }: GetDocumentsSummaryUseCaseRequest): Promise<GetDocumentsSummaryUseCaseResponse> {
-    const documentsBase = await this.documentsRepository.fetch(companyId)
+    let documentsBase = await this.documentsRepository.fetch(companyId)
+
+    documentsBase = documentsBase
+      .sort((a, b) => b.version - a.version)
+      .filter(
+        (doc, index, self) =>
+          self.findIndex((d) => d.documentType.id === doc.documentType.id) ===
+          index,
+      )
 
     const documents = documentsBase.map((doc) => {
       if (doc.indexation?.values) {
