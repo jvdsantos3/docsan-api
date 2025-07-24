@@ -9,9 +9,9 @@ interface GetDocumentsSummaryUseCaseRequest {
 }
 
 interface GetDocumentsSummaryUseCaseResponse {
-  inDay: number
-  near: number
-  won: number
+  up_to_date: number
+  due_soon: number
+  overdue: number
 }
 
 @Injectable()
@@ -47,9 +47,9 @@ export class GetDocumentsSummaryUseCase {
     const won = documents.filter((document) => document.status === 'won').length
 
     return {
-      inDay,
-      near,
-      won,
+      up_to_date: inDay,
+      due_soon: near,
+      overdue: won,
     }
   }
 
