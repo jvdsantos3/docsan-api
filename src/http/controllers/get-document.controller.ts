@@ -35,9 +35,7 @@ export class GetDocumentController {
         documentId,
       })
 
-      return {
-        document,
-      }
+      return document
     } catch (err: any) {
       switch (err.constructor) {
         default:
