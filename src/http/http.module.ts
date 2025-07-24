@@ -33,6 +33,8 @@ import { GetDocumentsSummaryController } from './controllers/get-documents-summa
 import { GetDocumentsSummaryUseCase } from '@/use-cases/get-documents-summary'
 import { GetDocumentController } from './controllers/get-document.controller'
 import { GetDocumentUseCase } from '@/use-cases/get-document'
+import { ExportDocumentController } from './controllers/export-document.controller'
+import { ExportDocumentUseCase } from '@/use-cases/export-document'
 
 @Module({
   imports: [
@@ -57,6 +59,7 @@ import { GetDocumentUseCase } from '@/use-cases/get-document'
     FetchDocumentsController,
     GetDocumentsSummaryController,
     GetDocumentController,
+    ExportDocumentController,
   ],
   providers: [
     RegisterCompanyUseCase,
@@ -74,6 +77,7 @@ import { GetDocumentUseCase } from '@/use-cases/get-document'
     FetchDocumentsUseCase,
     GetDocumentsSummaryUseCase,
     GetDocumentUseCase,
+    ExportDocumentUseCase,
   ],
 })
 export class HttpModule {}

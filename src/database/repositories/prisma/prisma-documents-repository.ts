@@ -10,11 +10,15 @@ import { addDays, isBefore, parse } from 'date-fns'
 export class PrismaDocumentsRepository implements DocumentsRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findById(id: string) {
+  async findById(id: string, companyId?: string) {
+    const where: Prisma.DocumentWhereUniqueInput = {
+      id,
+    }
+
+    if (companyId) where.companyId = companyId
+
     return await this.prisma.document.findUnique({
-      where: {
-        id,
-      },
+      where,
     })
   }
 

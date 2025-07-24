@@ -1,6 +1,5 @@
 import { DocumentsRepository } from '@/database/repositories/documents-repository'
 import { DocumentWithComputed } from '@/database/repositories/interfaces/document'
-import { Uploader } from '@/storage/upload'
 import { Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { differenceInDays, isBefore } from 'date-fns'
@@ -16,10 +15,7 @@ interface GetDocumentsSummaryUseCaseResponse {
 
 @Injectable()
 export class GetDocumentUseCase {
-  constructor(
-    private documentsRepository: DocumentsRepository,
-    private uploader: Uploader,
-  ) {}
+  constructor(private documentsRepository: DocumentsRepository) {}
 
   async execute({
     companyId,
@@ -45,19 +41,11 @@ export class GetDocumentUseCase {
       status = this.getStatus(duedate)
     }
 
-    const file = await this.uploader.get(documentBase.url)
-
     const document = {
       ...documentBase,
       duedate,
       status,
-      file,
-    } as DocumentWithComputed & {
-      file: {
-        body: Buffer
-        contentType: string
-      }
-    }
+    } as DocumentWithComputed
 
     return {
       document,
