@@ -40,12 +40,12 @@ export class RefreshUseCase {
 
     const newAccessToken = await this.encrypter.encrypt(
       { ...newPayload, type: 'access' },
-      { expiresIn: '60s' },
+      { expiresIn: '1h' },
     )
 
     const newRefreshToken = await this.encrypter.encrypt(
       { ...newPayload, type: 'refresh' },
-      { expiresIn: '1h' },
+      { expiresIn: '7d' },
     )
 
     return {
