@@ -1,9 +1,9 @@
-import { OwnersRepository } from '@/database/repositories/owners-repository'
-import { ProfessionalsRepository } from '@/database/repositories/professionals-repository'
-import { WrongCredentialsError } from './errors/wrong-credentials-error'
 import { HashComparer } from '@/cryptography/hash-comparer'
 import { Encrypter } from '@/cryptography/encrypter'
 import { Injectable } from '@nestjs/common'
+import { UsersRepository } from '@/database/repositories/users-repository'
+import { WrongCredentialsError } from './errors/wrong-credentials-error'
+import { UserNotFoundError } from './errors/user-not-found-error'
 
 interface AuthenticateUseCaseRequest {
   email: string
@@ -12,13 +12,13 @@ interface AuthenticateUseCaseRequest {
 
 interface AuthenticateUseCaseResponse {
   accessToken: string
+  refreshToken: string
 }
 
 @Injectable()
 export class AuthenticateUseCase {
   constructor(
-    private ownersRepository: OwnersRepository,
-    private professionalsRepository: ProfessionalsRepository,
+    private usersRepository: UsersRepository,
     private hashComparer: HashComparer,
     private encrypter: Encrypter,
   ) {}
@@ -27,13 +27,10 @@ export class AuthenticateUseCase {
     email,
     password,
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    const owner = await this.ownersRepository.findByEmail(email)
-    const professional = await this.professionalsRepository.findByEmail(email)
-
-    const user = owner || professional
+    const user = await this.usersRepository.findByEmail(email)
 
     if (!user) {
-      throw new WrongCredentialsError()
+      throw new UserNotFoundError()
     }
 
     const isPasswordValid = await this.hashComparer.compare(
@@ -45,13 +42,28 @@ export class AuthenticateUseCase {
       throw new WrongCredentialsError()
     }
 
-    const accessToken = await this.encrypter.encrypt({
+    const payload = {
       sub: user.id,
-      role: owner ? 'OWNER' : 'PROFESSIONAL',
-    })
+      role: user.role,
+    }
+
+    const accessToken = await this.encrypter.encrypt(
+      { ...payload, type: 'access' },
+      {
+        expiresIn: '1h',
+      },
+    )
+
+    const refreshToken = await this.encrypter.encrypt(
+      { ...payload, type: 'refresh' },
+      {
+        expiresIn: '7d',
+      },
+    )
 
     return {
       accessToken,
+      refreshToken,
     }
   }
 }

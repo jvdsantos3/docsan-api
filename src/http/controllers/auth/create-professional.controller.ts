@@ -11,15 +11,13 @@ import {
 } from '@nestjs/common'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
 import { z } from 'zod'
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
+import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 
 const createProfessionalBodySchema = z.object({
   name: z.string(),
   // TODO
   cpf: z.string(),
-  birthDate: z
-    .string()
-    .transform((val) => new Date(val)),
+  birthDate: z.string().transform((val) => new Date(val)),
   email: z.string().email(),
   password: z.string(),
   phone: z.string(),

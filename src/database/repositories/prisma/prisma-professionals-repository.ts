@@ -24,14 +24,6 @@ export class PrismaProfessionalsRepository implements ProfessionalsRepository {
     })
   }
 
-  async findByEmail(email: string): Promise<Professional | null> {
-    return await this.prisma.professional.findUnique({
-      where: {
-        email,
-      },
-    })
-  }
-
   async findByCpf(cpf: string): Promise<Professional | null> {
     return await this.prisma.professional.findUnique({
       where: {

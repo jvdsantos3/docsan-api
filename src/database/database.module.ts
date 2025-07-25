@@ -14,6 +14,8 @@ import { DocumentsRepository } from './repositories/documents-repository'
 import { PrismaDocumentsRepository } from './repositories/prisma/prisma-documents-repository'
 import { IndexationsRepository } from './repositories/indexations-repository'
 import { PrismaIndexationsRepository } from './repositories/prisma/prisma-indexations-repository'
+import { UsersRepository } from './repositories/users-repository'
+import { PrismaUsersRepository } from './repositories/prisma/prisma-users-repository'
 
 @Module({
   providers: [
@@ -21,6 +23,10 @@ import { PrismaIndexationsRepository } from './repositories/prisma/prisma-indexa
     {
       provide: AddressesRepository,
       useClass: PrismaAddressesRepository,
+    },
+    {
+      provide: UsersRepository,
+      useClass: PrismaUsersRepository,
     },
     {
       provide: OwnersRepository,
@@ -50,6 +56,7 @@ import { PrismaIndexationsRepository } from './repositories/prisma/prisma-indexa
   exports: [
     PrismaService,
     AddressesRepository,
+    UsersRepository,
     OwnersRepository,
     CompaniesRepository,
     ProfessionalsRepository,

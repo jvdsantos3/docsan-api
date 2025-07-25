@@ -5,12 +5,14 @@ import {
   Body,
   Controller,
   Post,
+  Res,
   UnauthorizedException,
   UsePipes,
 } from '@nestjs/common'
 import { z } from 'zod'
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
+import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 import { WrongCredentialsError } from '@/use-cases/errors/wrong-credentials-error'
+import { Response } from 'express'
 
 const authenticateBodySchema = z.object({
   email: z.string().email(),
@@ -26,13 +28,23 @@ export class AuthenticateController {
 
   @Post()
   @UsePipes(new ZodValidationPipe(authenticateBodySchema))
-  async handle(@Body() body: AuthenticateBodySchema) {
+  async handle(
+    @Body() body: AuthenticateBodySchema,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const { email, password } = body
 
     try {
-      const { accessToken } = await this.authenticate.execute({
+      const { accessToken, refreshToken } = await this.authenticate.execute({
         email,
         password,
+      })
+
+      res.cookie('refresh_token', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       })
 
       return {

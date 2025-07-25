@@ -7,10 +7,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  OWNER
+  PROFESSIONAL
+}
+
 enum InvitationStatus {
   PENDING
   ACCEPTED
   REJECTED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  role      Role
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  owner        Owner?        @relation("UserOwner")
+  professional Professional? @relation("UserProfessional")
+  actionLogs   ActionLog[]
+
+  @@map("users")
 }
 
 model Address {
@@ -40,14 +60,14 @@ model Company {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  addressId String  @unique @map("address_id")
   address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
+  addressId String  @unique @map("address_id")
 
-  owner         Owner?                @relation
+  owner Owner? @relation
+
   documents     Document[]
   documentTypes DocumentType[]
   professionals ProfessionalCompany[]
-  invitations   Invitation[]
   actionLogs    ActionLog[]
 
   @@map("companies")
@@ -58,14 +78,14 @@ model Owner {
   name      String
   cpf       String   @unique
   phone     String
-  email     String   @unique
-  password  String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  company   Company? @relation(fields: [companyId], references: [id])
   companyId String   @unique @map("company_id")
 
-  company   Company?    @relation(fields: [companyId], references: [id])
-  ActionLog ActionLog[]
+  user   User   @relation("UserOwner", fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique @map("user_id")
 
   @@map("owners")
 }
@@ -75,8 +95,6 @@ model Professional {
   name          String
   cpf           String   @unique
   birthDate     DateTime @map("birth_date")
-  email         String   @unique
-  password      String
   phone         String
   fieldActivity String   @map("field_activity")
   registry      String
@@ -84,25 +102,16 @@ model Professional {
   cnae          String
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
-  addressId     String   @unique
 
-  address     Address               @relation(fields: [addressId], references: [id], onDelete: Cascade)
-  companies   ProfessionalCompany[]
-  invitations Invitation[]
-  actionLogs  ActionLog[]
+  address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
+  addressId String  @unique
+
+  user   User   @relation("UserProfessional", fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique @map("user_id")
+
+  companies ProfessionalCompany[]
 
   @@map("professionals")
-}
-
-model Admin {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map("admins")
 }
 
 model DocumentType {
@@ -112,9 +121,10 @@ model DocumentType {
   isActive  Boolean  @default(true) @map("is_active")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  companyId String   @map("company_id")
 
-  company    Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId String  @map("company_id")
+
   documents  Document[]
   actionLogs ActionLog[]
 
@@ -122,82 +132,71 @@ model DocumentType {
 }
 
 model Document {
-  id             String   @id @default(uuid())
-  name           String
-  url            String
-  version        Int
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
-  companyId      String   @map("company_id")
-  documentTypeId String   @map("document_type_id")
+  id        String   @id @default(uuid())
+  name      String
+  url       String
+  version   Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  documentType DocumentType @relation(fields: [documentTypeId], references: [id], onDelete: Cascade)
-  indexation   Indexation?
-  actionLog    ActionLog[]
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId String  @map("company_id")
+
+  documentType   DocumentType @relation(fields: [documentTypeId], references: [id], onDelete: Cascade)
+  documentTypeId String       @map("document_type_id")
+
+  indexation Indexation?
+  actionLog  ActionLog[]
 
   @@unique([documentTypeId, version])
   @@map("documents")
 }
 
 model Indexation {
-  id         String   @id @default(uuid())
-  values     Json     @map("metadata_values")
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
-  documentId String   @unique @map("document_id")
+  id        String   @id @default(uuid())
+  values    Json     @map("metadata_values")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  documentId String   @unique @map("document_id")
 
   @@map("indexations")
 }
 
 model ProfessionalCompany {
-  id             String   @id @default(uuid())
-  permissions    Json // Ex.: { "document.create": true, "document-type.delete": false }
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
-  professionalId String   @map("professional_id")
-  companyId      String   @map("company_id")
+  id          String   @id @default(uuid())
+  permissions Json // Ex.: { "document.create": true, "document-type.delete": false }
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
-  professional Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
-  company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  professionalId String       @map("professional_id")
+
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId String  @map("company_id")
 
   @@unique([professionalId, companyId])
   @@map("professional_companies")
 }
 
-model Invitation {
-  id             String           @id @default(uuid())
-  professionalId String           @map("professional_id")
-  companyId      String           @map("company_id")
-  status         InvitationStatus @default(PENDING)
-  createdAt      DateTime         @default(now()) @map("created_at")
-  updatedAt      DateTime         @updatedAt @map("updated_at")
-
-  professional Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
-  company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  @@unique([professionalId, companyId])
-  @@map("invitations")
-}
-
 model ActionLog {
-  id             String   @id @default(uuid())
-  action         String
-  companyId      String   @map("company_id")
-  ownerId        String?  @map("owner_id")
-  professionalId String?  @map("professional_id")
-  documentId     String?  @map("document_id")
-  documentTypeId String?  @map("company_type_id")
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
+  id        String   @id @default(uuid())
+  action    String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  company      Company       @relation(fields: [companyId], references: [id])
-  owner        Owner?        @relation(fields: [ownerId], references: [id])
-  professional Professional? @relation(fields: [professionalId], references: [id])
-  documentType DocumentType? @relation(fields: [documentTypeId], references: [id])
-  document     Document?     @relation(fields: [documentId], references: [id])
+  company   Company @relation(fields: [companyId], references: [id])
+  companyId String  @map("company_id")
+
+  documentType   DocumentType? @relation(fields: [documentTypeId], references: [id])
+  documentTypeId String?       @map("company_type_id")
+
+  document   Document? @relation(fields: [documentId], references: [id])
+  documentId String?   @map("document_id")
+
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String?
 
   @@map("action_logs")
 }

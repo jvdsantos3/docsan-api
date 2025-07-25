@@ -36,14 +36,6 @@ export class PrismaOwnersRepository implements OwnersRepository {
     })
   }
 
-  async findByEmail(email: string) {
-    return await this.prisma.owner.findUnique({
-      where: {
-        email,
-      },
-    })
-  }
-
   async findByCpf(cpf: string) {
     return await this.prisma.owner.findUnique({
       where: {

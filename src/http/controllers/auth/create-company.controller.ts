@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
 import { z } from 'zod'
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
+import { ZodValidationPipe } from '@/http/pipes/zod-validation-pipe'
 
 const createCompanyBodySchema = z.object({
   name: z.string(),
@@ -44,7 +44,11 @@ export class CreateCompanyController {
   @UsePipes(new ZodValidationPipe(createCompanyBodySchema))
   async handle(@Body() body: CreateCompanyBodySchema) {
     try {
-      await this.registerCompanyUseCase.execute(body)
+      const { company } = await this.registerCompanyUseCase.execute(body)
+
+      return {
+        company,
+      }
     } catch (err: any) {
       switch (err.constructor) {
         case UserAlreadyExistsError:

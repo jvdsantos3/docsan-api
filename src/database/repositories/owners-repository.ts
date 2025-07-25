@@ -5,7 +5,6 @@ export abstract class OwnersRepository {
   abstract findByIdWithCompany(
     id: string,
   ): Promise<(Owner & { company: Company | null }) | null>
-  abstract findByEmail(email: string): Promise<Owner | null>
   abstract findByCpf(email: string): Promise<Owner | null>
   abstract create(
     data: Prisma.OwnerUncheckedCreateInput,

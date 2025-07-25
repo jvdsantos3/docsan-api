@@ -61,18 +61,18 @@ export class RegisterProfessionalUseCase {
     neighborhood,
     complement,
   }: RegisterProfessionalUseCaseRequest): Promise<RegisterProfessionalUseCaseResponse> {
-    const ownerWithSameEmail = await this.ownersRepository.findByEmail(email)
+    // const ownerWithSameEmail = await this.ownersRepository.findByEmail(email)
 
-    if (ownerWithSameEmail) {
-      throw new UserAlreadyExistsError(email)
-    }
+    // if (ownerWithSameEmail) {
+    //   throw new UserAlreadyExistsError(email)
+    // }
 
-    const professionalWithSameEmail =
-      await this.professionalsRepository.findByEmail(email)
+    // const professionalWithSameEmail =
+    //   await this.professionalsRepository.findByEmail(email)
 
-    if (professionalWithSameEmail) {
-      throw new UserAlreadyExistsError(email)
-    }
+    // if (professionalWithSameEmail) {
+    //   throw new UserAlreadyExistsError(email)
+    // }
 
     const professionalWithSameCpf =
       await this.professionalsRepository.findByCpf(cpf)
@@ -97,22 +97,22 @@ export class RegisterProfessionalUseCase {
         prisma,
       )
 
-      const professional = await this.professionalsRepository.create(
-        {
-          name,
-          cpf,
-          birthDate,
-          email,
-          password: hashedPassword,
-          phone,
-          fieldActivity,
-          registry,
-          registryUf,
-          cnae,
-          addressId: address.id,
-        },
-        prisma,
-      )
+      // const professional = await this.professionalsRepository.create(
+      //   {
+      //     name,
+      //     cpf,
+      //     birthDate,
+      //     email,
+      //     password: hashedPassword,
+      //     phone,
+      //     fieldActivity,
+      //     registry,
+      //     registryUf,
+      //     cnae,
+      //     addressId: address.id,
+      //   },
+      //   prisma,
+      // )
 
       return professional
     })
