@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import z from 'zod'
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
+import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 import { GetDocumentsSummaryUseCase } from '@/use-cases/get-documents-summary'
 
 const companyIdRouteParamSchema = z.string()

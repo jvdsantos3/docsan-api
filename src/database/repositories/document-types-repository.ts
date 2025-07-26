@@ -1,30 +1,128 @@
-import { Document, DocumentType, Prisma } from '@prisma/client'
-import {
-  PaginationParams,
-  PaginationResponse,
-} from './interfaces/pagination-params'
+import { Injectable } from '@nestjs/common'
+import { DocumentType, Prisma } from '@prisma/client'
+import { PrismaService } from '../prisma.service'
+import { PaginationParams } from '../interfaces/pagination-params'
 
 export interface FindManyFilters {
   filter?: string
   active?: boolean
 }
 
-export abstract class DocumentTypesRepository {
-  abstract findById(id: string): Promise<DocumentType | null>
-  abstract findByIdWithDocuments(
-    id: string,
-  ): Promise<(DocumentType & { documents: Document[] }) | null>
-  abstract findByName(name: string): Promise<DocumentType | null>
-  abstract findMany(
-    params: PaginationParams & FindManyFilters,
-  ): Promise<PaginationResponse<DocumentType>>
-  abstract create(
+@Injectable()
+export class DocumentTypesRepository {
+  constructor(private prisma: PrismaService) {}
+
+  async findById(id: string) {
+    return await this.prisma.documentType.findUnique({
+      where: {
+        id,
+      },
+    })
+  }
+
+  async findByIdWithDocuments(id: string) {
+    return await this.prisma.documentType.findUnique({
+      include: {
+        documents: true,
+      },
+      where: {
+        id,
+      },
+    })
+  }
+
+  async findByName(name: string) {
+    return await this.prisma.documentType.findUnique({
+      where: {
+        name,
+      },
+    })
+  }
+
+  async findMany({
+    page,
+    limit = 15,
+    order = 'asc',
+    active,
+    filter,
+  }: PaginationParams & FindManyFilters) {
+    const where: any = {}
+
+    if (typeof active === 'boolean') {
+      where.isActive = active
+    }
+
+    if (filter) {
+      where.name = {
+        contains: filter,
+        mode: 'insensitive',
+      }
+    }
+
+    const total = await this.prisma.documentType.count({ where })
+    const current = page
+    const first = total > 0 ? 1 : null
+    const last = Math.ceil(total / limit)
+    const next = page < last ? page + 1 : null
+    const prev = page > 1 ? page - 1 : null
+
+    const documentTypes = await this.prisma.documentType.findMany({
+      where,
+      orderBy: {
+        name: order,
+      },
+      take: limit,
+      skip: (page - 1) * limit,
+      include: {
+        _count: {
+          select: {
+            documents: true,
+          },
+        },
+      },
+    })
+
+    return {
+      data: documentTypes,
+      first,
+      last,
+      current,
+      next,
+      prev,
+      total,
+    }
+  }
+
+  async create(
     data: Prisma.DocumentTypeUncheckedCreateInput,
-    prisma?: Prisma.TransactionClient,
-  ): Promise<DocumentType>
-  abstract save(
-    documentType: DocumentType,
-    prisma?: Prisma.TransactionClient,
-  ): Promise<DocumentType>
-  abstract delete(documentType: DocumentType): Promise<void>
+    prisma: Prisma.TransactionClient = this.prisma,
+  ) {
+    return await prisma.documentType.create({
+      data,
+    })
+  }
+
+  async save(
+    data: DocumentType,
+    prisma: Prisma.TransactionClient = this.prisma,
+  ) {
+    return await prisma.documentType.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        name: data.name,
+        metadata: data.metadata as Prisma.InputJsonValue,
+        isActive: data.isActive,
+      },
+    })
+  }
+
+  async delete(documentType: DocumentType) {
+    await this.prisma.documentType.delete({
+      where: {
+        id: documentType.id,
+      },
+    })
+  }
 }

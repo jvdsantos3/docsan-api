@@ -11,11 +11,11 @@ import {
 import { CurrentUser } from '@/auth/current-user-decorator'
 import { UserPayload } from '@/auth/jwt.strategy'
 import z from 'zod'
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { CreateDocumentTypeUseCase } from '@/use-cases/create-document-type'
 import { CheckPolicies } from '@/casl/check-policies.decorator'
 import { CreateDocumentTypePolicyHandler } from '@/casl/policies/create-document-type.policy'
 import { PoliciesGuard } from '@/casl/policies.guard'
+import { ZodValidationPipe } from '@/http/pipes/zod-validation-pipe'
 
 const createDocumentTypeBodySchema = z.object({
   name: z.string(),

@@ -1,7 +1,7 @@
-import { DeleteDocumentTypeUseCase } from '@/use-cases/delete-document-type'
-import { BadRequestException, Controller, Delete, Param } from '@nestjs/common'
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
+import { BadRequestException, Controller, Get, Param } from '@nestjs/common'
 import z from 'zod'
+import { GetDocumentTypeByIdUseCase } from '@/use-cases/get-document-type-by-id'
+import { ZodValidationPipe } from '@/http/pipes/zod-validation-pipe'
 
 const idRouteParamSchema = z.string()
 
@@ -10,15 +10,17 @@ const paramValidationPipe = new ZodValidationPipe(idRouteParamSchema)
 type IdRouteParamSchema = z.infer<typeof idRouteParamSchema>
 
 @Controller('document-types/:id')
-export class DeleteDocumentTypeController {
-  constructor(private deleteDocumentTypeUseCase: DeleteDocumentTypeUseCase) {}
+export class GetDocumentTypeController {
+  constructor(private getDocumentTypeByIdUseCase: GetDocumentTypeByIdUseCase) {}
 
-  @Delete()
+  @Get()
   async handle(@Param('id', paramValidationPipe) id: IdRouteParamSchema) {
     try {
-      await this.deleteDocumentTypeUseCase.execute({
+      const { documentType } = await this.getDocumentTypeByIdUseCase.execute({
         documentTypeId: id,
       })
+
+      return documentType
     } catch (err: any) {
       switch (err.constructor) {
         default:

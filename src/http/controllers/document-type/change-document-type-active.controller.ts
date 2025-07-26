@@ -1,7 +1,7 @@
 import { BadRequestException, Controller, Param, Patch } from '@nestjs/common'
 import z from 'zod'
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { ChangeDocumentTypeActiveUseCase } from '@/use-cases/change-document-type-active'
+import { ZodValidationPipe } from '@/http/pipes/zod-validation-pipe'
 
 const idRouteParamSchema = z.string()
 

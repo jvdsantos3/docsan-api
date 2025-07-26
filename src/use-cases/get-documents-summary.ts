@@ -1,5 +1,5 @@
 import { DocumentsRepository } from '@/database/repositories/documents-repository'
-import { DocumentWithComputed } from '@/database/repositories/interfaces/document'
+import { DocumentWithComputed } from '@/database/interfaces/document'
 import { Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { differenceInDays, isBefore } from 'date-fns'

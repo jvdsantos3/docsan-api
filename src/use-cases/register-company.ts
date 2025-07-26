@@ -36,7 +36,7 @@ export class RegisterCompanyUseCase {
   constructor(
     private addressRepository: AddressesRepository,
     private companiesRepository: CompaniesRepository,
-    private userRepository: UsersRepository,
+    private usersRepository: UsersRepository,
     private ownersRepository: OwnersRepository,
     private hashGenerator: HashGenerator,
     private prisma: PrismaService,
@@ -60,7 +60,7 @@ export class RegisterCompanyUseCase {
     neighborhood,
     complement,
   }: RegisterCompanyUseCaseRequest): Promise<RegisterCompanyUseCaseResponse> {
-    const userWithSameEmail = await this.userRepository.findByEmail(ownerEmail)
+    const userWithSameEmail = await this.usersRepository.findByEmail(ownerEmail)
 
     if (userWithSameEmail) {
       throw new UserAlreadyExistsError(ownerEmail)
@@ -99,7 +99,7 @@ export class RegisterCompanyUseCase {
         prisma,
       )
 
-      const user = await this.userRepository.create({
+      const user = await this.usersRepository.create({
         email: ownerEmail,
         password: hashedPassword,
         role: 'OWNER',

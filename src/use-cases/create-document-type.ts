@@ -4,7 +4,7 @@ import { DocumentType, Prisma } from '@prisma/client'
 import { DocumetTypeAlreadyExistsError } from './errors/document-type-already-exists-error'
 import { DocumetTypeLimitError } from './errors/document-type-limit-error'
 import { Field } from './interfaces/document'
-import { User } from './interfaces/use'
+import { User } from './interfaces/user'
 interface CreateDocumentTypeUseCaseRequest {
   user: User
   companyId: string

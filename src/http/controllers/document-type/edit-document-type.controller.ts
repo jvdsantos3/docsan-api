@@ -5,9 +5,9 @@ import {
   Param,
   Put,
 } from '@nestjs/common'
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import z from 'zod'
 import { EditDocumentTypeUseCase } from '@/use-cases/edit-document-type'
+import { ZodValidationPipe } from '@/http/pipes/zod-validation-pipe'
 
 const idRouteParamSchema = z.string()
 

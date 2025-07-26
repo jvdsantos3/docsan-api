@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import z from 'zod'
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
+import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 import { CreateDocumentUseCase } from '@/use-cases/create-document'
 import { CurrentUser } from '@/auth/current-user-decorator'
 import { UserPayload } from '@/auth/jwt.strategy'

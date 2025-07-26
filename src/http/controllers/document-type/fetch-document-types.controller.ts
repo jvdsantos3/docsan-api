@@ -1,7 +1,7 @@
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
 import z from 'zod'
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { FetchDocumentTypesUseCase } from '@/use-cases/fetch-document-types'
+import { ZodValidationPipe } from '@/http/pipes/zod-validation-pipe'
 
 const fetchDocumentTypesParamSchema = z.object({
   page: z

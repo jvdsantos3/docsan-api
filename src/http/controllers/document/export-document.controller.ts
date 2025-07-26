@@ -10,34 +10,32 @@ import {
   UsePipes,
 } from '@nestjs/common'
 import z from 'zod'
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
-import { GetDocumentUseCase } from '@/use-cases/get-document'
+import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
+import { ExportDocumentUseCase } from '@/use-cases/export-document'
 
-const getDocumentParamsSchema = z.object({
+const exportDocumentParamsSchema = z.object({
   companyId: z.string(),
   documentId: z.string(),
 })
 
-type GetDocumentBodySchema = z.infer<typeof getDocumentParamsSchema>
+type ExportDocumentBodySchema = z.infer<typeof exportDocumentParamsSchema>
 
-@Controller('/company/:companyId/documents/:documentId')
-export class GetDocumentController {
-  constructor(private getDocument: GetDocumentUseCase) {}
+@Controller('/company/:companyId/documents/:documentId/export')
+export class ExportDocumentController {
+  constructor(private exportDocument: ExportDocumentUseCase) {}
 
   @Get()
   @UseGuards(PoliciesGuard)
   @CheckPolicies(new ReadDocumentPolicyHandler())
-  @UsePipes(new ZodValidationPipe(getDocumentParamsSchema))
-  async handle(@Param() { companyId, documentId }: GetDocumentBodySchema) {
+  @UsePipes(new ZodValidationPipe(exportDocumentParamsSchema))
+  async handle(@Param() { companyId, documentId }: ExportDocumentBodySchema) {
     try {
-      const document = await this.getDocument.execute({
+      const file = await this.exportDocument.execute({
         companyId,
         documentId,
       })
 
-      return {
-        document,
-      }
+      return file
     } catch (err: any) {
       switch (err.constructor) {
         default:

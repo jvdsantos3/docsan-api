@@ -3,7 +3,7 @@ import { AbilityBuilder, PureAbility } from '@casl/ability'
 import { createPrismaAbility, PrismaQuery, Subjects } from '@casl/prisma'
 import { Action } from './actions.enum'
 import { DocumentType, Document } from '@prisma/client'
-import { User } from '@/use-cases/interfaces/use'
+import { User } from '@/use-cases/interfaces/user'
 import { PrismaService } from '@/database/prisma.service'
 
 type AppSubjects =

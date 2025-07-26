@@ -1,13 +1,11 @@
 import { Public } from '@/auth/public'
 import {
-  BadRequestException,
   Controller,
   Get,
   Req,
   Res,
   UnauthorizedException,
 } from '@nestjs/common'
-import { WrongCredentialsError } from '@/use-cases/errors/wrong-credentials-error'
 import { RefreshUseCase } from '@/use-cases/refresh'
 import { Request, Response } from 'express'
 
@@ -18,30 +16,25 @@ export class RefreshController {
 
   @Get()
   async handle(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    try {
-      const token = req.cookies['refresh_token']
+    const token = req.cookies['refresh_token']
 
-      const { accessToken, refreshToken } = await this.refresh.execute({
-        refreshToken: token,
-      })
+    if (!token) {
+      throw new UnauthorizedException('Refresh token not found.')
+    }
 
-      res.cookie('refresh_token', refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      })
+    const { accessToken, refreshToken } = await this.refresh.execute({
+      refreshToken: token,
+    })
 
-      return {
-        access_token: accessToken,
-      }
-    } catch (err: any) {
-      switch (err.constructor) {
-        case WrongCredentialsError:
-          throw new UnauthorizedException(err.message)
-        default:
-          throw new BadRequestException(err.message)
-      }
+    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    })
+
+    return {
+      access_token: accessToken,
     }
   }
 }

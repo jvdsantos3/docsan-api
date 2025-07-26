@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import z from 'zod'
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
+import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 
 const extractDataBodySchema = z.object({
   documentTypeId: z.string(),

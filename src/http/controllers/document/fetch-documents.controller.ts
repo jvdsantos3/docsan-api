@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import z from 'zod'
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
+import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 import { FetchDocumentsUseCase } from '@/use-cases/fetch-documents'
 import { PoliciesGuard } from '@/casl/policies.guard'
 import { CheckPolicies } from '@/casl/check-policies.decorator'

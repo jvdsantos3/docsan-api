@@ -1,39 +1,34 @@
-import { OwnersRepository } from '@/database/repositories/owners-repository'
-import { ProfessionalsRepository } from '@/database/repositories/professionals-repository'
 import { Injectable } from '@nestjs/common'
-import { Owner, Professional } from '@prisma/client'
-import { User } from './interfaces/use'
+import {
+  UsersRepository,
+  UserWithProfile,
+} from '@/database/repositories/users-repository'
+import { UserPayload } from '@/auth/jwt.strategy'
+import { UserNotFoundError } from './errors/user-not-found-error'
 
 interface GetProfileUseCaseRequest {
-  user: User
+  payload: UserPayload
 }
 
-interface AuthenticateUseCaseResponse {
-  profile: Professional | Owner
+interface GetProfileUseCaseResponse {
+  user: UserWithProfile
 }
 
 @Injectable()
 export class GetProfileUseCase {
-  constructor(
-    private ownersRepository: OwnersRepository,
-    private professionalsRepository: ProfessionalsRepository,
-  ) {}
+  constructor(private usersRepository: UsersRepository) {}
 
   async execute({
-    user,
-  }: GetProfileUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    const owner = await this.ownersRepository.findByIdWithCompany(user.sub)
-    const professional = await this.professionalsRepository.findById(user.sub)
+    payload,
+  }: GetProfileUseCaseRequest): Promise<GetProfileUseCaseResponse> {
+    const user = await this.usersRepository.findById(payload.sub)
 
-    const profile = owner || professional
-
-    if (!profile) {
-      // TODO
-      throw new Error('User not found.')
+    if (!user) {
+      throw new UserNotFoundError()
     }
 
     return {
-      profile,
+      user,
     }
   }
 }

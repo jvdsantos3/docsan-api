@@ -1,38 +1,10 @@
 import { RegisterCompanyUseCase } from '@/use-cases/register-company'
 import { Public } from '@/auth/public'
+import { Body, Controller, HttpCode, Post, UsePipes } from '@nestjs/common'
 import {
-  BadRequestException,
-  Body,
-  ConflictException,
-  Controller,
-  HttpCode,
-  Post,
-  UsePipes,
-} from '@nestjs/common'
-import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
-import { z } from 'zod'
-import { ZodValidationPipe } from '@/http/pipes/zod-validation-pipe'
-
-const createCompanyBodySchema = z.object({
-  name: z.string(),
-  tradeName: z.string(),
-  cnpj: z.string(),
-  cnae: z.string(),
-  ownerName: z.string(),
-  ownerCpf: z.string(),
-  phone: z.string(),
-  ownerEmail: z.string().email(),
-  password: z.string(),
-  zipCode: z.string(),
-  uf: z.string(),
-  city: z.string(),
-  street: z.string(),
-  number: z.coerce.string(),
-  neighborhood: z.string(),
-  complement: z.string().optional(),
-})
-
-type CreateCompanyBodySchema = z.infer<typeof createCompanyBodySchema>
+  CreateCompanyBodySchema,
+  createCompanyValidationPipe,
+} from '@/http/schemas/create-company-schema'
 
 @Controller('/companies')
 @Public()
@@ -41,21 +13,12 @@ export class CreateCompanyController {
 
   @Post()
   @HttpCode(201)
-  @UsePipes(new ZodValidationPipe(createCompanyBodySchema))
+  @UsePipes(createCompanyValidationPipe())
   async handle(@Body() body: CreateCompanyBodySchema) {
-    try {
-      const { company } = await this.registerCompanyUseCase.execute(body)
+    const { company } = await this.registerCompanyUseCase.execute(body)
 
-      return {
-        company,
-      }
-    } catch (err: any) {
-      switch (err.constructor) {
-        case UserAlreadyExistsError:
-          throw new ConflictException(err.message)
-        default:
-          throw new BadRequestException(err.message)
-      }
+    return {
+      company,
     }
   }
 }

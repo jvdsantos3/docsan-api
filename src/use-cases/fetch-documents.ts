@@ -1,4 +1,4 @@
-import { PaginationResponse } from './../database/repositories/interfaces/pagination-params'
+import { PaginationResponse } from '../database/interfaces/pagination-params'
 import { DocumentsRepository } from '@/database/repositories/documents-repository'
 import { Injectable } from '@nestjs/common'
 import { Document } from '@prisma/client'
