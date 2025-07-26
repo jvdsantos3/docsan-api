@@ -9,13 +9,13 @@ import {
 @Controller('/companies')
 @Public()
 export class CreateCompanyController {
-  constructor(private registerCompanyUseCase: RegisterCompanyUseCase) {}
+  constructor(private registerCompany: RegisterCompanyUseCase) {}
 
   @Post()
   @HttpCode(201)
-  @UsePipes(createCompanyValidationPipe())
+  @UsePipes(createCompanyValidationPipe)
   async handle(@Body() body: CreateCompanyBodySchema) {
-    const { company } = await this.registerCompanyUseCase.execute(body)
+    const { company } = await this.registerCompany.execute(body)
 
     return {
       company,

@@ -1,8 +1,6 @@
 import {
-  BadRequestException,
   Body,
   Controller,
-  ForbiddenException,
   HttpCode,
   Param,
   Post,
@@ -10,58 +8,37 @@ import {
 } from '@nestjs/common'
 import { CurrentUser } from '@/auth/current-user-decorator'
 import { UserPayload } from '@/auth/jwt.strategy'
-import z from 'zod'
 import { CreateDocumentTypeUseCase } from '@/use-cases/create-document-type'
 import { CheckPolicies } from '@/casl/check-policies.decorator'
 import { CreateDocumentTypePolicyHandler } from '@/casl/policies/create-document-type.policy'
 import { PoliciesGuard } from '@/casl/policies.guard'
-import { ZodValidationPipe } from '@/http/pipes/zod-validation-pipe'
+import {
+  CreateDocumentTypeBodySchema,
+  CreateDocumentTypeParamsSchema,
+  createDocumentTypeParamsValidationPipe,
+  createDocumentTypeValidationPipe,
+} from '@/http/schemas/create-document-type-schema'
 
-const createDocumentTypeBodySchema = z.object({
-  name: z.string(),
-  fields: z
-    .array(
-      z.object({
-        name: z.string(),
-        type: z.string(),
-        required: z.boolean(),
-      }),
-    )
-    .nonempty(),
-})
-
-const bodyValidationPipe = new ZodValidationPipe(createDocumentTypeBodySchema)
-
-type CreateDocumentTypeBodySchema = z.infer<typeof createDocumentTypeBodySchema>
-
-@Controller('/document-types')
+@Controller('company/:companyId/document-types')
 export class CreateDocumentTypeController {
-  constructor(private createDocumentTypeUseCase: CreateDocumentTypeUseCase) {}
+  constructor(private createDocumentType: CreateDocumentTypeUseCase) {}
 
-  @Post(':companyId')
+  @Post()
   @UseGuards(PoliciesGuard)
   @CheckPolicies(new CreateDocumentTypePolicyHandler())
   @HttpCode(201)
   async handle(
     @CurrentUser() user: UserPayload,
-    // TODO
-    @Param('companyId') companyId: string,
-    @Body(bodyValidationPipe) { name, fields }: CreateDocumentTypeBodySchema,
+    @Param(createDocumentTypeParamsValidationPipe)
+    { companyId }: CreateDocumentTypeParamsSchema,
+    @Body(createDocumentTypeValidationPipe)
+    { name, fields }: CreateDocumentTypeBodySchema,
   ) {
-    try {
-      await this.createDocumentTypeUseCase.execute({
-        user,
-        companyId,
-        name,
-        fields,
-      })
-    } catch (err: any) {
-      switch (err.constructor) {
-        case ForbiddenException:
-          throw err
-        default:
-          throw new BadRequestException(err.message)
-      }
-    }
+    await this.createDocumentType.execute({
+      user,
+      companyId,
+      name,
+      fields,
+    })
   }
 }

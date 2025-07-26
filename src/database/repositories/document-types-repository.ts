@@ -14,6 +14,14 @@ export class DocumentTypesRepository {
 
   async findById(id: string) {
     return await this.prisma.documentType.findUnique({
+      include: {
+        _count: {
+          select: {
+            documents: true,
+          },
+        },
+        actionLogs: true,
+      },
       where: {
         id,
       },
@@ -31,10 +39,13 @@ export class DocumentTypesRepository {
     })
   }
 
-  async findByName(name: string) {
+  async findByName(name: string, companyId: string) {
     return await this.prisma.documentType.findUnique({
       where: {
-        name,
+        name_companyId: {
+          name,
+          companyId,
+        },
       },
     })
   }

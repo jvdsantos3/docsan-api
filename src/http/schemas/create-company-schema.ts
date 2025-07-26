@@ -22,6 +22,6 @@ const createCompanyBodySchema = z.object({
 
 export type CreateCompanyBodySchema = z.infer<typeof createCompanyBodySchema>
 
-export function createCompanyValidationPipe() {
-  return new ZodValidationPipe(createCompanyBodySchema)
-}
+export const createCompanyValidationPipe = new ZodValidationPipe(
+  createCompanyBodySchema,
+)

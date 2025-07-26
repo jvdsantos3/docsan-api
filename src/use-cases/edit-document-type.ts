@@ -3,6 +3,7 @@ import { DocumentType, Prisma } from '@prisma/client'
 import { DocumentTypesRepository } from '@/database/repositories/document-types-repository'
 import { DocumetTypeAlreadyExistsError } from './errors/document-type-already-exists-error'
 import { Field } from './interfaces/document'
+import { randomUUID } from 'node:crypto'
 
 interface EditDocumentTypeUseCaseRequest {
   documentTypeId: string
@@ -31,8 +32,9 @@ export class EditDocumentTypeUseCase {
       throw new Error('Document type not found.')
     }
 
+    // TODO
     const documentTypeWithSameName =
-      await this.documentTypesRepository.findByName(name)
+      await this.documentTypesRepository.findByName(name, randomUUID())
 
     if (
       documentTypeWithSameName &&

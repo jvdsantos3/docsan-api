@@ -25,8 +25,10 @@ const createProfessionalBodySchema = z.object({
   complement: z.string().optional(),
 })
 
-export type CreateProfessionalBodySchema = z.infer<typeof createProfessionalBodySchema>
+export type CreateProfessionalBodySchema = z.infer<
+  typeof createProfessionalBodySchema
+>
 
-export function createProfessionalValidationPipe() {
-  return new ZodValidationPipe(createProfessionalBodySchema)
-}
+export const createProfessionalValidationPipe = new ZodValidationPipe(
+  createProfessionalBodySchema,
+)

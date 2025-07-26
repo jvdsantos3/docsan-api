@@ -8,6 +8,6 @@ const authenticateBodySchema = z.object({
 
 export type AuthenticateBodySchema = z.infer<typeof authenticateBodySchema>
 
-export function authenticateValidationPipe() {
-  return new ZodValidationPipe(authenticateBodySchema)
-}
+export const authenticateValidationPipe = new ZodValidationPipe(
+  authenticateBodySchema,
+)

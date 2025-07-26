@@ -7,11 +7,11 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import z from 'zod'
-import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 import { FetchDocumentsUseCase } from '@/use-cases/fetch-documents'
 import { PoliciesGuard } from '@/casl/policies.guard'
 import { CheckPolicies } from '@/casl/check-policies.decorator'
 import { ReadDocumentPolicyHandler } from '@/casl/policies/read-document.policy'
+import { ZodValidationPipe } from '@/http/pipes/zod-validation-pipe'
 
 const companyIdRouteParamSchema = z.string()
 

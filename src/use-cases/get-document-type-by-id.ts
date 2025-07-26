@@ -1,6 +1,7 @@
 import { DocumentTypesRepository } from '@/database/repositories/document-types-repository'
 import { Injectable } from '@nestjs/common'
 import { DocumentType } from '@prisma/client'
+import { DocumentTypeNotFoundError } from './errors/document-type-not-found-error'
 
 interface GetDocumentTypeByIdUseCaseRequest {
   documentTypeId: string
@@ -21,8 +22,7 @@ export class GetDocumentTypeByIdUseCase {
       await this.documentTypesRepository.findById(documentTypeId)
 
     if (!documentType) {
-      // TODO
-      throw new Error('Document type not found.')
+      throw new DocumentTypeNotFoundError()
     }
 
     return {

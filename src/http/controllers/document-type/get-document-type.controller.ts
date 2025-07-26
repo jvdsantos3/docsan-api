@@ -1,31 +1,23 @@
-import { BadRequestException, Controller, Get, Param } from '@nestjs/common'
-import z from 'zod'
+import { Controller, Get, Param } from '@nestjs/common'
 import { GetDocumentTypeByIdUseCase } from '@/use-cases/get-document-type-by-id'
-import { ZodValidationPipe } from '@/http/pipes/zod-validation-pipe'
+import {
+  GetDocumentTypeParamsSchema,
+  getDocumentTypeParamsValidationPipe,
+} from '@/http/schemas/get-document-type-schema'
 
-const idRouteParamSchema = z.string()
-
-const paramValidationPipe = new ZodValidationPipe(idRouteParamSchema)
-
-type IdRouteParamSchema = z.infer<typeof idRouteParamSchema>
-
-@Controller('document-types/:id')
+@Controller('company/:companyId/document-types/:documentTypeId')
 export class GetDocumentTypeController {
-  constructor(private getDocumentTypeByIdUseCase: GetDocumentTypeByIdUseCase) {}
+  constructor(private getDocumentTypeById: GetDocumentTypeByIdUseCase) {}
 
   @Get()
-  async handle(@Param('id', paramValidationPipe) id: IdRouteParamSchema) {
-    try {
-      const { documentType } = await this.getDocumentTypeByIdUseCase.execute({
-        documentTypeId: id,
-      })
+  async handle(
+    @Param(getDocumentTypeParamsValidationPipe)
+    { documentTypeId }: GetDocumentTypeParamsSchema,
+  ) {
+    const { documentType } = await this.getDocumentTypeById.execute({
+      documentTypeId,
+    })
 
-      return documentType
-    } catch (err: any) {
-      switch (err.constructor) {
-        default:
-          throw new BadRequestException(err.message)
-      }
-    }
+    return documentType
   }
 }

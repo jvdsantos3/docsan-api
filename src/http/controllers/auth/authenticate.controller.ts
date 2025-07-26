@@ -13,7 +13,7 @@ export class AuthenticateController {
   constructor(private authenticate: AuthenticateUseCase) {}
 
   @Post()
-  @UsePipes(authenticateValidationPipe())
+  @UsePipes(authenticateValidationPipe)
   async handle(
     @Body() body: AuthenticateBodySchema,
     @Res({ passthrough: true }) res: Response,

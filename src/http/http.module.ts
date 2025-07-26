@@ -20,11 +20,8 @@ import { CreateDocumentController } from './controllers/document/create-document
 import { CaslAbilityModule } from '@/casl/casl.module'
 import { ProfileController } from './controllers/auth/profile.controller'
 import { GetProfileUseCase } from '@/use-cases/get-profile'
-import { FetchDocumentsController } from './controllers/document/fetch-documents.controller'
 import { FetchDocumentsUseCase } from '@/use-cases/fetch-documents'
-import { GetDocumentsSummaryController } from './controllers/document/get-documents-summary.controller'
 import { GetDocumentsSummaryUseCase } from '@/use-cases/get-documents-summary'
-import { GetDocumentController } from './controllers/document/get-document.controller'
 import { GetDocumentUseCase } from '@/use-cases/get-document'
 import { ExportDocumentController } from './controllers/document/export-document.controller'
 import { ExportDocumentUseCase } from '@/use-cases/export-document'
@@ -37,6 +34,9 @@ import { ChangeDocumentTypeActiveController } from './controllers/document-type/
 import { DeleteDocumentTypeController } from './controllers/document-type/delete-document-type.controller'
 import { GetDocumentTypeController } from './controllers/document-type/get-document-type.controller'
 import { EditDocumentTypeController } from './controllers/document-type/edit-document-type.controller'
+import { FetchDocumentsController } from './controllers/document/fetch-documents.controller'
+import { GetDocumentsSummaryController } from './controllers/document/get-documents-summary.controller'
+import { GetDocumentController } from './controllers/document/get-document.controller'
 
 @Module({
   imports: [

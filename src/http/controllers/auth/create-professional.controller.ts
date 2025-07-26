@@ -10,13 +10,13 @@ import {
 @Public()
 export class CreateProfessionalController {
   constructor(
-    private registerProfessionalUseCase: RegisterProfessionalUseCase,
+    private registerProfessional: RegisterProfessionalUseCase,
   ) {}
 
   @Post()
   @HttpCode(201)
-  @UsePipes(createProfessionalValidationPipe())
+  @UsePipes(createProfessionalValidationPipe)
   async handle(@Body() body: CreateProfessionalBodySchema) {
-    await this.registerProfessionalUseCase.execute(body)
+    await this.registerProfessional.execute(body)
   }
 }
