@@ -6,5 +6,5 @@ export interface Field {
 
 export interface Indexation {
   name: string
-  value: string
+  value: any
 }

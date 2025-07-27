@@ -135,6 +135,7 @@ model DocumentType {
 model Document {
   id        String   @id @default(uuid())
   name      String
+  duedate   DateTime
   url       String
   version   Int
   createdAt DateTime @default(now()) @map("created_at")

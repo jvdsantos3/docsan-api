@@ -1,9 +1,9 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   FileTypeValidator,
   MaxFileSizeValidator,
+  Param,
   ParseFilePipe,
   Post,
   UploadedFile,
@@ -11,52 +11,31 @@ import {
   UseInterceptors,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import z from 'zod'
-import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 import { CreateDocumentUseCase } from '@/use-cases/create-document'
 import { CurrentUser } from '@/auth/current-user-decorator'
 import { UserPayload } from '@/auth/jwt.strategy'
 import { PoliciesGuard } from '@/casl/policies.guard'
 import { CheckPolicies } from '@/casl/check-policies.decorator'
 import { CreateDocumentPolicyHandler } from '@/casl/policies/create-document.policy'
+import {
+  CreateDocumentBodySchema,
+  createDocumentBodyValidationPipe,
+  CreateDocumentParamsSchema,
+  createDocumentParamsValidationPipe,
+} from '@/http/schemas/create-document-schema'
 
-const createDocumentBodySchema = z.object({
-  documentTypeId: z.string(),
-  fields: z
-    .string()
-    .transform((val) => {
-      const parsed = JSON.parse(val)
-      if (!Array.isArray(parsed)) {
-        throw new Error('Fields must be a JSON array')
-      }
-      return parsed
-    })
-    .pipe(
-      z
-        .array(
-          z.object({
-            name: z.string(),
-            value: z.string(),
-          }),
-        )
-        .nonempty(),
-    ),
-})
-
-const bodyValidationPipe = new ZodValidationPipe(createDocumentBodySchema)
-
-type CreateDocumentBodySchema = z.infer<typeof createDocumentBodySchema>
-
-@Controller('/documents')
+@Controller('/company/:companyId/documents')
 export class CreateDocumentController {
   constructor(private createDocument: CreateDocumentUseCase) {}
 
-  @Post(':companyId')
+  @Post()
   @UseGuards(PoliciesGuard)
   @CheckPolicies(new CreateDocumentPolicyHandler())
   @UseInterceptors(FileInterceptor('file'))
   async handle(
-    @CurrentUser() user: UserPayload,
+    @CurrentUser() payload: UserPayload,
+    @Param(createDocumentParamsValidationPipe)
+    { companyId }: CreateDocumentParamsSchema,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -64,29 +43,23 @@ export class CreateDocumentController {
             maxSize: 1024 * 1024 * 10, // 10mb
           }),
           new FileTypeValidator({
-            fileType: '.(png|jpg|jpeg|pdf)',
+            fileType: '.(pdf)',
           }),
         ],
       }),
     )
     file: Express.Multer.File,
-    @Body(bodyValidationPipe)
+    @Body(createDocumentBodyValidationPipe)
     { documentTypeId, fields }: CreateDocumentBodySchema,
   ) {
-    try {
-      await this.createDocument.execute({
-        user,
-        documentTypeId,
-        fileType: file.mimetype,
-        fileName: file.originalname,
-        body: file.buffer,
-        fields,
-      })
-    } catch (err: any) {
-      switch (err.constructor) {
-        default:
-          throw new BadRequestException(err.message)
-      }
-    }
+    await this.createDocument.execute({
+      payload,
+      companyId,
+      documentTypeId,
+      fileType: file.mimetype,
+      fileName: file.originalname,
+      body: file.buffer,
+      fields,
+    })
   }
 }
