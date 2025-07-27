@@ -1,6 +1,12 @@
+import { CheckPolicies } from '@/casl/check-policies.decorator'
+import { PoliciesGuard } from '@/casl/policies.guard'
+import { CreateDocumentPolicyHandler } from '@/casl/policies/create-document.policy'
+import {
+  ExtractDataBodySchema,
+  extractDataBodyValidationPipe,
+} from '@/http/schemas/extract-data-schema'
 import { ExtractDataUseCase } from '@/use-cases/extract-data'
 import {
-  BadRequestException,
   Body,
   Controller,
   FileTypeValidator,
@@ -8,25 +14,18 @@ import {
   ParseFilePipe,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import z from 'zod'
-import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 
-const extractDataBodySchema = z.object({
-  documentTypeId: z.string(),
-})
-
-const bodyValidationPipe = new ZodValidationPipe(extractDataBodySchema)
-
-type ExtractDataBodySchema = z.infer<typeof extractDataBodySchema>
-
-@Controller('/documents/extract')
+@Controller('company/:companyId/documents/extract')
 export class ExtractDataController {
   constructor(private extractData: ExtractDataUseCase) {}
 
   @Post()
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies(new CreateDocumentPolicyHandler())
   @UseInterceptors(FileInterceptor('file'))
   async handle(
     @UploadedFile(
@@ -36,27 +35,21 @@ export class ExtractDataController {
             maxSize: 1024 * 1024 * 10, // 10mb
           }),
           new FileTypeValidator({
-            fileType: '.(png|jpg|jpeg|pdf)',
+            fileType: '.(pdf)',
           }),
         ],
       }),
     )
     file: Express.Multer.File,
-    @Body(bodyValidationPipe) { documentTypeId }: ExtractDataBodySchema,
+    @Body(extractDataBodyValidationPipe)
+    { documentTypeId }: ExtractDataBodySchema,
   ) {
-    try {
-      const { fields } = await this.extractData.execute({
-        documentTypeId,
-        fileType: file.mimetype,
-        body: file.buffer,
-      })
+    const { fields } = await this.extractData.execute({
+      documentTypeId,
+      fileType: file.mimetype,
+      body: file.buffer,
+    })
 
-      return fields
-    } catch (err: any) {
-      switch (err.constructor) {
-        default:
-          throw new BadRequestException(err.message)
-      }
-    }
+    return fields
   }
 }

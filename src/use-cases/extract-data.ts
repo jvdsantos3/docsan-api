@@ -3,6 +3,7 @@ import { InvalidDocumentTypeError } from './errors/invalid-document-type-error'
 import { DocumentTypesRepository } from '@/database/repositories/document-types-repository'
 import { Field } from './interfaces/document'
 import * as pdfParse from 'pdf-parse'
+import { DocumentTypeNotFoundError } from './errors/document-type-not-found-error'
 
 interface ExtractDataUseCaseRequest {
   documentTypeId: string
@@ -36,21 +37,21 @@ export class ExtractDataUseCase {
       await this.documentTypesRepository.findById(documentTypeId)
 
     if (!documentType) {
-      // TODO
-      throw new Error('Document type not found.')
+      throw new DocumentTypeNotFoundError()
     }
 
     const metadata = documentType.metadata as unknown as Field[]
 
     let text: string
+
     try {
       const pdfData = await pdfParse(body)
+
       text = pdfData.text
     } catch (error: any) {
       throw new Error('Failed to parse PDF: ' + error.message)
     }
 
-    // Mapeia os valores com base nas chaves do metadata
     const extractedData: ExtractedField[] = metadata.map((field) => {
       const key = field.name
       const value = this.extractValueForKey(text, key)
