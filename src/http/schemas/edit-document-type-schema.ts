@@ -16,6 +16,10 @@ export const editDocumentTypeParamsValidationPipe = new ZodValidationPipe(
 
 const editDocumentTypeBodySchema = z.object({
   name: z.string(),
+  validityPeriod: z.coerce
+    .number()
+    .int({ message: 'validityPeriod deve ser um número inteiro' })
+    .min(7, { message: 'validityPeriod deve ser no mínimo 7' }),
   fields: z
     .array(
       z.object({

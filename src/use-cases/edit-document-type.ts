@@ -16,6 +16,7 @@ interface EditDocumentTypeUseCaseRequest {
   companyId: string
   documentTypeId: string
   name: string
+  validityPeriod: number
   fields: Field[] | Prisma.JsonArray
 }
 
@@ -35,6 +36,7 @@ export class EditDocumentTypeUseCase {
     companyId,
     documentTypeId,
     name,
+    validityPeriod,
     fields,
   }: EditDocumentTypeUseCaseRequest): Promise<EditDocumentTypeUseCaseResponse> {
     const currentDocumentType =
@@ -47,7 +49,7 @@ export class EditDocumentTypeUseCase {
     const documentTypeWithSameName =
       await this.documentTypesRepository.findByName(name, companyId)
 
-    if (documentTypeWithSameName) {
+    if (documentTypeWithSameName && currentDocumentType.name !== name) {
       throw new DocumetTypeAlreadyExistsError(name)
     }
 
@@ -69,6 +71,7 @@ export class EditDocumentTypeUseCase {
     const newDocumentType = await this.documentTypesRepository.save({
       id: documentTypeId,
       name,
+      validityPeriod,
       metadata: fields as Prisma.JsonArray,
     })
 

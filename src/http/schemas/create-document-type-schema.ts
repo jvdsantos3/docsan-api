@@ -3,6 +3,10 @@ import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 
 const createDocumentTypeBodySchema = z.object({
   name: z.string(),
+  validityPeriod: z.coerce
+    .number()
+    .int({ message: 'validityPeriod deve ser um número inteiro' })
+    .min(7, { message: 'validityPeriod deve ser no mínimo 7' }),
   fields: z
     .array(
       z.object({

@@ -32,12 +32,13 @@ export class CreateDocumentTypeController {
     @Param(createDocumentTypeParamsValidationPipe)
     { companyId }: CreateDocumentTypeParamsSchema,
     @Body(createDocumentTypeValidationPipe)
-    { name, fields }: CreateDocumentTypeBodySchema,
+    { name, validityPeriod, fields }: CreateDocumentTypeBodySchema,
   ) {
     await this.createDocumentType.execute({
       user,
       companyId,
       name,
+      validityPeriod,
       fields,
     })
   }

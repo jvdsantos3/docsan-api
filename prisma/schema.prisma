@@ -115,12 +115,13 @@ model Professional {
 }
 
 model DocumentType {
-  id        String   @id @default(uuid())
-  name      String
-  metadata  Json
-  isActive  Boolean  @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id             String   @id @default(uuid())
+  name           String
+  validityPeriod Int      @map("validity_period")
+  isActive       Boolean  @default(true) @map("is_active")
+  metadata       Json
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId String  @map("company_id")
