@@ -4,6 +4,7 @@ import { envSchema } from './env/env'
 import { EnvModule } from './env/env.module'
 import { AuthModule } from './auth/auth.module'
 import { HttpModule } from './http/http.module'
+import { EventModule } from './events/event.module'
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { HttpModule } from './http/http.module'
       validate: (env) => envSchema.parse(env),
       isGlobal: true,
     }),
+    EventModule,
     AuthModule,
     HttpModule,
     EnvModule,

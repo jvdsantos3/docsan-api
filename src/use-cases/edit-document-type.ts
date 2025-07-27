@@ -3,9 +3,17 @@ import { DocumentType, Prisma } from '@prisma/client'
 import { DocumentTypesRepository } from '@/database/repositories/document-types-repository'
 import { DocumetTypeAlreadyExistsError } from './errors/document-type-already-exists-error'
 import { Field } from './interfaces/document'
-import { randomUUID } from 'node:crypto'
+import { DocumentTypeNotFoundError } from './errors/document-type-not-found-error'
+import { UserPayload } from '@/auth/jwt.strategy'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { DocumetTypeFieldsLenghtError } from './errors/document-type-fields-length-error'
+import { DocumetTypeLimitError } from './errors/document-type-limit-error'
+import { NotEditDocumetTypeWithDocumentsError } from './errors/not-edit-document-type-with-documents-error'
+import { DocumentTypeEvent } from '@/events/document-type.event'
 
 interface EditDocumentTypeUseCaseRequest {
+  user: UserPayload
+  companyId: string
   documentTypeId: string
   name: string
   fields: Field[] | Prisma.JsonArray
@@ -17,49 +25,57 @@ interface EditDocumentTypeUseCaseResponse {
 
 @Injectable()
 export class EditDocumentTypeUseCase {
-  constructor(private documentTypesRepository: DocumentTypesRepository) {}
+  constructor(
+    private documentTypesRepository: DocumentTypesRepository,
+    private eventEmitter: EventEmitter2,
+  ) {}
 
   async execute({
+    user,
+    companyId,
     documentTypeId,
     name,
     fields,
   }: EditDocumentTypeUseCaseRequest): Promise<EditDocumentTypeUseCaseResponse> {
-    const documentType =
-      await this.documentTypesRepository.findByIdWithDocuments(documentTypeId)
+    const currentDocumentType =
+      await this.documentTypesRepository.findById(documentTypeId)
 
-    if (!documentType) {
-      // TODO
-      throw new Error('Document type not found.')
+    if (!currentDocumentType) {
+      throw new DocumentTypeNotFoundError()
     }
 
-    // TODO
     const documentTypeWithSameName =
-      await this.documentTypesRepository.findByName(name, randomUUID())
+      await this.documentTypesRepository.findByName(name, companyId)
 
-    if (
-      documentTypeWithSameName &&
-      documentTypeWithSameName.id !== documentType?.id
-    ) {
+    if (documentTypeWithSameName) {
       throw new DocumetTypeAlreadyExistsError(name)
     }
 
-    const fieldsChanged = documentType.metadata !== JSON.stringify(fields)
-
-    if (documentType.documents.length && fieldsChanged) {
-      // TODO
-      throw new Error(
-        'It is not possible to edit a document type with linked documents',
-      )
+    if (fields.length === 0) {
+      throw new DocumetTypeFieldsLenghtError()
     }
 
-    documentType.name = name
-
-    if (fields) {
-      documentType.metadata = fields as Prisma.JsonValue
+    if (fields.length > 7) {
+      throw new DocumetTypeLimitError(7)
     }
 
-    const newDocumentType =
-      await this.documentTypesRepository.save(documentType)
+    const fieldsChanged =
+      JSON.stringify(currentDocumentType.metadata) !== JSON.stringify(fields)
+
+    if (fieldsChanged && currentDocumentType._count.documents) {
+      throw new NotEditDocumetTypeWithDocumentsError()
+    }
+
+    const newDocumentType = await this.documentTypesRepository.save({
+      id: documentTypeId,
+      name,
+      metadata: fields as Prisma.JsonArray,
+    })
+
+    this.eventEmitter.emit(
+      'document-type.updated',
+      new DocumentTypeEvent(newDocumentType.id, companyId, user.sub),
+    )
 
     return {
       documentType: newDocumentType,

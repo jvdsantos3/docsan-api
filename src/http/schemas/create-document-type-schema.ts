@@ -7,7 +7,7 @@ const createDocumentTypeBodySchema = z.object({
     .array(
       z.object({
         name: z.string(),
-        type: z.string(),
+        type: z.enum(['date', 'text', 'number']),
         required: z.boolean(),
       }),
     )

@@ -4,10 +4,12 @@ import { DocumentType, Prisma } from '@prisma/client'
 import { DocumetTypeAlreadyExistsError } from './errors/document-type-already-exists-error'
 import { DocumetTypeLimitError } from './errors/document-type-limit-error'
 import { Field } from './interfaces/document'
-import { User } from './interfaces/user'
 import { DocumetTypeFieldsLenghtError } from './errors/document-type-fields-length-error'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { DocumentTypeEvent } from '@/events/document-type.event'
+import { UserPayload } from '@/auth/jwt.strategy'
 interface CreateDocumentTypeUseCaseRequest {
-  user: User
+  user: UserPayload
   companyId: string
   name: string
   fields: Field[] | Prisma.JsonArray
@@ -19,9 +21,13 @@ interface CreateDocumentTypeUseCaseResponse {
 
 @Injectable()
 export class CreateDocumentTypeUseCase {
-  constructor(private documentTypesRepository: DocumentTypesRepository) {}
+  constructor(
+    private documentTypesRepository: DocumentTypesRepository,
+    private eventEmitter: EventEmitter2,
+  ) {}
 
   async execute({
+    user,
     companyId,
     name,
     fields,
@@ -48,6 +54,11 @@ export class CreateDocumentTypeUseCase {
     }
 
     const documentType = await this.documentTypesRepository.create(data)
+
+    this.eventEmitter.emit(
+      'document-type.created',
+      new DocumentTypeEvent(documentType.id, companyId, user.sub),
+    )
 
     return {
       documentType,

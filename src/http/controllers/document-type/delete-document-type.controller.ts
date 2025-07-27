@@ -1,29 +1,26 @@
-import { ZodValidationPipe } from '@/http/pipes/zod-validation-pipe'
+import { CheckPolicies } from '@/casl/check-policies.decorator'
+import { PoliciesGuard } from '@/casl/policies.guard'
+import { DeleteDocumentTypePolicyHandler } from '@/casl/policies/delete-document-type.policy'
+import {
+  DeleteDocumentTypeParamsSchema,
+  deleteDocumentTypeParamsValidationPipe,
+} from '@/http/schemas/delete-document-type-schema'
 import { DeleteDocumentTypeUseCase } from '@/use-cases/delete-document-type'
-import { BadRequestException, Controller, Delete, Param } from '@nestjs/common'
-import z from 'zod'
+import { Controller, Delete, Param, UseGuards } from '@nestjs/common'
 
-const idRouteParamSchema = z.string()
-
-const paramValidationPipe = new ZodValidationPipe(idRouteParamSchema)
-
-type IdRouteParamSchema = z.infer<typeof idRouteParamSchema>
-
-@Controller('document-types/:id')
+@Controller('company/:companyId/document-types/:documentTypeId')
 export class DeleteDocumentTypeController {
-  constructor(private deleteDocumentTypeUseCase: DeleteDocumentTypeUseCase) {}
+  constructor(private deleteDocumentType: DeleteDocumentTypeUseCase) {}
 
   @Delete()
-  async handle(@Param('id', paramValidationPipe) id: IdRouteParamSchema) {
-    try {
-      await this.deleteDocumentTypeUseCase.execute({
-        documentTypeId: id,
-      })
-    } catch (err: any) {
-      switch (err.constructor) {
-        default:
-          throw new BadRequestException(err.message)
-      }
-    }
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies(new DeleteDocumentTypePolicyHandler())
+  async handle(
+    @Param(deleteDocumentTypeParamsValidationPipe)
+    { documentTypeId }: DeleteDocumentTypeParamsSchema,
+  ) {
+    await this.deleteDocumentType.execute({
+      documentTypeId,
+    })
   }
 }

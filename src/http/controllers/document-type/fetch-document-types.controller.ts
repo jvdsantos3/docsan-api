@@ -1,60 +1,37 @@
-import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
-import z from 'zod'
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common'
 import { FetchDocumentTypesUseCase } from '@/use-cases/fetch-document-types'
-import { ZodValidationPipe } from '@/http/pipes/zod-validation-pipe'
+import {
+  FetchDocumentTypesParamSchema,
+  fetchDocumentTypesParamsValidationPipe,
+  FetchDocumentTypesQuerySchema,
+  FetchDocumentTypesQueryValidationPipe,
+} from '@/http/schemas/fetch-document-type-schema'
+import { PoliciesGuard } from '@/casl/policies.guard'
+import { CheckPolicies } from '@/casl/check-policies.decorator'
+import { ReadDocumentTypePolicyHandler } from '@/casl/policies/read-document-type.policy'
 
-const fetchDocumentTypesParamSchema = z.object({
-  page: z
-    .string()
-    .optional()
-    .default('1')
-    .transform(Number)
-    .pipe(z.number().min(1)),
-  limit: z
-    .string()
-    .optional()
-    .default('15')
-    .transform(Number)
-    .pipe(z.number().min(1)),
-  order: z.enum(['desc', 'asc']).optional(),
-  active: z.preprocess((val) => {
-    if (val === 'true') return true
-    if (val === 'false') return false
-    return val
-  }, z.boolean().optional()),
-  filter: z.string().optional(),
-})
-
-const queryValidationPipe = new ZodValidationPipe(fetchDocumentTypesParamSchema)
-
-type FetchDocumentTypesParamSchema = z.infer<
-  typeof fetchDocumentTypesParamSchema
->
-
-@Controller('/document-types')
+@Controller('company/:companyId/document-types')
 export class FetchDocumentTypesController {
   constructor(private fetchDocumentTypesUseCase: FetchDocumentTypesUseCase) {}
 
   @Get()
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies(new ReadDocumentTypePolicyHandler())
   async handle(
-    @Query(queryValidationPipe)
-    { page, limit, order, active, filter }: FetchDocumentTypesParamSchema,
+    @Param(fetchDocumentTypesParamsValidationPipe)
+    { companyId }: FetchDocumentTypesParamSchema,
+    @Query(FetchDocumentTypesQueryValidationPipe)
+    { page, limit, order, active, filter }: FetchDocumentTypesQuerySchema,
   ) {
-    try {
-      const documentTypes = await this.fetchDocumentTypesUseCase.execute({
-        page,
-        limit,
-        order,
-        active,
-        filter,
-      })
+    const documentTypes = await this.fetchDocumentTypesUseCase.execute({
+      companyId,
+      page,
+      limit,
+      order,
+      active,
+      filter,
+    })
 
-      return documentTypes
-    } catch (err: any) {
-      switch (err.constructor) {
-        default:
-          throw new BadRequestException(err.message)
-      }
-    }
+    return documentTypes
   }
 }

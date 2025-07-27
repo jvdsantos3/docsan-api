@@ -3,7 +3,7 @@ import { Prisma } from '@prisma/client'
 import { addDays, isBefore, parse } from 'date-fns'
 import { PrismaService } from '../prisma.service'
 import { PaginationParams } from '../interfaces/pagination-params'
-import { paginate } from './pagination'
+import { paginate } from '../pagination'
 
 export interface FindManyFilters {
   companyId?: string

@@ -1,31 +1,28 @@
-import { BadRequestException, Controller, Param, Patch } from '@nestjs/common'
-import z from 'zod'
+import { Controller, Param, Patch, UseGuards } from '@nestjs/common'
 import { ChangeDocumentTypeActiveUseCase } from '@/use-cases/change-document-type-active'
-import { ZodValidationPipe } from '@/http/pipes/zod-validation-pipe'
+import {
+  ChangeDocumentTypeActiveParamsSchema,
+  changeDocumentTypeActiveParamsValidationPipe,
+} from '@/http/schemas/change-document-type-active-schema'
+import { UpdateDocumentTypePolicyHandler } from '@/casl/policies/update-document-type.policy'
+import { PoliciesGuard } from '@/casl/policies.guard'
+import { CheckPolicies } from '@/casl/check-policies.decorator'
 
-const idRouteParamSchema = z.string()
-
-const paramValidationPipe = new ZodValidationPipe(idRouteParamSchema)
-
-type IdRouteParamSchema = z.infer<typeof idRouteParamSchema>
-
-@Controller('/document-types/:id/active')
+@Controller('company/:companyId/document-types/:documentTypeId/active')
 export class ChangeDocumentTypeActiveController {
   constructor(
-    private changeDocumentTypeActiveUseCase: ChangeDocumentTypeActiveUseCase,
+    private changeDocumentTypeActive: ChangeDocumentTypeActiveUseCase,
   ) {}
 
   @Patch()
-  async handle(@Param('id', paramValidationPipe) id: IdRouteParamSchema) {
-    try {
-      await this.changeDocumentTypeActiveUseCase.execute({
-        documentTypeId: id,
-      })
-    } catch (err: any) {
-      switch (err.constructor) {
-        default:
-          throw new BadRequestException(err.message)
-      }
-    }
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies(new UpdateDocumentTypePolicyHandler())
+  async handle(
+    @Param(changeDocumentTypeActiveParamsValidationPipe)
+    { documentTypeId }: ChangeDocumentTypeActiveParamsSchema,
+  ) {
+    await this.changeDocumentTypeActive.execute({
+      documentTypeId,
+    })
   }
 }

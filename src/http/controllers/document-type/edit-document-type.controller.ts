@@ -1,55 +1,37 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Param,
-  Put,
-} from '@nestjs/common'
-import z from 'zod'
+import { Body, Controller, Param, Put, UseGuards } from '@nestjs/common'
 import { EditDocumentTypeUseCase } from '@/use-cases/edit-document-type'
-import { ZodValidationPipe } from '@/http/pipes/zod-validation-pipe'
+import {
+  EditDocumentTypeBodySchema,
+  editDocumentTypeBodyValidationPipe,
+  EditDocumentTypeParamsSchema,
+  editDocumentTypeParamsValidationPipe,
+} from '@/http/schemas/edit-document-type-schema'
+import { CheckPolicies } from '@/casl/check-policies.decorator'
+import { PoliciesGuard } from '@/casl/policies.guard'
+import { UpdateDocumentTypePolicyHandler } from '@/casl/policies/update-document-type.policy'
+import { UserPayload } from '@/auth/jwt.strategy'
+import { CurrentUser } from '@/auth/current-user-decorator'
 
-const idRouteParamSchema = z.string()
-
-const paramValidationPipe = new ZodValidationPipe(idRouteParamSchema)
-
-type IdRouteParamSchema = z.infer<typeof idRouteParamSchema>
-
-const editDocumentTypeBodySchema = z.object({
-  name: z.string(),
-  fields: z.array(
-    z.object({
-      name: z.string(),
-      type: z.string(),
-      required: z.boolean(),
-    }),
-  ),
-})
-
-const bodyValidationPipe = new ZodValidationPipe(editDocumentTypeBodySchema)
-
-type EditDocumentTypeBodySchema = z.infer<typeof editDocumentTypeBodySchema>
-
-@Controller('document-types/:id')
+@Controller('company/:companyId/document-types/:documentTypeId')
 export class EditDocumentTypeController {
   constructor(private editDocumentTypeUseCase: EditDocumentTypeUseCase) {}
 
   @Put()
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies(new UpdateDocumentTypePolicyHandler())
   async handle(
-    @Param('id', paramValidationPipe) id: IdRouteParamSchema,
-    @Body(bodyValidationPipe) { name, fields }: EditDocumentTypeBodySchema,
+    @CurrentUser() user: UserPayload,
+    @Param(editDocumentTypeParamsValidationPipe)
+    { companyId, documentTypeId }: EditDocumentTypeParamsSchema,
+    @Body(editDocumentTypeBodyValidationPipe)
+    { name, fields }: EditDocumentTypeBodySchema,
   ) {
-    try {
-      await this.editDocumentTypeUseCase.execute({
-        documentTypeId: id,
-        name,
-        fields,
-      })
-    } catch (err: any) {
-      switch (err.constructor) {
-        default:
-          throw new BadRequestException(err.message)
-      }
-    }
+    await this.editDocumentTypeUseCase.execute({
+      user,
+      companyId,
+      documentTypeId,
+      name,
+      fields,
+    })
   }
 }

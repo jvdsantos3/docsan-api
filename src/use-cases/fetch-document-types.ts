@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common'
 import { DocumentType } from '@prisma/client'
 
 interface FetchDocumentTypesUseCaseRequest {
+  companyId: string
   page: number
   limit?: number
   order?: 'desc' | 'asc'
@@ -11,7 +12,9 @@ interface FetchDocumentTypesUseCaseRequest {
   filter?: string
 }
 
-type FetchDocumentTypesUseCaseResponse = PaginationResponse<DocumentType>
+interface FetchDocumentTypesUseCaseResponse {
+  documentTypes: PaginationResponse<DocumentType>
+}
 
 @Injectable()
 export class FetchDocumentTypesUseCase {
@@ -24,7 +27,7 @@ export class FetchDocumentTypesUseCase {
     active,
     filter,
   }: FetchDocumentTypesUseCaseRequest): Promise<FetchDocumentTypesUseCaseResponse> {
-    const documentTypes = await this.documentTypesRepository.findMany({
+    const documentTypes = await this.documentTypesRepository.fetchPagination({
       page,
       limit,
       order,
@@ -32,6 +35,8 @@ export class FetchDocumentTypesUseCase {
       filter,
     })
 
-    return documentTypes
+    return {
+      documentTypes,
+    }
   }
 }

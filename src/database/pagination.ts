@@ -1,5 +1,5 @@
 interface PaginateParams<T> {
-  data: T
+  data: T[]
   total: number
   page: number
   limit?: number
