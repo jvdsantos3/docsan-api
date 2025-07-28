@@ -1,20 +1,30 @@
 import { PaginationResponse } from '../database/interfaces/pagination-params'
 import { DocumentsRepository } from '@/database/repositories/documents-repository'
 import { Injectable } from '@nestjs/common'
-import { Document } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 
 interface FetchDocumentsUseCaseRequest {
   companyId: string
   page: number
   limit?: number
   order?: 'desc' | 'asc'
-  orderBy?: string
+  orderBy?: 'name' | 'type' | 'status' | 'duedate' | 'createdAt'
   type?: string
   status?: 'won' | 'near' | 'inDay'
   filter?: string
 }
 
-type FetchDocumentsUseCaseResponse = PaginationResponse<Document>
+interface FetchDocumentsUseCaseResponse {
+  documents: PaginationResponse<
+    Prisma.DocumentGetPayload<{
+      include: {
+        documentType: true
+      }
+    }> & {
+      status: 'inDay' | 'near' | 'won'
+    }
+  >
+}
 
 @Injectable()
 export class FetchDocumentsUseCase {
@@ -30,7 +40,7 @@ export class FetchDocumentsUseCase {
     type,
     filter,
   }: FetchDocumentsUseCaseRequest): Promise<FetchDocumentsUseCaseResponse> {
-    const documents = await this.documentsRepository.findMany({
+    const documents = await this.documentsRepository.fetchPagination({
       companyId,
       page,
       limit,
@@ -41,6 +51,6 @@ export class FetchDocumentsUseCase {
       filter,
     })
 
-    return documents
+    return { documents }
   }
 }

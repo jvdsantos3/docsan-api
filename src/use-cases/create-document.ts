@@ -150,7 +150,16 @@ export class CreateDocumentUseCase {
       const lastDocument =
         await this.documentsRepository.findFirstByDocumentId(documentTypeId)
 
-      const version = lastDocument ? lastDocument.version + 1 : 1
+      let version = 1
+
+      if (lastDocument) {
+        await this.documentsRepository.save({
+          id: lastDocument.id,
+          isLatest: false,
+        })
+
+        version = lastDocument.version + 1
+      }
 
       const document = await this.documentsRepository.create(
         {
@@ -160,6 +169,7 @@ export class CreateDocumentUseCase {
           duedate: parsedFields[0].value,
           url,
           version,
+          isLatest: true,
         },
         prisma,
       )

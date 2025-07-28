@@ -1,8 +1,8 @@
-export interface PaginationParams {
+export interface PaginationParams<T> {
   page: number
   limit?: number
   order?: 'desc' | 'asc'
-  orderBy?: string
+  orderBy?: T
 }
 
 export interface PaginationResponse<T> {

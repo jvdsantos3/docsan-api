@@ -139,6 +139,7 @@ model Document {
   duedate   DateTime
   url       String
   version   Int
+  isLatest  Boolean  @default(false) @map("is_latest")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

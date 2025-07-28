@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
-import { addDays, isBefore, parse } from 'date-fns'
 import { PrismaService } from '../prisma.service'
 import { PaginationParams } from '../interfaces/pagination-params'
+import { getDocumentStatusUnformated } from '@/use-cases/get-document-status'
 import { paginate } from '../pagination'
 
 export interface FindManyFilters {
@@ -24,22 +24,19 @@ export class DocumentsRepository {
     if (companyId) where.companyId = companyId
 
     return await this.prisma.document.findUnique({
-      where,
-    })
-  }
-
-  async findByIdWithComputed(id: string, companyId: string) {
-    const where: Prisma.DocumentWhereUniqueInput = {
-      id,
-    }
-
-    if (companyId) where.companyId = companyId
-
-    return await this.prisma.document.findUnique({
       include: {
         documentType: true,
         indexation: true,
-        actionLog: true,
+        actionLog: {
+          include: {
+            user: {
+              include: {
+                owner: true,
+                professional: true,
+              },
+            },
+          },
+        },
       },
       where,
     })
@@ -52,8 +49,20 @@ export class DocumentsRepository {
     })
   }
 
-  async fetch(companyId: string) {
-    const where: Prisma.DocumentWhereInput = {}
+  async findManyByDocumentId(id: string) {
+    return await this.prisma.document.findMany({
+      include: {
+        documentType: true,
+      },
+      where: { documentTypeId: id },
+      orderBy: { version: 'desc' },
+    })
+  }
+
+  async findMany(companyId?: string) {
+    const where: Prisma.DocumentWhereInput = {
+      isLatest: true,
+    }
 
     if (companyId) where.companyId = companyId
 
@@ -76,21 +85,20 @@ export class DocumentsRepository {
     })
   }
 
-  // TODO
-  async findMany({
+  async fetchPagination({
     companyId,
     page,
     limit = 15,
-    order = 'asc',
-    orderBy = 'name',
+    order = 'desc',
+    orderBy = 'createdAt',
     type,
     status,
     filter,
-  }: PaginationParams & FindManyFilters) {
-    const where: any = {}
-
-    if (companyId) {
-      where.companyId = companyId
+  }: PaginationParams<'name' | 'type' | 'status' | 'duedate' | 'createdAt'> &
+    FindManyFilters) {
+    const where: Prisma.DocumentWhereInput = {
+      companyId,
+      isLatest: true,
     }
 
     if (type) {
@@ -106,95 +114,68 @@ export class DocumentsRepository {
       }
     }
 
-    let orderByFields: any
+    const requiresStatusSorting = orderBy === 'status'
 
-    if (orderBy === 'type') {
-      orderByFields = {
-        documentType: {
-          name: order,
-        },
-      }
-    } else if (orderBy === 'status' || orderBy === 'duedate') {
-      orderByFields = undefined
-    } else {
-      orderByFields = {
-        [orderBy]: order,
-      }
-    }
-
-    let documents = await this.prisma.document.findMany({
-      include: {
-        indexation: {
-          omit: {
-            documentId: true,
-          },
-        },
-        documentType: {
-          omit: {
-            companyId: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-        },
-      },
+    const documentsBase = await this.prisma.document.findMany({
       where,
-      orderBy: orderByFields,
-      take: limit,
-      skip: (page - 1) * limit,
+      include: {
+        documentType: true,
+      },
+      ...(requiresStatusSorting
+        ? {}
+        : { orderBy: this.getOrderByField(orderBy, order) }),
     })
 
-    documents = documents.map((doc) => {
-      const indexationValues = doc.indexation?.values as Prisma.JsonArray
-
-      const dueDateEntry = indexationValues.find(
-        (value): value is { name: string; value: any } =>
-          typeof value === 'object' &&
-          value !== null &&
-          'name' in value &&
-          'value' in value &&
-          (value as any).name === 'Data de vencimento',
+    const documentsWithStatus = documentsBase.map((doc) => {
+      const status = getDocumentStatusUnformated(
+        doc.duedate,
+        doc.documentType.validityPeriod,
       )
-
-      const dueDate = dueDateEntry ? dueDateEntry.value : null
-      const status = dueDate ? this.calculateStatus(dueDate) : 'inDay'
-
-      return { ...doc, dueDate, status }
+      return { ...doc, status }
     })
 
-    if (status) {
-      documents = documents.filter((doc: any) => doc.status === status)
-    }
+    const filteredByStatus = status
+      ? documentsWithStatus.filter((doc) => doc.status === status)
+      : documentsWithStatus
 
-    if (orderBy === 'status' || orderBy === 'duedate') {
-      const statusOrder = ['inDay', 'near', 'won']
-
-      documents = documents.sort((a: any, b: any) => {
-        if (orderBy === 'status') {
-          const aIndex = statusOrder.indexOf(a.status)
-          const bIndex = statusOrder.indexOf(b.status)
-          return order === 'asc' ? aIndex - bIndex : bIndex - aIndex
-        } else if (orderBy === 'duedate') {
-          const aDate = a.duedate
-            ? parse(a.duedate, 'dd/MM/yyyy', new Date())
-            : new Date(0)
-
-          const bDate = b.duedate
-            ? parse(b.duedate, 'dd/MM/yyyy', new Date())
-            : new Date(0)
-
+    const finalSorted = requiresStatusSorting
+      ? filteredByStatus.sort((a, b) => {
+          const weights = { inDay: 1, near: 2, won: 3 }
           return order === 'asc'
-            ? aDate.getTime() - bDate.getTime()
-            : bDate.getTime() - aDate.getTime()
-        }
-        return 0
-      })
-    }
+            ? weights[a.status] - weights[b.status]
+            : weights[b.status] - weights[a.status]
+        })
+      : filteredByStatus
 
-    return paginate({
-      data: documents,
-      total: documents.length,
+    const total = finalSorted.length
+
+    const paginatedData = finalSorted.slice((page - 1) * limit, page * limit)
+
+    return paginate<
+      Prisma.DocumentGetPayload<{
+        include: {
+          documentType: true
+        }
+      }> & {
+        status: 'inDay' | 'near' | 'won'
+      }
+    >({
+      data: paginatedData,
+      total,
       page,
       limit,
+    })
+  }
+
+  async save(
+    data: Partial<Prisma.DocumentUncheckedUpdateInput> & { id: string },
+    prisma: Prisma.TransactionClient = this.prisma,
+  ) {
+    return await prisma.document.update({
+      where: {
+        id: data.id,
+      },
+      data,
     })
   }
 
@@ -207,20 +188,17 @@ export class DocumentsRepository {
     })
   }
 
-  calculateStatus(dueDateStr: string): 'inDay' | 'near' | 'won' {
-    const today = new Date()
-    const dueDate = parse(dueDateStr, 'dd/MM/yyyy', new Date())
-    const ninetyDaysFromNow = addDays(today, 90)
+  private getOrderByField(orderBy: string, order: 'asc' | 'desc') {
+    if (orderBy === 'type') {
+      return {
+        documentType: {
+          name: order,
+        },
+      }
+    }
 
-    if (isBefore(dueDate, today)) {
-      return 'won'
-    } else if (
-      isBefore(dueDate, ninetyDaysFromNow) ||
-      dueDate.getTime() === today.getTime()
-    ) {
-      return 'near'
-    } else {
-      return 'inDay'
+    return {
+      [orderBy]: order,
     }
   }
 }

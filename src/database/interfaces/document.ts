@@ -7,9 +7,8 @@ export type DocumentBase = Prisma.DocumentGetPayload<{
   }
 }>
 
-export interface DocumentWithDuedate {
-  duedate: Date | null
-  status: 'inDay' | 'near' | 'won' | null
+export interface DocumentComputedProps {
+  status: 'Em dia' | 'Próximo do vencimento' | 'Vencido'
 }
 
-export type DocumentWithComputed = DocumentBase & DocumentWithDuedate
+export type DocumentWithComputed = DocumentBase & DocumentComputedProps

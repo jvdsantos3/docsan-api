@@ -37,6 +37,8 @@ import { EditDocumentTypeController } from './controllers/document-type/edit-doc
 import { FetchDocumentsController } from './controllers/document/fetch-documents.controller'
 import { GetDocumentsSummaryController } from './controllers/document/get-documents-summary.controller'
 import { GetDocumentController } from './controllers/document/get-document.controller'
+import { FetchDocumentTypeDocumentsController } from './controllers/document-type/fetch-document-type-documents.controller'
+import { FetchDocumentTypeDocumentsUseCase } from '@/use-cases/fetch-document-type-documents'
 
 @Module({
   imports: [
@@ -60,6 +62,7 @@ import { GetDocumentController } from './controllers/document/get-document.contr
     DeleteDocumentTypeController,
     GetDocumentTypeController,
     EditDocumentTypeController,
+    FetchDocumentTypeDocumentsController,
 
     // DOCUMENT
     ExtractDataController,
@@ -77,12 +80,16 @@ import { GetDocumentController } from './controllers/document/get-document.contr
     RefreshUseCase,
     GetProfileUseCase,
 
+    // DOCUMENT TYPE
     CreateDocumentTypeUseCase,
     FetchDocumentTypesUseCase,
     ChangeDocumentTypeActiveUseCase,
     DeleteDocumentTypeUseCase,
     GetDocumentTypeByIdUseCase,
     EditDocumentTypeUseCase,
+    FetchDocumentTypeDocumentsUseCase,
+
+    // DOCUMENT
     ExtractDataUseCase,
     CreateDocumentUseCase,
     FetchDocumentsUseCase,
