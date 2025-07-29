@@ -8,6 +8,7 @@ import { DocumentTypesRepository } from './repositories/document-types-repositor
 import { DocumentsRepository } from './repositories/documents-repository'
 import { IndexationsRepository } from './repositories/indexations-repository'
 import { UsersRepository } from './repositories/users-repository'
+import { DocumentNotificationsRepository } from './repositories/document-notifications-repository'
 
 @Module({
   providers: [
@@ -20,6 +21,7 @@ import { UsersRepository } from './repositories/users-repository'
     DocumentTypesRepository,
     DocumentsRepository,
     IndexationsRepository,
+    DocumentNotificationsRepository,
   ],
   exports: [
     PrismaService,
@@ -31,6 +33,7 @@ import { UsersRepository } from './repositories/users-repository'
     DocumentTypesRepository,
     DocumentsRepository,
     IndexationsRepository,
+    DocumentNotificationsRepository,
   ],
 })
 export class DatabaseModule {}

@@ -39,6 +39,8 @@ import { GetDocumentsSummaryController } from './controllers/document/get-docume
 import { GetDocumentController } from './controllers/document/get-document.controller'
 import { FetchDocumentTypeDocumentsController } from './controllers/document-type/fetch-document-type-documents.controller'
 import { FetchDocumentTypeDocumentsUseCase } from '@/use-cases/fetch-document-type-documents'
+import { CreateDocumentNotificationController } from './controllers/document/create-document-notification.controller'
+import { CreateDocumentNotifictionUseCase } from '@/use-cases/create-document-notification'
 
 @Module({
   imports: [
@@ -48,14 +50,11 @@ import { FetchDocumentTypeDocumentsUseCase } from '@/use-cases/fetch-document-ty
     StorageModule,
   ],
   controllers: [
-    // AUTH
     CreateCompanyController,
     CreateProfessionalController,
     AuthenticateController,
     RefreshController,
     ProfileController,
-
-    // DOCUMENT TYPE
     CreateDocumentTypeController,
     FetchDocumentTypesController,
     ChangeDocumentTypeActiveController,
@@ -63,24 +62,20 @@ import { FetchDocumentTypeDocumentsUseCase } from '@/use-cases/fetch-document-ty
     GetDocumentTypeController,
     EditDocumentTypeController,
     FetchDocumentTypeDocumentsController,
-
-    // DOCUMENT
     ExtractDataController,
     CreateDocumentController,
     FetchDocumentsController,
     GetDocumentsSummaryController,
     GetDocumentController,
     ExportDocumentController,
+    CreateDocumentNotificationController,
   ],
   providers: [
-    // AUTH
     RegisterCompanyUseCase,
     RegisterProfessionalUseCase,
     AuthenticateUseCase,
     RefreshUseCase,
     GetProfileUseCase,
-
-    // DOCUMENT TYPE
     CreateDocumentTypeUseCase,
     FetchDocumentTypesUseCase,
     ChangeDocumentTypeActiveUseCase,
@@ -88,14 +83,13 @@ import { FetchDocumentTypeDocumentsUseCase } from '@/use-cases/fetch-document-ty
     GetDocumentTypeByIdUseCase,
     EditDocumentTypeUseCase,
     FetchDocumentTypeDocumentsUseCase,
-
-    // DOCUMENT
     ExtractDataUseCase,
     CreateDocumentUseCase,
     FetchDocumentsUseCase,
     GetDocumentsSummaryUseCase,
     GetDocumentUseCase,
     ExportDocumentUseCase,
+    CreateDocumentNotifictionUseCase,
   ],
 })
 export class HttpModule {}

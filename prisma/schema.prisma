@@ -149,8 +149,9 @@ model Document {
   documentType   DocumentType @relation(fields: [documentTypeId], references: [id], onDelete: Cascade)
   documentTypeId String       @map("document_type_id")
 
-  indexation Indexation?
-  actionLog  ActionLog[]
+  indexation           Indexation?
+  actionLog            ActionLog[]
+  documentNotification DocumentNotification?
 
   @@unique([documentTypeId, version])
   @@map("documents")
@@ -203,4 +204,16 @@ model ActionLog {
   userId String
 
   @@map("action_logs")
+}
+
+model DocumentNotification {
+  id          String   @id @default(uuid())
+  scheduledAt DateTime @map("scheduled_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  documentId String   @unique @map("document_id")
+
+  @@map("document_notifications")
 }
