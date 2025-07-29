@@ -10,6 +10,7 @@ interface ExportDocumentUseCaseRequest {
 
 interface ExportDocumentUseCaseResponse {
   file: Buffer
+  contentType: string
 }
 
 @Injectable()
@@ -32,10 +33,11 @@ export class ExportDocumentUseCase {
       throw new DocumentNotFoundError()
     }
 
-    const { body } = await this.uploader.get(document.url)
+    const { body, contentType } = await this.uploader.get(document.url)
 
     return {
       file: body,
+      contentType,
     }
   }
 }

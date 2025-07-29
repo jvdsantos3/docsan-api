@@ -1,12 +1,13 @@
 import { CheckPolicies } from '@/casl/check-policies.decorator'
 import { PoliciesGuard } from '@/casl/policies.guard'
 import { ReadDocumentPolicyHandler } from '@/casl/policies/read-document.policy'
-import { Controller, Get, Param, UseGuards } from '@nestjs/common'
+import { Controller, Get, Param, Res, UseGuards } from '@nestjs/common'
 import { ExportDocumentUseCase } from '@/use-cases/export-document'
 import {
   ExportDocumentParamsSchema,
   exportDocumentValidationPipe,
 } from '@/http/schemas/export-document-schema'
+import { Response } from 'express'
 
 @Controller('/company/:companyId/documents/:documentId/export')
 export class ExportDocumentController {
@@ -18,12 +19,16 @@ export class ExportDocumentController {
   async handle(
     @Param(exportDocumentValidationPipe)
     { companyId, documentId }: ExportDocumentParamsSchema,
+    @Res() res: Response,
   ) {
-    const file = await this.exportDocument.execute({
+    const { file, contentType } = await this.exportDocument.execute({
       companyId,
       documentId,
     })
 
-    return file
+    res.setHeader('Content-Type', contentType)
+    res.setHeader('Content-Disposition', 'inline')
+
+    return res.send(file)
   }
 }
