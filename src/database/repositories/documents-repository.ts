@@ -6,6 +6,7 @@ import { getDocumentStatusUnformated } from '@/use-cases/get-document-status'
 import { paginate } from '../pagination'
 
 export interface FindManyFilters {
+  documentTypeId?: string
   companyId?: string
   status?: 'inDay' | 'near' | 'won'
   type?: string
@@ -161,6 +162,68 @@ export class DocumentsRepository {
       }
     >({
       data: paginatedData,
+      total,
+      page,
+      limit,
+    })
+  }
+
+  async fetchByDocumentTypeIdPagination({
+    documentTypeId,
+    page,
+    limit = 15,
+    order = 'desc',
+    orderBy = 'createdAt',
+    filter,
+  }: PaginationParams<'name' | 'createdAt'> & FindManyFilters) {
+    const where: Prisma.DocumentWhereInput = {
+      documentTypeId,
+    }
+
+    if (filter) {
+      where.name = {
+        contains: filter,
+        mode: 'insensitive',
+      }
+    }
+
+    const [documents, total] = await Promise.all([
+      this.prisma.document.findMany({
+        include: {
+          documentType: true,
+        },
+        where,
+        orderBy: {
+          [orderBy]: order,
+        },
+        take: limit,
+        skip: (page - 1) * limit,
+      }),
+      this.prisma.document.count({ where }),
+    ])
+
+    const documentsWithStatus = documents.map((doc) => {
+      const status = getDocumentStatusUnformated(
+        doc.duedate,
+        doc.documentType.validityPeriod,
+      )
+
+      return {
+        ...doc,
+        status,
+      }
+    })
+
+    return paginate<
+      Prisma.DocumentGetPayload<{
+        include: {
+          documentType: true
+        }
+      }> & {
+        status: 'inDay' | 'near' | 'won'
+      }
+    >({
+      data: documentsWithStatus,
       total,
       page,
       limit,
