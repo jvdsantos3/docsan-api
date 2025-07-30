@@ -15,8 +15,7 @@ export class NotificationsService {
   ) {}
 
   // Executa diariamente às 08:00
-  // @Cron('0 8 * * *')
-  @Cron('45 * * * * *')
+  @Cron('0 8 * * *')
   async checkDailyNotifications() {
     const now = new Date()
 
