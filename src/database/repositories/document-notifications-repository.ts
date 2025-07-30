@@ -14,11 +14,35 @@ export class DocumentNotificationsRepository {
     })
   }
 
+  async findByDocumentId(
+    documentId: string,
+  ): Promise<DocumentNotification | null> {
+    return await this.prisma.documentNotification.findUnique({
+      where: {
+        documentId,
+      },
+    })
+  }
+
   async create(
     data: Prisma.DocumentNotificationUncheckedCreateInput,
     prisma: Prisma.TransactionClient = this.prisma,
   ): Promise<DocumentNotification> {
     return await prisma.documentNotification.create({
+      data,
+    })
+  }
+
+  async save(
+    data: Partial<Prisma.DocumentNotificationUncheckedUpdateInput> & {
+      id: string
+    },
+    prisma: Prisma.TransactionClient = this.prisma,
+  ) {
+    return await prisma.documentNotification.update({
+      where: {
+        id: data.id,
+      },
       data,
     })
   }

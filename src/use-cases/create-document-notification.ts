@@ -2,8 +2,9 @@ import { DocumentsRepository } from '@/database/repositories/documents-repositor
 import { Injectable } from '@nestjs/common'
 import { DocumentNotificationsRepository } from '@/database/repositories/document-notifications-repository'
 import { DocumentNotFoundError } from './errors/document-not-found-error'
-import { subMonths, subWeeks } from 'date-fns'
+import { isBefore, isSameDay, subMonths, subWeeks } from 'date-fns'
 import { DocumentNotification } from '@prisma/client'
+import { DocumentWonError } from './errors/document-won-error'
 
 interface CreateDocumentNotificationUseCaseRequest {
   documentId: string
@@ -33,12 +34,34 @@ export class CreateDocumentNotifictionUseCase {
       throw new DocumentNotFoundError()
     }
 
+    if (
+      isBefore(document.duedate, new Date()) ||
+      isSameDay(document.duedate, new Date())
+    ) {
+      throw new DocumentWonError()
+    }
+
     let scheduleDate: Date
 
     if (period === 'week') {
       scheduleDate = subWeeks(new Date(document.duedate), time)
     } else {
       scheduleDate = subMonths(new Date(document.duedate), time)
+    }
+
+    const notification =
+      await this.documentNotificationsRepository.findByDocumentId(documentId)
+
+    if (notification) {
+      const updatedNotification =
+        await this.documentNotificationsRepository.save({
+          id: notification.id,
+          scheduledAt: scheduleDate,
+        })
+
+      return {
+        documentNotification: updatedNotification,
+      }
     }
 
     const documentNotification =
