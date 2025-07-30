@@ -4,6 +4,7 @@ export type DocumentBase = Prisma.DocumentGetPayload<{
   include: {
     indexation: true
     documentType: true
+    documentNotification: true
   }
 }>
 

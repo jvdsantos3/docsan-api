@@ -38,6 +38,7 @@ export class DocumentsRepository {
             },
           },
         },
+        documentNotification: true,
       },
       where,
     })
@@ -71,6 +72,7 @@ export class DocumentsRepository {
       include: {
         documentType: true,
         indexation: true,
+        documentNotification: true,
       },
       where,
       orderBy: { version: 'desc' },
