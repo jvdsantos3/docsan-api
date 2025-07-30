@@ -40,7 +40,7 @@ export class GeminiService {
               },
             },
             {
-              text: `${prompt} - Formato de retorno desejado: fields: [{ "name": [Nome do campo], "value": [Valor coletado] }] caso não consiga coletar o valor coloque null, colete somente os campos passados e ignore o restante.`,
+              text: `${prompt} - Formato de retorno desejado: [{ "name": [Nome do campo], "value": [Valor coletado] }] caso não consiga coletar o valor coloque null, colete somente os campos passados e ignore o restante.`,
             },
           ],
         },
