@@ -1,5 +1,5 @@
 import { DocumentTypesRepository } from '@/database/repositories/document-types-repository'
-import { PaginationParams } from '@/database/repositories/interfaces/pagination-params'
+import { PaginationParams } from '@/database/interfaces/pagination-params'
 import { DocumentType, Prisma } from '@prisma/client'
 import { randomUUID } from 'node:crypto'
 import { InMemoryDocumentsRepository } from './in-memory-documents-repository'

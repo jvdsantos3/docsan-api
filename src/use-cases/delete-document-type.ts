@@ -1,5 +1,7 @@
 import { DocumentTypesRepository } from '@/database/repositories/document-types-repository'
 import { Injectable } from '@nestjs/common'
+import { DocumentTypeNotFoundError } from './errors/document-type-not-found-error'
+import { NotDeleteDocumetTypeWithDocumentsError } from './errors/not-delete-document-type-with-documents-error'
 
 interface DeleteDocumentTypeUseCaseRequest {
   documentTypeId: string
@@ -13,18 +15,14 @@ export class DeleteDocumentTypeUseCase {
     documentTypeId,
   }: DeleteDocumentTypeUseCaseRequest): Promise<void> {
     const documentType =
-      await this.documentTypesRepository.findByIdWithDocuments(documentTypeId)
+      await this.documentTypesRepository.findById(documentTypeId)
 
     if (!documentType) {
-      // TODO
-      throw new Error('Document type not found.')
+      throw new DocumentTypeNotFoundError()
     }
 
-    if (documentType.documents.length) {
-      // TODO
-      throw new Error(
-        'It is not possible to delete a document type with linked documents',
-      )
+    if (documentType._count.documents) {
+      throw new NotDeleteDocumetTypeWithDocumentsError()
     }
 
     await this.documentTypesRepository.delete(documentType)

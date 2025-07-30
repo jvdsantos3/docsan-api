@@ -4,11 +4,16 @@ import { DocumentType, Prisma } from '@prisma/client'
 import { DocumetTypeAlreadyExistsError } from './errors/document-type-already-exists-error'
 import { DocumetTypeLimitError } from './errors/document-type-limit-error'
 import { Field } from './interfaces/document'
-import { User } from './interfaces/use'
+import { DocumetTypeFieldsLenghtError } from './errors/document-type-fields-length-error'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { DocumentTypeEvent } from '@/events/document-type.event'
+import { UserPayload } from '@/auth/jwt.strategy'
 interface CreateDocumentTypeUseCaseRequest {
-  user: User
+  user: UserPayload
   companyId: string
   name: string
+  validityPeriod: number
+  prompt: string
   fields: Field[] | Prisma.JsonArray
 }
 
@@ -18,18 +23,28 @@ interface CreateDocumentTypeUseCaseResponse {
 
 @Injectable()
 export class CreateDocumentTypeUseCase {
-  constructor(private documentTypesRepository: DocumentTypesRepository) {}
+  constructor(
+    private documentTypesRepository: DocumentTypesRepository,
+    private eventEmitter: EventEmitter2,
+  ) {}
 
   async execute({
+    user,
     companyId,
     name,
+    validityPeriod,
+    prompt,
     fields,
   }: CreateDocumentTypeUseCaseRequest): Promise<CreateDocumentTypeUseCaseResponse> {
     const documentTypeWithSameName =
-      await this.documentTypesRepository.findByName(name)
+      await this.documentTypesRepository.findByName(name, companyId)
 
     if (documentTypeWithSameName) {
       throw new DocumetTypeAlreadyExistsError(name)
+    }
+
+    if (fields.length === 0) {
+      throw new DocumetTypeFieldsLenghtError()
     }
 
     if (fields.length > 7) {
@@ -38,11 +53,18 @@ export class CreateDocumentTypeUseCase {
 
     const data = {
       name,
-      metadata: fields as Prisma.InputJsonValue,
+      validityPeriod,
+      prompt,
+      metadata: fields as Prisma.JsonArray,
       companyId,
     }
 
     const documentType = await this.documentTypesRepository.create(data)
+
+    this.eventEmitter.emit(
+      'document-type.created',
+      new DocumentTypeEvent(documentType.id, companyId, user.sub),
+    )
 
     return {
       documentType,

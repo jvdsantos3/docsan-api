@@ -6,7 +6,7 @@ import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 import { AddressesRepository } from '@/database/repositories/addresses-repository'
 import { OwnersRepository } from '@/database/repositories/owners-repository'
 import { PrismaService } from '@/database/prisma.service'
-import { ProfessionalsRepository } from '@/database/repositories/professionals-repository'
+import { UsersRepository } from '@/database/repositories/users-repository'
 
 interface RegisterCompanyUseCaseRequest {
   name: string
@@ -35,9 +35,9 @@ interface RegisterCompanyUseCaseResponse {
 export class RegisterCompanyUseCase {
   constructor(
     private addressRepository: AddressesRepository,
-    private ownersRepository: OwnersRepository,
     private companiesRepository: CompaniesRepository,
-    private professionalsRepository: ProfessionalsRepository,
+    private usersRepository: UsersRepository,
+    private ownersRepository: OwnersRepository,
     private hashGenerator: HashGenerator,
     private prisma: PrismaService,
   ) {}
@@ -60,17 +60,9 @@ export class RegisterCompanyUseCase {
     neighborhood,
     complement,
   }: RegisterCompanyUseCaseRequest): Promise<RegisterCompanyUseCaseResponse> {
-    const ownerWithSameEmail =
-      await this.ownersRepository.findByEmail(ownerEmail)
+    const userWithSameEmail = await this.usersRepository.findByEmail(ownerEmail)
 
-    if (ownerWithSameEmail) {
-      throw new UserAlreadyExistsError(ownerEmail)
-    }
-
-    const professionalWithSameEmail =
-      await this.professionalsRepository.findByEmail(ownerEmail)
-
-    if (professionalWithSameEmail) {
+    if (userWithSameEmail) {
       throw new UserAlreadyExistsError(ownerEmail)
     }
 
@@ -107,14 +99,19 @@ export class RegisterCompanyUseCase {
         prisma,
       )
 
+      const user = await this.usersRepository.create({
+        email: ownerEmail,
+        password: hashedPassword,
+        role: 'OWNER',
+      })
+
       await this.ownersRepository.create(
         {
+          companyId: company.id,
+          userId: user.id,
           name: ownerName,
           cpf: ownerCpf,
           phone: phone,
-          email: ownerEmail,
-          password: hashedPassword,
-          companyId: company.id,
         },
         prisma,
       )

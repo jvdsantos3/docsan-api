@@ -3,9 +3,9 @@ import { Injectable } from '@nestjs/common'
 import { Professional } from '@prisma/client'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 import { AddressesRepository } from '@/database/repositories/addresses-repository'
-import { OwnersRepository } from '@/database/repositories/owners-repository'
 import { PrismaService } from '@/database/prisma.service'
 import { ProfessionalsRepository } from '@/database/repositories/professionals-repository'
+import { UsersRepository } from '@/database/repositories/users-repository'
 
 interface RegisterProfessionalUseCaseRequest {
   name: string
@@ -18,7 +18,6 @@ interface RegisterProfessionalUseCaseRequest {
   registry: string
   registryUf: string
   cnae: string
-  // TODO
   zipCode: string
   uf: string
   city: string
@@ -36,7 +35,7 @@ interface RegisterProfessionalUseCaseResponse {
 export class RegisterProfessionalUseCase {
   constructor(
     private addressRepository: AddressesRepository,
-    private ownersRepository: OwnersRepository,
+    private usersRepository: UsersRepository,
     private professionalsRepository: ProfessionalsRepository,
     private hashGenerator: HashGenerator,
     private prisma: PrismaService,
@@ -61,16 +60,9 @@ export class RegisterProfessionalUseCase {
     neighborhood,
     complement,
   }: RegisterProfessionalUseCaseRequest): Promise<RegisterProfessionalUseCaseResponse> {
-    const ownerWithSameEmail = await this.ownersRepository.findByEmail(email)
+    const userWithSameEmail = await this.usersRepository.findByEmail(email)
 
-    if (ownerWithSameEmail) {
-      throw new UserAlreadyExistsError(email)
-    }
-
-    const professionalWithSameEmail =
-      await this.professionalsRepository.findByEmail(email)
-
-    if (professionalWithSameEmail) {
+    if (userWithSameEmail) {
       throw new UserAlreadyExistsError(email)
     }
 
@@ -97,19 +89,24 @@ export class RegisterProfessionalUseCase {
         prisma,
       )
 
+      const user = await this.usersRepository.create({
+        email: email,
+        password: hashedPassword,
+        role: 'PROFESSIONAL',
+      })
+
       const professional = await this.professionalsRepository.create(
         {
+          addressId: address.id,
+          userId: user.id,
           name,
           cpf,
           birthDate,
-          email,
-          password: hashedPassword,
           phone,
           fieldActivity,
           registry,
           registryUf,
           cnae,
-          addressId: address.id,
         },
         prisma,
       )

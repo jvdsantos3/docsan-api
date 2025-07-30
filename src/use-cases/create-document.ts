@@ -1,17 +1,22 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { DocumentTypesRepository } from '@/database/repositories/document-types-repository'
 import { Field, Indexation } from './interfaces/document'
 import { Document, Prisma } from '@prisma/client'
 import { Uploader } from '@/storage/upload'
 import { PrismaService } from '@/database/prisma.service'
 import { DocumentsRepository } from '@/database/repositories/documents-repository'
-import { User } from './interfaces/use'
-import { OwnersRepository } from '@/database/repositories/owners-repository'
 import { IndexationsRepository } from '@/database/repositories/indexations-repository'
 import { randomUUID } from 'node:crypto'
+import { UserPayload } from '@/auth/jwt.strategy'
+import { UsersRepository } from '@/database/repositories/users-repository'
+import { DocumentTypeNotFoundError } from './errors/document-type-not-found-error'
+import { UserNotFoundError } from './errors/user-not-found-error'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { DocumentEvent } from '@/events/document.event'
 
 interface CreateDocumentUseCaseRequest {
-  user: User
+  payload: UserPayload
+  companyId: string
   documentTypeId: string
   fileName: string
   fileType: string
@@ -27,80 +32,116 @@ interface CreateDocumentUseCaseResponse {
 export class CreateDocumentUseCase {
   constructor(
     private prisma: PrismaService,
-    private ownersRepository: OwnersRepository,
+    private usersRepository: UsersRepository,
     private documentTypesRepository: DocumentTypesRepository,
     private documentsRepository: DocumentsRepository,
     private indexationsRepository: IndexationsRepository,
     private uploader: Uploader,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async execute({
-    user,
+    payload,
+    companyId,
     documentTypeId,
     fileName,
     fileType,
     body,
     fields,
   }: CreateDocumentUseCaseRequest): Promise<CreateDocumentUseCaseResponse> {
-    const userId = user.sub
-    let companyId: string
+    const user = await this.usersRepository.findById(payload.sub)
 
-    if (user.role === 'OWNER') {
-      const owner = await this.ownersRepository.findById(userId)
-
-      // TODO
-      if (!owner) {
-        throw new Error('User not found')
-      }
-
-      companyId = owner?.companyId
-    } else {
-      companyId = '1'
+    if (!user) {
+      throw new UserNotFoundError()
     }
 
     const documentType =
       await this.documentTypesRepository.findById(documentTypeId)
 
     if (!documentType) {
-      // TODO
-      throw new Error('Document type not found.')
+      throw new DocumentTypeNotFoundError()
     }
 
     const metadata = documentType.metadata as unknown as Field[]
 
-    const missingRequiredFields = metadata
-      .filter((field) => field.required)
-      .filter((field) => !fields.some((index) => index.name === field.name))
+    const parsedFields: Indexation[] = []
+
+    const missingRequiredFields = metadata.filter((data) => {
+      const rawValue = fields.find((field) => field.name === data.name)
+
+      if (!rawValue || (rawValue && !rawValue.value)) {
+        return data.required
+      }
+
+      switch (data.type) {
+        case 'text': {
+          parsedFields.push({
+            name: data.name,
+            value: rawValue.value.trim(),
+          })
+
+          return false
+        }
+        case 'number': {
+          const parsedNumber = Number(rawValue.value)
+
+          if (isNaN(parsedNumber)) return true
+
+          parsedFields.push({
+            name: data.name,
+            value: parsedNumber,
+          })
+
+          return false
+        }
+        case 'date': {
+          let parsedDate: Date | null = null
+
+          const value = rawValue.value
+
+          if (value instanceof Date) {
+            parsedDate = value
+          } else if (typeof value === 'string') {
+            const parts = value.split('/')
+
+            if (parts.length === 3) {
+              const [day, month, year] = parts.map(Number)
+
+              if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                parsedDate = new Date(year, month - 1, day)
+              }
+            } else {
+              const fallbackDate = new Date(value)
+              if (!isNaN(fallbackDate.getTime())) {
+                parsedDate = fallbackDate
+              }
+            }
+          }
+
+          if (!parsedDate || isNaN(parsedDate.getTime())) return true
+
+          parsedFields.push({
+            name: data.name,
+            value: parsedDate,
+          })
+
+          return false
+        }
+        default:
+          return true
+      }
+    })
 
     if (missingRequiredFields.length > 0) {
-      throw new Error(
+      throw new BadRequestException(
         `Missing required fields: ${missingRequiredFields
           .map((field) => field.name)
           .join(', ')}`,
       )
     }
 
-    const invalidFields = fields.filter(
-      (index) => !metadata.some((field) => field.name === index.name),
-    )
-
-    if (invalidFields.length > 0) {
-      throw new Error(
-        `Invalid fields provided: ${invalidFields
-          .map((index) => index.name)
-          .join(', ')}`,
-      )
-    }
-
-    const indexation = metadata.map((field) => ({
-      name: field.name,
-      value: fields.find((index) => index.name === field.name)?.value || null,
-      type: field.type,
-      required: field.required,
-    })) as Prisma.InputJsonValue
-
     const { url } = await this.uploader.upload({
-      fileName: `documents/${randomUUID()}-${fileName}`,
+      fileName: `companies/${companyId}/documents/${randomUUID()}-${fileName}`,
       fileType,
       body,
     })
@@ -109,15 +150,26 @@ export class CreateDocumentUseCase {
       const lastDocument =
         await this.documentsRepository.findFirstByDocumentId(documentTypeId)
 
-      const version = lastDocument ? lastDocument.version + 1 : 1
+      let version = 1
+
+      if (lastDocument) {
+        await this.documentsRepository.save({
+          id: lastDocument.id,
+          isLatest: false,
+        })
+
+        version = lastDocument.version + 1
+      }
 
       const document = await this.documentsRepository.create(
         {
           companyId,
           documentTypeId,
           name: fileName,
+          duedate: parsedFields[0].value,
           url,
           version,
+          isLatest: true,
         },
         prisma,
       )
@@ -125,13 +177,18 @@ export class CreateDocumentUseCase {
       await this.indexationsRepository.create(
         {
           documentId: document.id,
-          values: indexation,
+          values: parsedFields as unknown as Prisma.JsonArray,
         },
         prisma,
       )
 
       return document
     })
+
+    this.eventEmitter.emit(
+      'document.created',
+      new DocumentEvent(document.id, companyId, payload.sub),
+    )
 
     return {
       document,

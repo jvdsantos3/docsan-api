@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { InvalidDocumentTypeError } from './errors/invalid-document-type-error'
 import { DocumentTypesRepository } from '@/database/repositories/document-types-repository'
-import { Field } from './interfaces/document'
-import * as pdfParse from 'pdf-parse'
+import { DocumentTypeNotFoundError } from './errors/document-type-not-found-error'
+import { GeminiService } from '@/gemini/gemini.service'
 
 interface ExtractDataUseCaseRequest {
   documentTypeId: string
@@ -21,7 +21,10 @@ interface ExtractDataUseCaseResponse {
 
 @Injectable()
 export class ExtractDataUseCase {
-  constructor(private documentTypesRepository: DocumentTypesRepository) {}
+  constructor(
+    private geminiService: GeminiService,
+    private documentTypesRepository: DocumentTypesRepository,
+  ) {}
 
   async execute({
     documentTypeId,
@@ -36,35 +39,13 @@ export class ExtractDataUseCase {
       await this.documentTypesRepository.findById(documentTypeId)
 
     if (!documentType) {
-      // TODO
-      throw new Error('Document type not found.')
+      throw new DocumentTypeNotFoundError()
     }
 
-    const metadata = documentType.metadata as unknown as Field[]
+    const response = await this.geminiService.generate(documentType.prompt, fileType, body)
 
-    let text: string
-    try {
-      const pdfData = await pdfParse(body)
-      text = pdfData.text
-    } catch (error: any) {
-      throw new Error('Failed to parse PDF: ' + error.message)
-    }
+    const extractData = JSON.parse(response) as ExtractedField[]
 
-    // Mapeia os valores com base nas chaves do metadata
-    const extractedData: ExtractedField[] = metadata.map((field) => {
-      const key = field.name
-      const value = this.extractValueForKey(text, key)
-      return { name: key, value }
-    })
-
-    return { fields: extractedData }
-  }
-
-  private extractValueForKey(text: string, key: string): string | null {
-    const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    const regex = new RegExp(`${escapedKey}\\s*[:=]\\s*([^\\n\\r]+)`, 'i')
-    const match = text.match(regex)
-
-    return match ? match[1].trim() : null
+    return { fields: extractData }
   }
 }

@@ -1,6 +1,7 @@
 import { DocumentsRepository } from '@/database/repositories/documents-repository'
 import { Uploader } from '@/storage/upload'
 import { Injectable } from '@nestjs/common'
+import { DocumentNotFoundError } from './errors/document-not-found-error'
 
 interface ExportDocumentUseCaseRequest {
   companyId: string
@@ -9,6 +10,7 @@ interface ExportDocumentUseCaseRequest {
 
 interface ExportDocumentUseCaseResponse {
   file: Buffer
+  contentType: string
 }
 
 @Injectable()
@@ -28,14 +30,14 @@ export class ExportDocumentUseCase {
     )
 
     if (!document) {
-      // TODO
-      throw new Error('Document not found.')
+      throw new DocumentNotFoundError()
     }
 
-    const { body } = await this.uploader.get(document.url)
+    const { body, contentType } = await this.uploader.get(document.url)
 
     return {
       file: body,
+      contentType,
     }
   }
 }

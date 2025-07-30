@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { AbilityBuilder, PureAbility } from '@casl/ability'
 import { createPrismaAbility, PrismaQuery, Subjects } from '@casl/prisma'
 import { Action } from './actions.enum'
 import { DocumentType, Document } from '@prisma/client'
-import { User } from '@/use-cases/interfaces/use'
 import { PrismaService } from '@/database/prisma.service'
+import { UserPayload } from '@/auth/jwt.strategy'
 
 type AppSubjects =
   | 'all'
@@ -19,19 +19,26 @@ export type AppAbility = PureAbility<[Action, AppSubjects], PrismaQuery>
 export class CaslAbilityFactory {
   constructor(private prisma: PrismaService) {}
 
-  async createForUser(user: User, companyId: string) {
+  async createForUser(payload: UserPayload, companyId: string) {
     const { can, cannot, build } = new AbilityBuilder<AppAbility>(
       createPrismaAbility,
     )
 
-    if (user.role === 'OWNER') {
-      const owner = await this.prisma.owner.findUnique({
+    if (payload.role === 'OWNER') {
+      const user = await this.prisma.user.findUnique({
+        include: {
+          owner: true,
+        },
         where: {
-          id: user.sub,
+          id: payload.sub,
         },
       })
 
-      if (owner?.companyId !== companyId) {
+      if (!user) {
+        throw new UnauthorizedException('User not found.')
+      }
+
+      if (user.owner?.companyId !== companyId) {
         cannot(Action.Manage, 'all')
 
         return build()
@@ -43,7 +50,7 @@ export class CaslAbilityFactory {
         await this.prisma.professionalCompany.findUnique({
           where: {
             professionalId_companyId: {
-              professionalId: user.sub,
+              professionalId: payload.sub,
               companyId,
             },
           },
