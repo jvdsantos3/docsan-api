@@ -32,20 +32,15 @@ services:
       - db-data:/var/lib/postgresql/data
     restart: unless-stopped
 
-  # prisma-studio:
-  #   container_name: docsan-prisma-studio
-  #   image: node:22-alpine
-  #   ports:
-  #     - "5555:5555"
-  #   working_dir: /app
-  #   command: sh -c "npm install -g pnpm && pnpm install && pnpm prisma studio"
-  #   volumes:
-  #     - .:/app
-  #   environment:
-  #     - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}?schema=public
-  #   depends_on:
-  #     - db
-  #   restart: unless-stopped
+  redis:
+    container_name: docsan-redis
+    image: redis:8
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
 
 volumes:
   db-data:
+  redis-data:
