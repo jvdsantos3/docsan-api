@@ -8,7 +8,7 @@ import { paginate } from '../pagination'
 export interface FindManyFilters {
   documentTypeId?: string
   companyId?: string
-  status?: 'inDay' | 'near' | 'won'
+  status?: 'up_to_date' | 'due_soon' | 'overdue'
   type?: string
   filter?: string
 }
@@ -143,7 +143,7 @@ export class DocumentsRepository {
 
     const finalSorted = requiresStatusSorting
       ? filteredByStatus.sort((a, b) => {
-          const weights = { inDay: 1, near: 2, won: 3 }
+          const weights = { up_to_date: 1, due_soon: 2, overdue: 3 }
           return order === 'asc'
             ? weights[a.status] - weights[b.status]
             : weights[b.status] - weights[a.status]
@@ -160,7 +160,7 @@ export class DocumentsRepository {
           documentType: true
         }
       }> & {
-        status: 'inDay' | 'near' | 'won'
+        status: 'up_to_date' | 'due_soon' | 'overdue'
       }
     >({
       data: paginatedData,
@@ -222,7 +222,7 @@ export class DocumentsRepository {
           documentType: true
         }
       }> & {
-        status: 'inDay' | 'near' | 'won'
+        status: 'up_to_date' | 'due_soon' | 'overdue'
       }
     >({
       data: documentsWithStatus,

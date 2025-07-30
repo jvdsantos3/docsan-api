@@ -4,7 +4,7 @@ import { DocumentNotificationsRepository } from '@/database/repositories/documen
 import { DocumentNotFoundError } from './errors/document-not-found-error'
 import { isBefore, isSameDay, subMonths, subWeeks } from 'date-fns'
 import { DocumentNotification } from '@prisma/client'
-import { DocumentWonError } from './errors/document-won-error'
+import { DocumentOverdueError } from './errors/document-overdue-error'
 
 interface CreateDocumentNotificationUseCaseRequest {
   documentId: string
@@ -38,7 +38,7 @@ export class CreateDocumentNotifictionUseCase {
       isBefore(document.duedate, new Date()) ||
       isSameDay(document.duedate, new Date())
     ) {
-      throw new DocumentWonError()
+      throw new DocumentOverdueError()
     }
 
     let scheduleDate: Date

@@ -10,7 +10,7 @@ interface FetchDocumentsUseCaseRequest {
   order?: 'desc' | 'asc'
   orderBy?: 'name' | 'type' | 'status' | 'duedate' | 'createdAt'
   type?: string
-  status?: 'won' | 'near' | 'inDay'
+  status?: 'overdue' | 'due_soon' | 'up_to_date'
   filter?: string
 }
 
@@ -21,7 +21,7 @@ interface FetchDocumentsUseCaseResponse {
         documentType: true
       }
     }> & {
-      status: 'inDay' | 'near' | 'won'
+      status: 'up_to_date' | 'due_soon' | 'overdue'
     }
   >
 }

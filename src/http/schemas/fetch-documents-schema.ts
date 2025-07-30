@@ -31,10 +31,14 @@ const fetchDocumentsQuerySchema = z.object({
     .enum(['name', 'type', 'status', 'duedate', 'createdAt'])
     .optional(),
   type: z.string().optional(),
-  status: z.enum(['inDay', 'near', 'won']).optional(),
+  status: z.enum(['up_to_date', 'due_soon', 'overdue']).optional(),
   filter: z.string().optional(),
 })
 
-export const fetchDocumentsQueryValidationPipe = new ZodValidationPipe(fetchDocumentsQuerySchema)
+export const fetchDocumentsQueryValidationPipe = new ZodValidationPipe(
+  fetchDocumentsQuerySchema,
+)
 
-export type FetchDocumentsQuerySchema = z.infer<typeof fetchDocumentsQuerySchema>
+export type FetchDocumentsQuerySchema = z.infer<
+  typeof fetchDocumentsQuerySchema
+>

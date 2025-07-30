@@ -1,6 +1,6 @@
 import { BadRequestException } from '@nestjs/common'
 
-export class DocumentWonError extends BadRequestException {
+export class DocumentOverdueError extends BadRequestException {
   constructor() {
     super('Expired document.')
   }

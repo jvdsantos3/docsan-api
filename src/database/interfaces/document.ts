@@ -9,7 +9,7 @@ export type DocumentBase = Prisma.DocumentGetPayload<{
 }>
 
 export interface DocumentComputedProps {
-  status: 'Em dia' | 'Próximo do vencimento' | 'Vencido'
+  status: 'Up_to_date' | 'Due_soon' | 'Overdue'
 }
 
 export type DocumentWithComputed = DocumentBase & DocumentComputedProps

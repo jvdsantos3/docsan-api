@@ -8,9 +8,9 @@ interface GetDocumentsSummaryUseCaseRequest {
 }
 
 interface GetDocumentsSummaryUseCaseResponse {
-  inDay: number
-  near: number
-  won: number
+  up_to_date: number
+  due_soon: number
+  overdue: number
 }
 
 @Injectable()
@@ -34,20 +34,20 @@ export class GetDocumentsSummaryUseCase {
       }
     }) as DocumentWithComputed[]
 
-    const inDay = documents.filter(
-      (document) => document.status === 'Em dia',
+    const up_to_date = documents.filter(
+      (document) => document.status === 'Up_to_date',
     ).length
-    const near = documents.filter(
-      (document) => document.status === 'Próximo do vencimento',
+    const due_soon = documents.filter(
+      (document) => document.status === 'Due_soon',
     ).length
-    const won = documents.filter(
-      (document) => document.status === 'Vencido',
+    const overdue = documents.filter(
+      (document) => document.status === 'Overdue',
     ).length
 
     return {
-      inDay: inDay,
-      near: near,
-      won: won,
+      up_to_date: up_to_date,
+      due_soon: due_soon,
+      overdue: overdue,
     }
   }
 }

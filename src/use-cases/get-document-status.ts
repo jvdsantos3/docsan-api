@@ -3,29 +3,29 @@ import { differenceInDays, isBefore } from 'date-fns'
 export function getDocumentStatus(
   duedate: Date,
   validityPeriod: number,
-): 'Em dia' | 'Próximo do vencimento' | 'Vencido' {
+): 'Up_to_date' | 'Due_soon' | 'Overdue' {
   const today = new Date()
 
-  if (isBefore(duedate, today)) return 'Vencido'
+  if (isBefore(duedate, today)) return 'Overdue'
 
   const days = differenceInDays(duedate, today)
 
-  if (days <= validityPeriod) return 'Próximo do vencimento'
+  if (days <= validityPeriod) return 'Due_soon'
 
-  return 'Em dia'
+  return 'Up_to_date'
 }
 
 export function getDocumentStatusUnformated(
   duedate: Date,
   validityPeriod: number,
-): 'inDay' | 'near' | 'won' {
+): 'up_to_date' | 'due_soon' | 'overdue' {
   const today = new Date()
 
-  if (isBefore(duedate, today)) return 'won'
+  if (isBefore(duedate, today)) return 'overdue'
 
   const days = differenceInDays(duedate, today)
 
-  if (days <= validityPeriod) return 'near'
+  if (days <= validityPeriod) return 'due_soon'
 
-  return 'inDay'
+  return 'up_to_date'
 }

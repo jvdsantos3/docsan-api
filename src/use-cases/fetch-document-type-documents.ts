@@ -19,7 +19,7 @@ interface FetchDocumentTypeDocumentsUseCaseResponse {
         documentType: true
       }
     }> & {
-      status: 'inDay' | 'near' | 'won'
+      status: 'up_to_date' | 'due_soon' | 'overdue'
     }
   >
 }
