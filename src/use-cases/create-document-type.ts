@@ -13,6 +13,7 @@ interface CreateDocumentTypeUseCaseRequest {
   companyId: string
   name: string
   validityPeriod: number
+  prompt: string
   fields: Field[] | Prisma.JsonArray
 }
 
@@ -32,6 +33,7 @@ export class CreateDocumentTypeUseCase {
     companyId,
     name,
     validityPeriod,
+    prompt,
     fields,
   }: CreateDocumentTypeUseCaseRequest): Promise<CreateDocumentTypeUseCaseResponse> {
     const documentTypeWithSameName =
@@ -52,6 +54,7 @@ export class CreateDocumentTypeUseCase {
     const data = {
       name,
       validityPeriod,
+      prompt,
       metadata: fields as Prisma.JsonArray,
       companyId,
     }

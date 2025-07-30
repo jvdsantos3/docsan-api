@@ -118,6 +118,7 @@ model DocumentType {
   id             String   @id @default(uuid())
   name           String
   validityPeriod Int      @map("validity_period")
+  prompt         String
   isActive       Boolean  @default(true) @map("is_active")
   metadata       Json
   createdAt      DateTime @default(now()) @map("created_at")

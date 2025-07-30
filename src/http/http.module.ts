@@ -41,6 +41,7 @@ import { FetchDocumentTypeDocumentsController } from './controllers/document-typ
 import { FetchDocumentTypeDocumentsUseCase } from '@/use-cases/fetch-document-type-documents'
 import { CreateDocumentNotificationController } from './controllers/document/create-document-notification.controller'
 import { CreateDocumentNotifictionUseCase } from '@/use-cases/create-document-notification'
+import { GeminiModule } from '@/gemini/gemini.module'
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { CreateDocumentNotifictionUseCase } from '@/use-cases/create-document-no
     CryptographyModule,
     DatabaseModule,
     StorageModule,
+    GeminiModule,
   ],
   controllers: [
     CreateCompanyController,

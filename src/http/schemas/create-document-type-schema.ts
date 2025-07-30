@@ -7,6 +7,7 @@ const createDocumentTypeBodySchema = z.object({
     .number()
     .int({ message: 'validityPeriod deve ser um número inteiro' })
     .min(7, { message: 'validityPeriod deve ser no mínimo 7' }),
+  prompt: z.string(),
   fields: z
     .array(
       z.object({
