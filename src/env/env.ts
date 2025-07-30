@@ -9,6 +9,13 @@ export const envSchema = z.object({
   AWS_ACCESS_KEY_ID: z.string(),
   AWS_SECRET_ACCESS_KEY: z.string(),
   GOOGLE_API_KEY: z.string(),
+  REDIS_HOST: z.string(),
+  REDIS_PORT: z.coerce.number(),
+  MAIL_HOST: z.string(),
+  MAIL_PORT: z.string(),
+  MAIL_USER: z.string(),
+  MAIL_PASSWORD: z.string(),
+  MAIL_SECURE: z.coerce.boolean(),
   APP_PORT: z.coerce.number().optional().default(3333),
 })
 
