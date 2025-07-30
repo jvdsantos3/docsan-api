@@ -1,3 +1,4 @@
+import { EnvService } from '@/env/env.service'
 import { Injectable } from '@nestjs/common'
 import * as nodemailer from 'nodemailer'
 
@@ -5,21 +6,21 @@ import * as nodemailer from 'nodemailer'
 export class MailService {
   private transporter: nodemailer.Transporter
 
-  constructor() {
+  constructor(private env: EnvService) {
     this.transporter = nodemailer.createTransport({
-      host: 'smtp.seudominio.com',
-      port: 587,
+      host: this.env.get('MAIL_HOST'),
+      port: this.env.get('MAIL_PORT'),
       secure: false, // true para 465, false para outras
       auth: {
-        user: 'seu@email.com',
-        pass: 'sua-senha',
+        user: this.env.get('MAIL_USER'),
+        pass: this.env.get('MAIL_PASSWORD'), 
       },
     })
   }
 
   async sendMail(to: string, subject: string, html: string) {
     await this.transporter.sendMail({
-      from: '"Notificações" <notificacoes@seudominio.com>',
+      from: 'docsan@gmail.com',
       to,
       subject,
       html,

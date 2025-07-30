@@ -1,21 +1,27 @@
-// src/queue/queue.module.ts
 import { Module, Global } from '@nestjs/common'
 import { BullModule } from '@nestjs/bull'
 import { QUEUE_NAMES } from './queue.constants'
+import { EnvService } from '@/env/env.service'
+import { EnvModule } from '@/env/env.module'
 
 @Global()
 @Module({
   imports: [
-    BullModule.forRoot({
-      redis: {
-        host: 'localhost',
-        port: 6379,
-      },
+    BullModule.forRootAsync({
+      imports: [EnvModule],
+      inject: [EnvService],
+      useFactory: (env: EnvService) => ({
+        redis: {
+          host: env.get('REDIS_HOST'),
+          port: env.get('REDIS_PORT'),
+        },
+      }),
     }),
     BullModule.registerQueue({
       name: QUEUE_NAMES.NOTIFICATIONS,
     }),
   ],
   exports: [BullModule],
+  providers: [EnvService],
 })
 export class QueueModule {}

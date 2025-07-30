@@ -8,6 +8,7 @@ import { EventModule } from './events/event.module'
 import { ScheduleModule } from '@nestjs/schedule'
 import { QueueModule } from './queue/queue.module'
 import { NotificationsModule } from './notifications/notifications.module'
+import { MailModule } from './mail/mail.module'
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { NotificationsModule } from './notifications/notifications.module'
     HttpModule,
     EnvModule,
     QueueModule,
+    MailModule,
     NotificationsModule,
   ],
 })

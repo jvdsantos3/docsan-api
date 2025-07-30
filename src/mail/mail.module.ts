@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common'
 import { ScheduleModule } from '@nestjs/schedule'
 import { MailService } from '@/mail/mail.service'
+import { EnvService } from '@/env/env.service'
 
 @Module({
   imports: [ScheduleModule],
-  providers: [MailService],
+  providers: [MailService, EnvService],
 })
-export class NotificationsModule {}
+export class MailModule {}
