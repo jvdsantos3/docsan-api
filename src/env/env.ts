@@ -16,6 +16,7 @@ export const envSchema = z.object({
   MAIL_USER: z.string(),
   MAIL_PASSWORD: z.string(),
   MAIL_SECURE: z.coerce.boolean(),
+  VOLUME_PATH: z.string(),
   APP_PORT: z.coerce.number().optional().default(3333),
 })
 
