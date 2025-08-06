@@ -29,6 +29,7 @@ model User {
   owner        Owner?        @relation("UserOwner")
   professional Professional? @relation("UserProfessional")
   actionLogs   ActionLog[]
+  chatHistory  ChatHistory[]
 
   @@map("users")
 }
@@ -217,4 +218,17 @@ model DocumentNotification {
   documentId String   @unique @map("document_id")
 
   @@map("document_notifications")
+}
+
+model ChatHistory {
+  id        String   @id @default(uuid())
+  question  String
+  answer    String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
+
+  @@map("chat_histories")
 }

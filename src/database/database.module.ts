@@ -9,6 +9,7 @@ import { DocumentsRepository } from './repositories/documents-repository'
 import { IndexationsRepository } from './repositories/indexations-repository'
 import { UsersRepository } from './repositories/users-repository'
 import { DocumentNotificationsRepository } from './repositories/document-notifications-repository'
+import { ChatHistoriesRepository } from './repositories/chat-histories-repository'
 
 @Module({
   providers: [
@@ -22,6 +23,7 @@ import { DocumentNotificationsRepository } from './repositories/document-notific
     DocumentsRepository,
     IndexationsRepository,
     DocumentNotificationsRepository,
+    ChatHistoriesRepository,
   ],
   exports: [
     PrismaService,
@@ -34,6 +36,7 @@ import { DocumentNotificationsRepository } from './repositories/document-notific
     DocumentsRepository,
     IndexationsRepository,
     DocumentNotificationsRepository,
+    ChatHistoriesRepository,
   ],
 })
 export class DatabaseModule {}

@@ -46,6 +46,8 @@ import { SendQuestionController } from './controllers/chat/send-question.control
 import { RedisService } from '@/redis/redis.service'
 import { EnvService } from '@/env/env.service'
 import { AnswerQuestionUseCase } from '@/use-cases/answer-question'
+import { SendQuestionPrivateController } from './controllers/chat/send-question.controller-private'
+import { GeminiService } from '@/gemini/gemini.service'
 
 @Module({
   imports: [
@@ -76,6 +78,7 @@ import { AnswerQuestionUseCase } from '@/use-cases/answer-question'
     ExportDocumentController,
     CreateDocumentNotificationController,
     SendQuestionController,
+    SendQuestionPrivateController,
   ],
   providers: [
     EnvService,

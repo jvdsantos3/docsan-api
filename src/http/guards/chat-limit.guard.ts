@@ -19,6 +19,10 @@ export class ChatLimitGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest()
 
+    if (request.user) {
+      return true
+    }
+
     const forwarded = request.headers['x-forwarded-for']
 
     if (!forwarded) {
