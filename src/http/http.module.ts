@@ -42,6 +42,10 @@ import { FetchDocumentTypeDocumentsUseCase } from '@/use-cases/fetch-document-ty
 import { CreateDocumentNotificationController } from './controllers/document/create-document-notification.controller'
 import { CreateDocumentNotifictionUseCase } from '@/use-cases/create-document-notification'
 import { GeminiModule } from '@/gemini/gemini.module'
+import { SendQuestionController } from './controllers/chat/send-question.controller'
+import { RedisService } from '@/redis/redis.service'
+import { EnvService } from '@/env/env.service'
+import { AnswerQuestionUseCase } from '@/use-cases/answer-question'
 
 @Module({
   imports: [
@@ -71,8 +75,11 @@ import { GeminiModule } from '@/gemini/gemini.module'
     GetDocumentController,
     ExportDocumentController,
     CreateDocumentNotificationController,
+    SendQuestionController,
   ],
   providers: [
+    EnvService,
+    RedisService,
     RegisterCompanyUseCase,
     RegisterProfessionalUseCase,
     AuthenticateUseCase,
@@ -92,6 +99,7 @@ import { GeminiModule } from '@/gemini/gemini.module'
     GetDocumentUseCase,
     ExportDocumentUseCase,
     CreateDocumentNotifictionUseCase,
+    AnswerQuestionUseCase,
   ],
 })
 export class HttpModule {}

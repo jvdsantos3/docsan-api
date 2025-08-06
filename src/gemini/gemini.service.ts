@@ -51,4 +51,30 @@ export class GeminiService {
 
     return result.response.text()
   }
+
+  async generateText(prompt: string): Promise<string> {
+    const model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
+
+    const generationConfig = {
+      temperature: 1,
+      topP: 0.95,
+      topK: 64,
+      maxOutputTokens: 8192,
+      responseMimeType: 'text/plain',
+    }
+
+    const chatSession = model.startChat({
+      generationConfig,
+      history: [
+        {
+          role: 'user',
+          parts: [{ text: prompt }],
+        },
+      ],
+    })
+
+    const result = await chatSession.sendMessage('INSERT_INPUT_HERE')
+
+    return result.response.text()
+  }
 }
