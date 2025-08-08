@@ -3,7 +3,6 @@ import { Encrypter } from '@/cryptography/encrypter'
 import { Injectable } from '@nestjs/common'
 import { UsersRepository } from '@/database/repositories/users-repository'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
-import { UserNotFoundError } from './errors/user-not-found-error'
 
 interface AuthenticateUseCaseRequest {
   email: string
@@ -30,7 +29,7 @@ export class AuthenticateUseCase {
     const user = await this.usersRepository.findByEmail(email)
 
     if (!user) {
-      throw new UserNotFoundError()
+      throw new WrongCredentialsError()
     }
 
     const isPasswordValid = await this.hashComparer.compare(
