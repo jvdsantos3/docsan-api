@@ -6,7 +6,8 @@ import { Cnae } from '@prisma/client'
 interface FetchCnaesUseCaseRequest {
   page: number
   limit?: number
-  order?: 'desc' | 'asc'
+  order?: 'desc' | 'asc',
+  active?: boolean
   filter?: string
 }
 
@@ -22,12 +23,14 @@ export class FetchCnaesUseCase {
     page,
     limit,
     order,
+    active,
     filter,
   }: FetchCnaesUseCaseRequest): Promise<FetchCnaesUseCaseResponse> {
     const cnaes = await this.cnaesRepository.fetchPagination({
       page,
       limit,
       order,
+      active,
       filter,
     })
 

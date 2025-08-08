@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common'
+import { Controller, Get, Query, UseGuards } from '@nestjs/common'
 import { FetchCnaesUseCase } from '@/use-cases/fetch-cnaes'
 import {
   FetchCnaesQuerySchema,
@@ -17,12 +17,13 @@ export class FetchCnaesController {
   // @CheckPolicies(new ReadCnaePolicyHandler())
   async handle(
     @Query(FetchCnaesQueryValidationPipe)
-    { page, limit, order, filter }: FetchCnaesQuerySchema,
+    { page, limit, order, active, filter }: FetchCnaesQuerySchema,
   ) {
     const cnaes = await this.fetchCnaesUseCase.execute({
       page,
       limit,
       order,
+      active,
       filter,
     })
 

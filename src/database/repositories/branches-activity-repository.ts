@@ -1,30 +1,30 @@
 import { Injectable } from '@nestjs/common'
-import { Cnae, Prisma } from '@prisma/client'
+import { BranchActivity, Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma.service'
 import { PaginationParams } from '../interfaces/pagination-params'
 import { paginate } from '../pagination'
 
 export interface FetchFilters {
-  filter?: string,
+  filter?: string
   active?: boolean
 }
 
 @Injectable()
-export class CnaesRepository {
+export class BranchesActivityRepository {
   constructor(private prisma: PrismaService) {}
 
   async findById(id: string) {
-    return await this.prisma.cnae.findUnique({
+    return await this.prisma.branchActivity.findUnique({
       where: {
         id,
       },
     })
   }
 
-  async findByCode(code: string) {
-    return await this.prisma.cnae.findUnique({
+  async findByName(name: string) {
+    return await this.prisma.branchActivity.findUnique({
       where: {
-        code,
+        name,
       },
     })
   }
@@ -35,34 +35,34 @@ export class CnaesRepository {
     order = 'asc',
     active,
     filter,
-  }: PaginationParams<Prisma.CnaeOrderByWithAggregationInput> & FetchFilters) {
-    const where: Prisma.CnaeWhereInput = {}
+  }: PaginationParams<Prisma.BranchActivityOrderByWithAggregationInput> & FetchFilters) {
+    const where: Prisma.BranchActivityWhereInput = {}
 
     if (typeof active === 'boolean') {
       where.isActive = active
     }
 
     if (filter) {
-      where.description = {
+      where.name = {
         contains: filter,
         mode: 'insensitive',
       }
     }
 
-    const [cnaes, total] = await Promise.all([
-      this.prisma.cnae.findMany({
+    const [branchesActivity, total] = await Promise.all([
+      this.prisma.branchActivity.findMany({
         where,
         orderBy: {
-          code: order,
+          name: order,
         },
         take: limit,
         skip: (page - 1) * limit,
       }),
-      this.prisma.cnae.count({ where }),
+      this.prisma.branchActivity.count({ where }),
     ])
 
-    return paginate<Cnae>({
-      data: cnaes,
+    return paginate<BranchActivity>({
+      data: branchesActivity,
       total,
       page,
       limit,
@@ -70,19 +70,19 @@ export class CnaesRepository {
   }
 
   async create(
-    data: Prisma.CnaeUncheckedCreateInput,
+    data: Prisma.BranchActivityUncheckedCreateInput,
     prisma: Prisma.TransactionClient = this.prisma,
   ) {
-    return await prisma.cnae.create({
+    return await prisma.branchActivity.create({
       data,
     })
   }
 
   async save(
-    data: Partial<Prisma.CnaeUncheckedUpdateInput> & { id: string },
+    data: Partial<Prisma.BranchActivityUncheckedUpdateInput> & { id: string },
     prisma: Prisma.TransactionClient = this.prisma,
   ) {
-    return await prisma.cnae.update({
+    return await prisma.branchActivity.update({
       where: {
         id: data.id,
       },
@@ -90,10 +90,10 @@ export class CnaesRepository {
     })
   }
 
-  async delete(cnae: Cnae) {
-    await this.prisma.cnae.delete({
+  async delete(branchActivity: BranchActivity) {
+    await this.prisma.branchActivity.delete({
       where: {
-        id: cnae.id,
+        id: branchActivity.id,
       },
     })
   }

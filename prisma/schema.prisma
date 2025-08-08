@@ -237,10 +237,23 @@ model Cnae {
   id          String   @id @default(uuid())
   code        String
   description String
+  isActive    Boolean  @default(true) @map("is_active")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@unique([code])
 
   @@map("cnaes")
+}
+
+model BranchActivity {
+  id          String   @id @default(uuid())
+  name        String
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([name])
+
+  @@map("branches_activity")
 }

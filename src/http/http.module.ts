@@ -58,6 +58,20 @@ import { EditCnaeController } from './controllers/cnae/edit-cnae.controller'
 import { EditCnaeUseCase } from '@/use-cases/edit-cnae'
 import { DeleteCnaeController } from './controllers/cnae/delete-cnae.controller'
 import { DeleteCnaeUseCase } from '@/use-cases/delete-cnae'
+import { CreateBranchActivityController } from './controllers/branch-activity/create-branch-activity.controller'
+import { CreateBranchActivityUseCase } from '@/use-cases/create-branch-activity'
+import { FetchBranchesActivityController } from './controllers/branch-activity/fetch-branch-activities.controller'
+import { FetchBranchesActivityUseCase } from '@/use-cases/fetch-branches-activity'
+import { GetBranchActivitController } from './controllers/branch-activity/get-branch-activity.controller'
+import { GetBranchActivitByIdUseCase } from '@/use-cases/get-branch-activity-by-id'
+import { EditBranchActivityController } from './controllers/branch-activity/edit-branch-activity.controller'
+import { EditBranchActivityUseCase } from '@/use-cases/edit-branch-activity'
+import { DeleteBranchActivityUseCase } from '@/use-cases/delete-branch-activity'
+import { DeleteBranchActivityController } from './controllers/branch-activity/delete-branch-activity.controller'
+import { ChangeCnaeActiveController } from './controllers/cnae/change-cnae-active.controller'
+import { ChangeCnaeActiveUseCase } from '@/use-cases/change-cnae-active'
+import { ChangeBranchActivityActiveUseCase } from '@/use-cases/change-branch-activity-active'
+import { ChangeBranchActivityActiveController } from './controllers/branch-activity/change-branch-activity-active.controller'
 
 @Module({
   imports: [
@@ -90,10 +104,17 @@ import { DeleteCnaeUseCase } from '@/use-cases/delete-cnae'
     SendQuestionController,
     SendQuestionPrivateController,
     FetchCnaesController,
-    CreateCnaeController,
     GetCnaeController,
+    ChangeCnaeActiveController,
+    CreateCnaeController,
     EditCnaeController,
-    DeleteCnaeController
+    DeleteCnaeController,
+    FetchBranchesActivityController,
+    GetBranchActivitController,
+    ChangeBranchActivityActiveController,
+    CreateBranchActivityController,
+    EditBranchActivityController,
+    DeleteBranchActivityController,
   ],
   providers: [
     EnvService,
@@ -119,10 +140,17 @@ import { DeleteCnaeUseCase } from '@/use-cases/delete-cnae'
     CreateDocumentNotifictionUseCase,
     AnswerQuestionUseCase,
     FetchCnaesUseCase,
-    CreateCnaeUseCase,
     GetCnaeByIdUseCase,
+    ChangeCnaeActiveUseCase,
+    CreateCnaeUseCase,
     EditCnaeUseCase,
-    DeleteCnaeUseCase
+    DeleteCnaeUseCase,
+    FetchBranchesActivityUseCase,
+    GetBranchActivitByIdUseCase,
+    ChangeBranchActivityActiveUseCase,
+    CreateBranchActivityUseCase,
+    EditBranchActivityUseCase,
+    DeleteBranchActivityUseCase,
   ],
 })
 export class HttpModule {}

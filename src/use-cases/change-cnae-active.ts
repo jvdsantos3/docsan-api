@@ -1,23 +1,23 @@
+import { CnaesRepository } from '@/database/repositories/cnaes-repository'
 import { Injectable } from '@nestjs/common'
 import { Cnae } from '@prisma/client'
-import { CnaesRepository } from '@/database/repositories/cnaes-repository'
 import { CnaeNotFoundError } from './errors/cnae-not-found-error'
 
-interface GetCnaeByIdUseCaseRequest {
+interface ChangeCnaeUseCaseRequest {
   cnaeId: string
 }
 
-interface GetCnaeByIdUseCaseResponse {
+interface ChangeCnaeUseCaseResponse {
   cnae: Cnae
 }
 
 @Injectable()
-export class GetCnaeByIdUseCase {
+export class ChangeCnaeActiveUseCase {
   constructor(private cnaesRepository: CnaesRepository) {}
 
   async execute({
     cnaeId,
-  }: GetCnaeByIdUseCaseRequest): Promise<GetCnaeByIdUseCaseResponse> {
+  }: ChangeCnaeUseCaseRequest): Promise<ChangeCnaeUseCaseResponse> {
     const cnae =
       await this.cnaesRepository.findById(cnaeId)
 
@@ -25,8 +25,13 @@ export class GetCnaeByIdUseCase {
       throw new CnaeNotFoundError()
     }
 
+    const newCnae = await this.cnaesRepository.save({
+      id: cnae.id,
+      isActive: !cnae.isActive,
+    })
+
     return {
-      cnae,
+      cnae: newCnae,
     }
   }
 }
