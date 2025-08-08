@@ -70,7 +70,7 @@ export class BranchesActivityRepository {
   }
 
   async create(
-    data: Prisma.BranchActivityUncheckedCreateInput,
+    data: Prisma.BranchActivityCreateInput,
     prisma: Prisma.TransactionClient = this.prisma,
   ) {
     return await prisma.branchActivity.create({
@@ -79,7 +79,7 @@ export class BranchesActivityRepository {
   }
 
   async save(
-    data: Partial<Prisma.BranchActivityUncheckedUpdateInput> & { id: string },
+    data: Partial<Prisma.BranchActivityUpdateInput> & { id: string },
     prisma: Prisma.TransactionClient = this.prisma,
   ) {
     return await prisma.branchActivity.update({

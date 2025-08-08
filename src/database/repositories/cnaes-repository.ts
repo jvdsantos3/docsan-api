@@ -70,7 +70,7 @@ export class CnaesRepository {
   }
 
   async create(
-    data: Prisma.CnaeUncheckedCreateInput,
+    data: Prisma.CnaeCreateInput,
     prisma: Prisma.TransactionClient = this.prisma,
   ) {
     return await prisma.cnae.create({
@@ -79,7 +79,7 @@ export class CnaesRepository {
   }
 
   async save(
-    data: Partial<Prisma.CnaeUncheckedUpdateInput> & { id: string },
+    data: Partial<Prisma.CnaeUpdateInput> & { id: string },
     prisma: Prisma.TransactionClient = this.prisma,
   ) {
     return await prisma.cnae.update({
