@@ -267,3 +267,25 @@ model ChatHistory {
 
   @@map("chat_histories")
 }
+
+model Cnae {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  description String
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("cnaes")
+}
+
+model BranchActivity {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+
+  @@map("branches_activity")
+}

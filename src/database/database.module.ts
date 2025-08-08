@@ -10,6 +10,8 @@ import { IndexationsRepository } from './repositories/indexations-repository'
 import { UsersRepository } from './repositories/users-repository'
 import { DocumentNotificationsRepository } from './repositories/document-notifications-repository'
 import { ChatHistoriesRepository } from './repositories/chat-histories-repository'
+import { CnaesRepository } from './repositories/cnaes-repository'
+import { BranchesActivityRepository } from './repositories/branches-activity-repository'
 
 @Module({
   providers: [
@@ -24,6 +26,8 @@ import { ChatHistoriesRepository } from './repositories/chat-histories-repositor
     IndexationsRepository,
     DocumentNotificationsRepository,
     ChatHistoriesRepository,
+    CnaesRepository,
+    BranchesActivityRepository
   ],
   exports: [
     PrismaService,
@@ -37,6 +41,8 @@ import { ChatHistoriesRepository } from './repositories/chat-histories-repositor
     IndexationsRepository,
     DocumentNotificationsRepository,
     ChatHistoriesRepository,
+    CnaesRepository,
+    BranchesActivityRepository
   ],
 })
 export class DatabaseModule {}
