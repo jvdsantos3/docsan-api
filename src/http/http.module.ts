@@ -47,7 +47,8 @@ import { RedisService } from '@/redis/redis.service'
 import { EnvService } from '@/env/env.service'
 import { AnswerQuestionUseCase } from '@/use-cases/answer-question'
 import { SendQuestionPrivateController } from './controllers/chat/send-question.controller-private'
-import { GeminiService } from '@/gemini/gemini.service'
+import { CreateRegistryTypeController } from './controllers/registry-type/create-registry-type.controller'
+import { CreateRegistryTypeUseCase } from '@/use-cases/create-registry-type'
 
 @Module({
   imports: [
@@ -79,6 +80,7 @@ import { GeminiService } from '@/gemini/gemini.service'
     CreateDocumentNotificationController,
     SendQuestionController,
     SendQuestionPrivateController,
+    CreateRegistryTypeController,
   ],
   providers: [
     EnvService,
@@ -103,6 +105,7 @@ import { GeminiService } from '@/gemini/gemini.service'
     ExportDocumentUseCase,
     CreateDocumentNotifictionUseCase,
     AnswerQuestionUseCase,
+    CreateRegistryTypeUseCase,
   ],
 })
 export class HttpModule {}

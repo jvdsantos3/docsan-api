@@ -8,6 +8,7 @@ import { DocumetTypeFieldsLenghtError } from './errors/document-type-fields-leng
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { DocumentTypeEvent } from '@/events/document-type.event'
 import { UserPayload } from '@/auth/jwt.strategy'
+
 interface CreateDocumentTypeUseCaseRequest {
   user: UserPayload
   companyId: string

@@ -11,6 +11,7 @@ const createProfessionalBodySchema = z.object({
   phone: z.string(),
   fieldActivity: z.string(),
   // TODO
+  registryTypeId: z.string(),
   registry: z.string(),
   registryUf: z.string(),
   // TODO
