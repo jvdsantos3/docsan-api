@@ -232,3 +232,15 @@ model ChatHistory {
 
   @@map("chat_histories")
 }
+
+model Cnae {
+  id          String   @id @default(uuid())
+  code        String
+  description String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([code])
+
+  @@map("cnaes")
+}

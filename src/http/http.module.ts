@@ -48,6 +48,16 @@ import { EnvService } from '@/env/env.service'
 import { AnswerQuestionUseCase } from '@/use-cases/answer-question'
 import { SendQuestionPrivateController } from './controllers/chat/send-question.controller-private'
 import { GeminiService } from '@/gemini/gemini.service'
+import { FetchCnaesController } from './controllers/cnae/fetch-cnaes.controller'
+import { FetchCnaesUseCase } from '@/use-cases/fetch-cnaes'
+import { CreateCnaeUseCase } from '@/use-cases/create-cnae'
+import { CreateCnaeController } from './controllers/cnae/create-cnae.controller'
+import { GetCnaeByIdUseCase } from '@/use-cases/get-cnae-by-id'
+import { GetCnaeController } from './controllers/cnae/get-cnae.controller'
+import { EditCnaeController } from './controllers/cnae/edit-cnae.controller'
+import { EditCnaeUseCase } from '@/use-cases/edit-cnae'
+import { DeleteCnaeController } from './controllers/cnae/delete-cnae.controller'
+import { DeleteCnaeUseCase } from '@/use-cases/delete-cnae'
 
 @Module({
   imports: [
@@ -79,6 +89,11 @@ import { GeminiService } from '@/gemini/gemini.service'
     CreateDocumentNotificationController,
     SendQuestionController,
     SendQuestionPrivateController,
+    FetchCnaesController,
+    CreateCnaeController,
+    GetCnaeController,
+    EditCnaeController,
+    DeleteCnaeController
   ],
   providers: [
     EnvService,
@@ -103,6 +118,11 @@ import { GeminiService } from '@/gemini/gemini.service'
     ExportDocumentUseCase,
     CreateDocumentNotifictionUseCase,
     AnswerQuestionUseCase,
+    FetchCnaesUseCase,
+    CreateCnaeUseCase,
+    GetCnaeByIdUseCase,
+    EditCnaeUseCase,
+    DeleteCnaeUseCase
   ],
 })
 export class HttpModule {}
