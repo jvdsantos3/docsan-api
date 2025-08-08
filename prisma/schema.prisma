@@ -10,12 +10,7 @@ datasource db {
 enum Role {
   OWNER
   PROFESSIONAL
-}
-
-enum InvitationStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
+  ADMIN
 }
 
 model User {
@@ -28,10 +23,26 @@ model User {
 
   owner        Owner?        @relation("UserOwner")
   professional Professional? @relation("UserProfessional")
+  admin        Admin?        @relation("UserAdmin")
   actionLogs   ActionLog[]
   chatHistory  ChatHistory[]
 
   @@map("users")
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  name      String
+  isMain    Boolean  @default(false) @map("is_main")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user   User   @relation("UserAdmin", fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique @map("user_id")
+
+  adminPermissions AdminPermission[]
+
+  @@map("admins")
 }
 
 model Address {
@@ -113,6 +124,30 @@ model Professional {
   companies ProfessionalCompany[]
 
   @@map("professionals")
+}
+
+model Permission {
+  id        String   @id @default(uuid())
+  name      String
+  code      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  adminPermissions AdminPermission[]
+}
+
+model AdminPermission {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  admin   Admin  @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  adminId String
+
+  permission   Permission @relation(fields: [permissionId], references: [id])
+  permissionId String
+
+  @@unique([adminId, permissionId])
 }
 
 model DocumentType {

@@ -24,60 +24,90 @@ export class CaslAbilityFactory {
       createPrismaAbility,
     )
 
-    if (payload.role === 'OWNER') {
-      const user = await this.prisma.user.findUnique({
-        include: {
-          owner: true,
-        },
-        where: {
-          id: payload.sub,
-        },
-      })
-
-      if (!user) {
-        throw new UnauthorizedException('User not found.')
-      }
-
-      if (user.owner?.companyId !== companyId) {
-        cannot(Action.Manage, 'all')
-
-        return build()
-      }
-
-      can(Action.Manage, 'all')
-    } else {
-      const professionalCompany =
-        await this.prisma.professionalCompany.findUnique({
+    switch (payload.role) {
+      case 'ADMIN': {
+        const user = await this.prisma.user.findUnique({
+          include: {
+            admin: true,
+          },
           where: {
-            professionalId_companyId: {
-              professionalId: payload.sub,
-              companyId,
-            },
+            id: payload.sub,
           },
         })
 
-      if (!professionalCompany) {
-        cannot(Action.Manage, 'all')
+        if (!user) {
+          throw new UnauthorizedException('User not found.')
+        }
 
-        return build()
+        if (user.admin?.isMain) {
+          can(Action.Manage, 'all')
+        }
+
+        break
       }
+      case 'OWNER': {
+        const user = await this.prisma.user.findUnique({
+          include: {
+            owner: true,
+          },
+          where: {
+            id: payload.sub,
+          },
+        })
 
-      const permissions = professionalCompany.permissions as Record<
-        string,
-        boolean
-      >
+        if (!user) {
+          throw new UnauthorizedException('User not found.')
+        }
 
-      for (const [key, value] of Object.entries(permissions)) {
-        if (!value) continue
+        if (user.owner?.companyId !== companyId) {
+          cannot(Action.Manage, 'all')
 
-        const [resource, action] = key.split('.')
+          return build()
+        }
 
-        if (!resource || !action) continue
+        can(Action.Manage, 'DocumentType')
+        can(Action.Manage, 'Document')
 
-        const subject = this.toSubjectClass(resource)
-
-        can(action as Action, subject)
+        break
       }
+      case 'PROFESSIONAL': {
+        const professionalCompany =
+          await this.prisma.professionalCompany.findUnique({
+            where: {
+              professionalId_companyId: {
+                professionalId: payload.sub,
+                companyId,
+              },
+            },
+          })
+
+        if (!professionalCompany) {
+          cannot(Action.Manage, 'all')
+
+          return build()
+        }
+
+        const permissions = professionalCompany.permissions as Record<
+          string,
+          boolean
+        >
+
+        for (const [key, value] of Object.entries(permissions)) {
+          if (!value) continue
+
+          const [resource, action] = key.split('.')
+
+          if (!resource || !action) continue
+
+          const subject = this.toSubjectClass(resource)
+
+          can(action as Action, subject)
+        }
+
+        break
+      }
+      default:
+        throw new UnauthorizedException('Invalid user role.')
     }
 
     return build()
