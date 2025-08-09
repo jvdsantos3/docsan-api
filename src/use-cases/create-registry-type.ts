@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common'
 import { RegistryType } from '@prisma/client'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { UserPayload } from '@/auth/jwt.strategy'
+import { RegistryTypesRepository } from '@/database/repositories/registry-types-repository'
+import { RegistryTypeAlreadyExistsError } from './errors/registry-type-already-exists-error'
+import { RegistryTypeEvent } from '@/events/registry-type.event'
 
 interface CreateRegistryTypeUseCaseRequest {
   user: UserPayload
@@ -15,17 +18,34 @@ interface CreateRegistryTypeUseCaseResponse {
 @Injectable()
 export class CreateRegistryTypeUseCase {
   constructor(
+    private registryTypesRepository: RegistryTypesRepository,
     private eventEmitter: EventEmitter2,
   ) {}
 
   async execute({
     user,
     name,
-  }: CreateRegistryTypeUseCaseRequest): Promise<void> {
+  }: CreateRegistryTypeUseCaseRequest): Promise<CreateRegistryTypeUseCaseResponse> {
+    const registryTypeWithSameName =
+      await this.registryTypesRepository.findByName(name)
 
-    // this.eventEmitter.emit(
-    //   'document-type.created',
-    //   new DocumentTypeEvent(documentType.id, companyId, user.sub),
-    // )
+    if (registryTypeWithSameName) {
+      throw new RegistryTypeAlreadyExistsError(name)
+    }
+
+    const data = {
+      name,
+    }
+
+    const registryType = await this.registryTypesRepository.create(data)
+
+    this.eventEmitter.emit(
+      'registry-type.created',
+      new RegistryTypeEvent(registryType.id, user.sub),
+    )
+
+    return {
+      registryType,
+    }
   }
 }

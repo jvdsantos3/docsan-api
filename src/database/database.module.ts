@@ -12,6 +12,7 @@ import { DocumentNotificationsRepository } from './repositories/document-notific
 import { ChatHistoriesRepository } from './repositories/chat-histories-repository'
 import { CnaesRepository } from './repositories/cnaes-repository'
 import { BranchesActivityRepository } from './repositories/branches-activity-repository'
+import { RegistryTypesRepository } from './repositories/registry-types-repository'
 
 @Module({
   providers: [
@@ -27,7 +28,8 @@ import { BranchesActivityRepository } from './repositories/branches-activity-rep
     DocumentNotificationsRepository,
     ChatHistoriesRepository,
     CnaesRepository,
-    BranchesActivityRepository
+    BranchesActivityRepository,
+    RegistryTypesRepository,
   ],
   exports: [
     PrismaService,
@@ -42,7 +44,8 @@ import { BranchesActivityRepository } from './repositories/branches-activity-rep
     DocumentNotificationsRepository,
     ChatHistoriesRepository,
     CnaesRepository,
-    BranchesActivityRepository
+    BranchesActivityRepository,
+    RegistryTypesRepository,
   ],
 })
 export class DatabaseModule {}
