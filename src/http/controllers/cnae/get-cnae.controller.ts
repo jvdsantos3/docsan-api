@@ -1,18 +1,17 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common'
+import { Controller, Get, Param } from '@nestjs/common'
 import { GetCnaeByIdUseCase } from '@/use-cases/get-cnae-by-id'
 import {
   GetCnaeParamsSchema,
   getCnaeParamsValidationPipe,
 } from '@/http/schemas/get-cnae-schema'
-import { PoliciesGuard } from '@/casl/policies.guard'
+import { Public } from '@/auth/public'
 
 @Controller('cnaes/:cnaeId')
 export class GetCnaeController {
   constructor(private getCnaeById: GetCnaeByIdUseCase) {}
 
   @Get()
-  @UseGuards(PoliciesGuard)
-  // @CheckPolicies(new ReadCnaePolicyHandler())
+  @Public()
   async handle(
     @Param(getCnaeParamsValidationPipe)
     { cnaeId }: GetCnaeParamsSchema,

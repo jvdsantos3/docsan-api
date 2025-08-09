@@ -1,20 +1,17 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common'
-import { PoliciesGuard } from '@/casl/policies.guard'
-import { CheckPolicies } from '@/casl/check-policies.decorator'
-import { ReadRegistryTypePolicyHandler } from '@/casl/policies/read-registry-type.policy'
 import {
   FetchRegistryTypesQuerySchema,
   fetchRegistryTypesQueryValidationPipe,
 } from '@/http/schemas/fetch-registry-types-schema'
 import { FetchRegistryTypesUseCase } from '@/use-cases/fetch-registry-types'
+import { Public } from '@/auth/public'
 
 @Controller('registry-types')
 export class FetchRegistryTypesController {
   constructor(private fetchRegistryTypes: FetchRegistryTypesUseCase) {}
 
   @Get()
-  @UseGuards(PoliciesGuard)
-  @CheckPolicies(new ReadRegistryTypePolicyHandler())
+  @Public()
   async handle(
     @Query(fetchRegistryTypesQueryValidationPipe)
     { page, limit, order, active, filter }: FetchRegistryTypesQuerySchema,

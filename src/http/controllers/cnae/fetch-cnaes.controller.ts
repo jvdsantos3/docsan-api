@@ -1,20 +1,17 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common'
+import { Controller, Get, Query } from '@nestjs/common'
 import { FetchCnaesUseCase } from '@/use-cases/fetch-cnaes'
 import {
   FetchCnaesQuerySchema,
   FetchCnaesQueryValidationPipe,
 } from '@/http/schemas/fetch-cnaes-schema'
-import { PoliciesGuard } from '@/casl/policies.guard'
-// import { CheckPolicies } from '@/casl/check-policies.decorator'
-// import { ReadCnaePolicyHandler } from '@/casl/policies/read-cnae-type.policy'
+import { Public } from '@/auth/public'
 
 @Controller('cnaes')
 export class FetchCnaesController {
   constructor(private fetchCnaesUseCase: FetchCnaesUseCase) {}
 
   @Get()
-  @UseGuards(PoliciesGuard)
-  // @CheckPolicies(new ReadCnaePolicyHandler())
+  @Public()
   async handle(
     @Query(FetchCnaesQueryValidationPipe)
     { page, limit, order, active, filter }: FetchCnaesQuerySchema,

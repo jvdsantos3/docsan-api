@@ -5,6 +5,7 @@ import {
   FetchBranchesActivityQueryValidationPipe,
 } from '@/http/schemas/fetch-branches-activity-schema'
 import { PoliciesGuard } from '@/casl/policies.guard'
+import { Public } from '@/auth/public'
 // import { CheckPolicies } from '@/casl/check-policies.decorator'
 // import { ReadCnaePolicyHandler } from '@/casl/policies/read-cnae-type.policy'
 
@@ -13,8 +14,7 @@ export class FetchBranchesActivityController {
   constructor(private fetchBranchesActivityUseCase: FetchBranchesActivityUseCase) {}
 
   @Get()
-  @UseGuards(PoliciesGuard)
-  // @CheckPolicies(new ReadCnaePolicyHandler())
+  @Public()
   async handle(
     @Query(FetchBranchesActivityQueryValidationPipe)
     { page, limit, order, active, filter }: FetchBranchesActivityQuerySchema,
