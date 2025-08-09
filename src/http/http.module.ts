@@ -83,6 +83,7 @@ import { EditRegistryTypeController } from './controllers/registry-type/edit-reg
 import { EditRegistryTypeUseCase } from '@/use-cases/edit-registry-type'
 import { DeleteRegistryTypeController } from './controllers/registry-type/delete-registry-type.controller'
 import { DeleteRegistryTypeUseCase } from '@/use-cases/delete-registry-type'
+import { LogoutController } from './controllers/auth/logout.controller'
 
 @Module({
   imports: [
@@ -96,6 +97,7 @@ import { DeleteRegistryTypeUseCase } from '@/use-cases/delete-registry-type'
     CreateCompanyController,
     CreateProfessionalController,
     AuthenticateController,
+    LogoutController,
     RefreshController,
     ProfileController,
     CreateDocumentTypeController,
