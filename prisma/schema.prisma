@@ -103,15 +103,15 @@ model Owner {
 }
 
 model Professional {
-  id            String   @id @default(uuid())
-  name          String
-  cpf           String   @unique
-  birthDate     DateTime @map("birth_date")
-  phone         String
-  registry      String
-  registryUf    String   @map("registry_uf")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  id         String   @id @default(uuid())
+  name       String
+  cpf        String   @unique
+  birthDate  DateTime @map("birth_date")
+  phone      String
+  registry   String
+  registryUf String   @map("registry_uf")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
   address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
   addressId String  @unique @map("address_id")
