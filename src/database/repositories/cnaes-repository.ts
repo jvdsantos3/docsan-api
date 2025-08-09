@@ -5,7 +5,7 @@ import { PaginationParams } from '../interfaces/pagination-params'
 import { paginate } from '../pagination'
 
 export interface FetchFilters {
-  filter?: string,
+  filter?: string
   active?: boolean
 }
 
@@ -15,6 +15,10 @@ export class CnaesRepository {
 
   async findById(id: string) {
     return await this.prisma.cnae.findUnique({
+      include: {
+        actionLogs: true,
+        professionals: true,
+      },
       where: {
         id,
       },
@@ -36,17 +40,29 @@ export class CnaesRepository {
     active,
     filter,
   }: PaginationParams<Prisma.CnaeOrderByWithAggregationInput> & FetchFilters) {
-    const where: Prisma.CnaeWhereInput = {}
+    const where: Prisma.CnaeWhereInput = {
+      isActive: true,
+    }
 
     if (typeof active === 'boolean') {
       where.isActive = active
     }
 
     if (filter) {
-      where.description = {
-        contains: filter,
-        mode: 'insensitive',
-      }
+      where.OR = [
+        {
+          description: {
+            contains: filter,
+            mode: 'insensitive',
+          },
+        },
+        {
+          code: {
+            contains: filter,
+            mode: 'insensitive',
+          },
+        },
+      ]
     }
 
     const [cnaes, total] = await Promise.all([

@@ -6,7 +6,7 @@ import {
 } from '@/http/schemas/fetch-cnaes-schema'
 import { Public } from '@/auth/public'
 
-@Controller('cnaes')
+@Controller('/cnaes')
 export class FetchCnaesController {
   constructor(private fetchCnaesUseCase: FetchCnaesUseCase) {}
 
