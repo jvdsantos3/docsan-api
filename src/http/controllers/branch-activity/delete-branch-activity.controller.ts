@@ -1,10 +1,10 @@
-// import { CheckPolicies } from '@/casl/check-policies.decorator'
+import { CheckPolicies } from '@/casl/check-policies.decorator'
 import { PoliciesGuard } from '@/casl/policies.guard'
-import { 
+import { DeleteBranchActivityPolicyHandler } from '@/casl/policies/delete-branch-activity.policy'
+import {
   DeleteBranchActivityParamsSchema,
-  deleteBranchActivityParamsValidationPipe 
+  deleteBranchActivityParamsValidationPipe,
 } from '@/http/schemas/delete-branch-activity-schema'
-// import { DeleteCnaePolicyHandler } from '@/casl/policies/delete-cnae.policy'
 import { DeleteBranchActivityUseCase } from '@/use-cases/delete-branch-activity'
 import { Controller, Delete, Param, UseGuards } from '@nestjs/common'
 
@@ -14,7 +14,7 @@ export class DeleteBranchActivityController {
 
   @Delete()
   @UseGuards(PoliciesGuard)
-  // @CheckPolicies(new DeletebranchActivityPolicyHandler())
+  @CheckPolicies(new DeleteBranchActivityPolicyHandler())
   async handle(
     @Param(deleteBranchActivityParamsValidationPipe)
     { branchActivityId }: DeleteBranchActivityParamsSchema,

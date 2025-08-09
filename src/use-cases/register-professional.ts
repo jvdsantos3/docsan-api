@@ -14,7 +14,7 @@ interface RegisterProfessionalUseCaseRequest {
   email: string
   password: string
   phone: string
-  fieldActivity: string
+  branchActivityId: string
   registryTypeId: string
   registry: string
   registryUf: string
@@ -49,7 +49,7 @@ export class RegisterProfessionalUseCase {
     email,
     password,
     phone,
-    fieldActivity,
+    branchActivityId,
     registryTypeId,
     registry,
     registryUf,
@@ -105,7 +105,7 @@ export class RegisterProfessionalUseCase {
           cpf,
           birthDate,
           phone,
-          fieldActivity,
+          branchActivityId,
           registryTypeId,
           registry,
           registryUf,

@@ -108,20 +108,22 @@ model Professional {
   cpf           String   @unique
   birthDate     DateTime @map("birth_date")
   phone         String
-  fieldActivity String   @map("field_activity")
   registry      String
   registryUf    String   @map("registry_uf")
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
   address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
-  addressId String  @unique
+  addressId String  @unique @map("address_id")
 
   registryType   RegistryType @relation(fields: [registryTypeId], references: [id])
-  registryTypeId String       @unique
+  registryTypeId String       @unique @map("registry_type_id")
 
   cnae   Cnae   @relation(fields: [cnaeId], references: [id])
-  cnaeId String @unique
+  cnaeId String @unique @map("cnae_id")
+
+  branchActivity   BranchActivity @relation(fields: [branchActivityId], references: [id])
+  branchActivityId String         @unique @map("branch_activity_id")
 
   user   User   @relation("UserProfessional", fields: [userId], references: [id], onDelete: Cascade)
   userId String @unique @map("user_id")
@@ -251,6 +253,9 @@ model ActionLog {
   registryType   RegistryType? @relation(fields: [registryTypeId], references: [id])
   registryTypeId String?
 
+  branchActivity   BranchActivity? @relation(fields: [branchActivityId], references: [id])
+  branchActivityId String?
+
   @@map("action_logs")
 }
 
@@ -312,6 +317,9 @@ model BranchActivity {
   isActive  Boolean  @default(true) @map("is_active")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  actionLogs    ActionLog[]
+  professionals Professional[]
 
   @@map("branches_activity")
 }

@@ -2,7 +2,13 @@ import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { AbilityBuilder, PureAbility } from '@casl/ability'
 import { createPrismaAbility, PrismaQuery, Subjects } from '@casl/prisma'
 import { Action } from './actions.enum'
-import { DocumentType, Document, RegistryType, Cnae, BranchActivity } from '@prisma/client'
+import {
+  DocumentType,
+  Document,
+  RegistryType,
+  Cnae,
+  BranchActivity,
+} from '@prisma/client'
 import { PrismaService } from '@/database/prisma.service'
 import { UserPayload } from '@/auth/jwt.strategy'
 

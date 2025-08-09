@@ -4,14 +4,17 @@ import {
   GetBranchActivityParamsSchema,
   getBranchActivityParamsValidationPipe,
 } from '@/http/schemas/get-branch-activity-schema'
-import { Public } from '@/auth/public'
+import { PoliciesGuard } from '@/casl/policies.guard'
+import { CheckPolicies } from '@/casl/check-policies.decorator'
+import { ReadBranchActivityPolicyHandler } from '@/casl/policies/read-branch-activity.policy'
 
 @Controller('branches-activity/:branchActivityId')
 export class GetBranchActivitController {
   constructor(private getBranchActivityById: GetBranchActivitByIdUseCase) {}
 
   @Get()
-  @Public()
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies(new ReadBranchActivityPolicyHandler())
   async handle(
     @Param(getBranchActivityParamsValidationPipe)
     { branchActivityId }: GetBranchActivityParamsSchema,

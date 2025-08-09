@@ -15,6 +15,10 @@ export class BranchesActivityRepository {
 
   async findById(id: string) {
     return await this.prisma.branchActivity.findUnique({
+      include: {
+        actionLogs: true,
+        professionals: true,
+      },
       where: {
         id,
       },
@@ -35,8 +39,11 @@ export class BranchesActivityRepository {
     order = 'asc',
     active,
     filter,
-  }: PaginationParams<Prisma.BranchActivityOrderByWithAggregationInput> & FetchFilters) {
-    const where: Prisma.BranchActivityWhereInput = {}
+  }: PaginationParams<Prisma.BranchActivityOrderByWithAggregationInput> &
+    FetchFilters) {
+    const where: Prisma.BranchActivityWhereInput = {
+      isActive: true,
+    }
 
     if (typeof active === 'boolean') {
       where.isActive = active

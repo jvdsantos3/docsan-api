@@ -4,9 +4,9 @@ import {
   ChangeBranchActivityActiveParamsSchema,
   changeBranchActivityActiveParamsValidationPipe,
 } from '@/http/schemas/change-branch-activity-active-schema'
-// import { UpdateDocumentTypePolicyHandler } from '@/casl/policies/update-document-type.policy'
 import { PoliciesGuard } from '@/casl/policies.guard'
-// import { CheckPolicies } from '@/casl/check-policies.decorator'
+import { CheckPolicies } from '@/casl/check-policies.decorator'
+import { UpdateBranchActivityPolicyHandler } from '@/casl/policies/update-branch-activity.policy'
 
 @Controller('branches-activity/:branchActivityId/active')
 export class ChangeBranchActivityActiveController {
@@ -16,7 +16,7 @@ export class ChangeBranchActivityActiveController {
 
   @Patch()
   @UseGuards(PoliciesGuard)
-  // @CheckPolicies(new UpdateBranchActivityPolicyHandler())
+  @CheckPolicies(new UpdateBranchActivityPolicyHandler())
   async handle(
     @Param(changeBranchActivityActiveParamsValidationPipe)
     { branchActivityId }: ChangeBranchActivityActiveParamsSchema,

@@ -8,6 +8,8 @@ import { RegistryTypeCreatedListener } from './listeners/registry-type-created.l
 import { RegistryTypeUpdatedListener } from './listeners/registry-type-updated.listener'
 import { CnaeCreatedListener } from './listeners/cnae-created.listener'
 import { CnaeUpdatedListener } from './listeners/cnae-updated.listener'
+import { BranchActivityCreatedListener } from './listeners/branch-activity-updated.listener'
+import { BranchActivityUpdatedListener } from './listeners/branch-activity-created.listener'
 
 @Module({
   imports: [EventEmitterModule.forRoot()],
@@ -20,6 +22,8 @@ import { CnaeUpdatedListener } from './listeners/cnae-updated.listener'
     RegistryTypeUpdatedListener,
     CnaeCreatedListener,
     CnaeUpdatedListener,
+    BranchActivityCreatedListener,
+    BranchActivityUpdatedListener,
   ],
 })
 export class EventModule {}

@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common'
 import { BranchActivity } from '@prisma/client'
 import { BranchesActivityRepository } from '@/database/repositories/branches-activity-repository'
 import { BranchActivityAlreadyExistsError } from './errors/branch-activity-already-exists-error'
-// import { EventEmitter2 } from '@nestjs/event-emitter'
-// import { UserPayload } from '@/auth/jwt.strategy'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { UserPayload } from '@/auth/jwt.strategy'
+import { BranchActivityEvent } from '@/events/branch-activity.event'
 interface CreateBranchActivityUseCaseRequest {
-  // user: UserPayload
+  user: UserPayload
   name: string
 }
 
@@ -17,12 +18,12 @@ interface CreateBranchActivityUseCaseResponse {
 export class CreateBranchActivityUseCase {
   constructor(
     private branchesActivityRepository: BranchesActivityRepository,
-    // private eventEmitter: EventEmitter2,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async execute({
-    // user,
-    name
+    user,
+    name,
   }: CreateBranchActivityUseCaseRequest): Promise<CreateBranchActivityUseCaseResponse> {
     const BranchActivityWithSameName =
       await this.branchesActivityRepository.findByName(name)
@@ -32,15 +33,15 @@ export class CreateBranchActivityUseCase {
     }
 
     const data = {
-      name
+      name,
     }
 
     const branchActivity = await this.branchesActivityRepository.create(data)
 
-    // this.eventEmitter.emit(
-    //   'BranchActivity.created',
-    //   new BranchActivityEvent(BranchActivity.id, user.sub),
-    // )
+    this.eventEmitter.emit(
+      'branch-activity.created',
+      new BranchActivityEvent(branchActivity.id, user.sub),
+    )
 
     return {
       branchActivity,

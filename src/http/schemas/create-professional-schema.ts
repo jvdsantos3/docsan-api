@@ -9,7 +9,7 @@ const createProfessionalBodySchema = z.object({
   email: z.string().email(),
   password: z.string(),
   phone: z.string(),
-  fieldActivity: z.string(),
+  branchActivityId: z.string(),
   registryTypeId: z.string(),
   registry: z.string(),
   registryUf: z.string(),
