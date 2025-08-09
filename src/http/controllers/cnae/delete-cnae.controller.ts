@@ -1,20 +1,21 @@
 // import { CheckPolicies } from '@/casl/check-policies.decorator'
+import { CheckPolicies } from '@/casl/check-policies.decorator'
 import { PoliciesGuard } from '@/casl/policies.guard'
-import { 
+import { DeleteCnaePolicyHandler } from '@/casl/policies/delete-cnae.policy'
+import {
   DeleteCnaeParamsSchema,
-  deleteCnaeParamsValidationPipe 
+  deleteCnaeParamsValidationPipe,
 } from '@/http/schemas/delete-cnae-schema'
-// import { DeleteCnaePolicyHandler } from '@/casl/policies/delete-cnae.policy'
 import { DeleteCnaeUseCase } from '@/use-cases/delete-cnae'
 import { Controller, Delete, Param, UseGuards } from '@nestjs/common'
 
-@Controller('cnaes/:cnaeId')
+@Controller('/cnaes/:cnaeId')
 export class DeleteCnaeController {
   constructor(private deleteCnae: DeleteCnaeUseCase) {}
 
   @Delete()
   @UseGuards(PoliciesGuard)
-  // @CheckPolicies(new DeleteCnaePolicyHandler())
+  @CheckPolicies(new DeleteCnaePolicyHandler())
   async handle(
     @Param(deleteCnaeParamsValidationPipe)
     { cnaeId }: DeleteCnaeParamsSchema,

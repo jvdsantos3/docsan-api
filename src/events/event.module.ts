@@ -6,6 +6,8 @@ import { DocumentTypeUpdatedListener } from './listeners/document-type-updated.l
 import { DocumentCreatedListener } from './listeners/document-created.listener'
 import { RegistryTypeCreatedListener } from './listeners/registry-type-created.listener'
 import { RegistryTypeUpdatedListener } from './listeners/registry-type-updated.listener'
+import { CnaeCreatedListener } from './listeners/cnae-created.listener'
+import { CnaeUpdatedListener } from './listeners/cnae-updated.listener'
 
 @Module({
   imports: [EventEmitterModule.forRoot()],
@@ -16,6 +18,8 @@ import { RegistryTypeUpdatedListener } from './listeners/registry-type-updated.l
     DocumentCreatedListener,
     RegistryTypeCreatedListener,
     RegistryTypeUpdatedListener,
+    CnaeCreatedListener,
+    CnaeUpdatedListener,
   ],
 })
 export class EventModule {}

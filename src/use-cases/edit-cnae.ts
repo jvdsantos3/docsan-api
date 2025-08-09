@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common'
 import { Cnae } from '@prisma/client'
-// import { UserPayload } from '@/auth/jwt.strategy'
-// import { EventEmitter2 } from '@nestjs/event-emitter'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 import { CnaesRepository } from '@/database/repositories/cnaes-repository'
 import { CnaeNotFoundError } from './errors/cnae-not-found-error'
 import { CnaeAlreadyExistsError } from './errors/cnae-already-exists-error'
+import { UserPayload } from '@/auth/jwt.strategy'
+import { CnaeEvent } from '@/events/cnae.event'
 
 interface EditCnaeUseCaseRequest {
-  // user: UserPayload
+  user: UserPayload
   cnaeId: string
   code: string
   description: string
@@ -21,24 +22,22 @@ interface EditCnaeUseCaseResponse {
 export class EditCnaeUseCase {
   constructor(
     private cnaesRepository: CnaesRepository,
-    // private eventEmitter: EventEmitter2,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async execute({
-    // user,
+    user,
     cnaeId,
     code,
     description,
   }: EditCnaeUseCaseRequest): Promise<EditCnaeUseCaseResponse> {
-    const currentCnae =
-      await this.cnaesRepository.findById(cnaeId)
+    const currentCnae = await this.cnaesRepository.findById(cnaeId)
 
     if (!currentCnae) {
       throw new CnaeNotFoundError()
     }
 
-    const cnaeWithSameCode =
-      await this.cnaesRepository.findByCode(code)
+    const cnaeWithSameCode = await this.cnaesRepository.findByCode(code)
 
     if (cnaeWithSameCode && currentCnae.code !== code) {
       throw new CnaeAlreadyExistsError(code)
@@ -47,13 +46,10 @@ export class EditCnaeUseCase {
     const newCnae = await this.cnaesRepository.save({
       id: cnaeId,
       code,
-      description
+      description,
     })
 
-    // this.eventEmitter.emit(
-    //   'cnae.updated',
-    //   new CnaeEvent(newCnae.id, user.sub),
-    // )
+    this.eventEmitter.emit('cnae.updated', new CnaeEvent(newCnae.id, user.sub))
 
     return {
       cnae: newCnae,

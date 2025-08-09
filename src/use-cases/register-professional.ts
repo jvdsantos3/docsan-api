@@ -18,7 +18,7 @@ interface RegisterProfessionalUseCaseRequest {
   registryTypeId: string
   registry: string
   registryUf: string
-  cnae: string
+  cnaeId: string
   zipCode: string
   uf: string
   city: string
@@ -53,7 +53,7 @@ export class RegisterProfessionalUseCase {
     registryTypeId,
     registry,
     registryUf,
-    cnae,
+    cnaeId,
     zipCode,
     uf,
     city,
@@ -109,7 +109,7 @@ export class RegisterProfessionalUseCase {
           registryTypeId,
           registry,
           registryUf,
-          cnae,
+          cnaeId,
         },
         prisma,
       )

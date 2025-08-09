@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common'
 import { Cnae} from '@prisma/client'
 import { CnaesRepository } from '@/database/repositories/cnaes-repository'
 import { CnaeAlreadyExistsError } from './errors/cnae-already-exists-error'
-// import { EventEmitter2 } from '@nestjs/event-emitter'
-// import { UserPayload } from '@/auth/jwt.strategy'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { UserPayload } from '@/auth/jwt.strategy'
+import { CnaeEvent } from '@/events/cnae.event'
 interface CreateCnaeUseCaseRequest {
-  // user: UserPayload
+  user: UserPayload
   code: string
   description: string
 }
@@ -18,11 +19,11 @@ interface CreateCnaeUseCaseResponse {
 export class CreateCnaeUseCase {
   constructor(
     private cnaesRepository: CnaesRepository,
-    // private eventEmitter: EventEmitter2,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async execute({
-    // user,
+    user,
     code,
     description,
   }: CreateCnaeUseCaseRequest): Promise<CreateCnaeUseCaseResponse> {
@@ -40,10 +41,10 @@ export class CreateCnaeUseCase {
 
     const cnae = await this.cnaesRepository.create(data)
 
-    // this.eventEmitter.emit(
-    //   'cnae.created',
-    //   new CnaeEvent(cnae.id, user.sub),
-    // )
+    this.eventEmitter.emit(
+      'cnae.created',
+      new CnaeEvent(cnae.id, user.sub),
+    )
 
     return {
       cnae,

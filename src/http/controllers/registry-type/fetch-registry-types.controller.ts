@@ -24,6 +24,8 @@ export class FetchRegistryTypesController {
       filter,
     })
 
-    return registryTypes
+    return {
+      registryTypes,
+    }
   }
 }

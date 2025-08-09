@@ -10,12 +10,10 @@ const createProfessionalBodySchema = z.object({
   password: z.string(),
   phone: z.string(),
   fieldActivity: z.string(),
-  // TODO
   registryTypeId: z.string(),
   registry: z.string(),
   registryUf: z.string(),
-  // TODO
-  cnae: z.string(),
+  cnaeId: z.string(),
   // TODO
   zipCode: z.string(),
   uf: z.string(),
