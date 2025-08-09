@@ -47,7 +47,8 @@ import { RedisService } from '@/redis/redis.service'
 import { EnvService } from '@/env/env.service'
 import { AnswerQuestionUseCase } from '@/use-cases/answer-question'
 import { SendQuestionPrivateController } from './controllers/chat/send-question.controller-private'
-import { GeminiService } from '@/gemini/gemini.service'
+import { CreateRegistryTypeController } from './controllers/registry-type/create-registry-type.controller'
+import { CreateRegistryTypeUseCase } from '@/use-cases/create-registry-type'
 import { FetchCnaesController } from './controllers/cnae/fetch-cnaes.controller'
 import { FetchCnaesUseCase } from '@/use-cases/fetch-cnaes'
 import { CreateCnaeUseCase } from '@/use-cases/create-cnae'
@@ -72,6 +73,16 @@ import { ChangeCnaeActiveController } from './controllers/cnae/change-cnae-activ
 import { ChangeCnaeActiveUseCase } from '@/use-cases/change-cnae-active'
 import { ChangeBranchActivityActiveUseCase } from '@/use-cases/change-branch-activity-active'
 import { ChangeBranchActivityActiveController } from './controllers/branch-activity/change-branch-activity-active.controller'
+import { ChangeRegistryTypeActiveController } from './controllers/registry-type/change-registry-type-active.controller'
+import { ChangeRegistryTypeActiveUseCase } from '@/use-cases/change-registry-type-active'
+import { GetRegistryTypeController } from './controllers/registry-type/get-registry-type.controller'
+import { GetRegistryTypeUseCase } from '@/use-cases/get-registry-type-active'
+import { FetchRegistryTypesUseCase } from '@/use-cases/fetch-registry-types'
+import { FetchRegistryTypesController } from './controllers/registry-type/fetch-registry-types.controller'
+import { EditRegistryTypeController } from './controllers/registry-type/edit-registry-type.controller'
+import { EditRegistryTypeUseCase } from '@/use-cases/edit-registry-type'
+import { DeleteRegistryTypeController } from './controllers/registry-type/delete-registry-type.controller'
+import { DeleteRegistryTypeUseCase } from '@/use-cases/delete-registry-type'
 
 @Module({
   imports: [
@@ -103,6 +114,12 @@ import { ChangeBranchActivityActiveController } from './controllers/branch-activ
     CreateDocumentNotificationController,
     SendQuestionController,
     SendQuestionPrivateController,
+    CreateRegistryTypeController,
+    ChangeRegistryTypeActiveController,
+    GetRegistryTypeController,
+    FetchRegistryTypesController,
+    EditRegistryTypeController,
+    DeleteRegistryTypeController,
     FetchCnaesController,
     GetCnaeController,
     ChangeCnaeActiveController,
@@ -139,6 +156,12 @@ import { ChangeBranchActivityActiveController } from './controllers/branch-activ
     ExportDocumentUseCase,
     CreateDocumentNotifictionUseCase,
     AnswerQuestionUseCase,
+    CreateRegistryTypeUseCase,
+    ChangeRegistryTypeActiveUseCase,
+    GetRegistryTypeUseCase,
+    FetchRegistryTypesUseCase,
+    EditRegistryTypeUseCase,
+    DeleteRegistryTypeUseCase,
     FetchCnaesUseCase,
     GetCnaeByIdUseCase,
     ChangeCnaeActiveUseCase,
