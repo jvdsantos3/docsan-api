@@ -3,6 +3,10 @@ import { Encrypter } from '@/cryptography/encrypter'
 import { Injectable } from '@nestjs/common'
 import { UsersRepository } from '@/database/repositories/users-repository'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
+import { ProfessionalPendingError } from './errors/professional-pending-error'
+import { ProfessionalRejectedError } from './errors/professional-rejected-error'
+import { format } from 'date-fns'
+import { ProfessionalBannedError } from './errors/professional-banned-error'
 
 interface AuthenticateUseCaseRequest {
   email: string
@@ -30,6 +34,24 @@ export class AuthenticateUseCase {
 
     if (!user) {
       throw new WrongCredentialsError()
+    }
+
+    if (user.professional) {
+      const professional = user.professional
+
+      switch (professional.status) {
+        case 'PENDING':
+          throw new ProfessionalPendingError()
+        case 'REJECTED': {
+          if (professional.rejectedUntil) {
+            throw new ProfessionalRejectedError(
+              format(professional.rejectedUntil, 'dd/MM/yyyy'),
+            )
+          }
+        }
+        case 'BANNED':
+          throw new ProfessionalBannedError()
+      }
     }
 
     const isPasswordValid = await this.hashComparer.compare(

@@ -99,6 +99,8 @@ export class UsersRepository {
     const user = await this.prisma.user.findUnique({
       include: {
         professional: true,
+        owner: true,
+        admin: true,
       },
       where: { email },
     })
