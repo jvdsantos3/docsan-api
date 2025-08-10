@@ -7,12 +7,14 @@ import { AddressesRepository } from '@/database/repositories/addresses-repositor
 import { OwnersRepository } from '@/database/repositories/owners-repository'
 import { PrismaService } from '@/database/prisma.service'
 import { UsersRepository } from '@/database/repositories/users-repository'
+import { CnaesRepository } from '@/database/repositories/cnaes-repository'
+import { CnaeNotFoundError } from './errors/cnae-not-found-error'
 
 interface RegisterCompanyUseCaseRequest {
   name: string
   tradeName: string
   cnpj: string
-  cnae: string
+  cnaeId: string
   ownerName: string
   ownerCpf: string
   phone: string
@@ -38,6 +40,7 @@ export class RegisterCompanyUseCase {
     private companiesRepository: CompaniesRepository,
     private usersRepository: UsersRepository,
     private ownersRepository: OwnersRepository,
+    private cnaesRepository: CnaesRepository,
     private hashGenerator: HashGenerator,
     private prisma: PrismaService,
   ) {}
@@ -46,7 +49,7 @@ export class RegisterCompanyUseCase {
     name,
     tradeName,
     cnpj,
-    cnae,
+    cnaeId,
     ownerName,
     ownerCpf,
     phone,
@@ -72,6 +75,12 @@ export class RegisterCompanyUseCase {
       throw new UserAlreadyExistsError()
     }
 
+    const cnae = await this.cnaesRepository.findById(cnaeId)
+
+    if (!cnae) {
+      throw new CnaeNotFoundError()
+    }
+
     const hashedPassword = await this.hashGenerator.hash(password)
 
     const company = await this.prisma.$transaction(async (prisma) => {
@@ -93,7 +102,7 @@ export class RegisterCompanyUseCase {
           name,
           tradeName,
           cnpj,
-          cnae,
+          cnaeId,
           addressId: address.id,
         },
         prisma,

@@ -15,6 +15,10 @@ import { EnvModule } from '@/env/env.module'
           host: env.get('REDIS_HOST'),
           port: env.get('REDIS_PORT'),
         },
+        limiter: {
+          max: 1,
+          duration: 1000,
+        },
       }),
     }),
     BullModule.registerQueue({

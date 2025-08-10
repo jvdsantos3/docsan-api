@@ -5,7 +5,7 @@ const createCompanyBodySchema = z.object({
   name: z.string(),
   tradeName: z.string(),
   cnpj: z.string(),
-  cnae: z.string(),
+  cnaeId: z.string(),
   ownerName: z.string(),
   ownerCpf: z.string(),
   phone: z.string(),

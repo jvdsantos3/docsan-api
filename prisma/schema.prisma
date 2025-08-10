@@ -81,12 +81,14 @@ model Company {
   name      String
   tradeName String   @map("trade_name")
   cnpj      String   @unique
-  cnae      String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
   addressId String  @unique @map("address_id")
+
+  cnae   Cnae   @relation(fields: [cnaeId], references: [id])
+  cnaeId String
 
   owner Owner? @relation
 
@@ -340,6 +342,7 @@ model Cnae {
 
   actionLogs    ActionLog[]
   professionals Professional[]
+  companies     Company[]
 
   @@map("cnaes")
 }
