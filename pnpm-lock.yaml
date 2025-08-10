@@ -11,6 +11,9 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.848.0
         version: 3.848.0
+      '@brazilian-utils/brazilian-utils':
+        specifier: 1.0.0-rc.12
+        version: 1.0.0-rc.12
       '@casl/ability':
         specifier: ^6.7.3
         version: 6.7.3
@@ -405,6 +408,9 @@ packages:
   '@bcoe/v8-coverage@1.0.2':
     resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
     engines: {node: '>=18'}
+
+  '@brazilian-utils/brazilian-utils@1.0.0-rc.12':
+    resolution: {integrity: sha512-gR5TbSKTgFgDe0/ZghgwqCEryLbHjwdEpvr3ao/Z0f8zRu6LD3lif0HJ3eQiC3pJSwtUPyA+97vm1IEqZkYSTA==}
 
   '@casl/ability@6.7.3':
     resolution: {integrity: sha512-A4L28Ko+phJAsTDhRjzCOZWECQWN2jzZnJPnROWWHjJpyMq1h7h9ZqjwS2WbIUa3Z474X1ZPSgW0f1PboZGC0A==}
@@ -4700,6 +4706,8 @@ snapshots:
       '@babel/helper-validator-identifier': 7.27.1
 
   '@bcoe/v8-coverage@1.0.2': {}
+
+  '@brazilian-utils/brazilian-utils@1.0.0-rc.12': {}
 
   '@casl/ability@6.7.3':
     dependencies:

@@ -31,6 +31,9 @@ export class DocumentsRepository {
         actionLog: {
           include: {
             user: {
+              omit: {
+                password: true,
+              },
               include: {
                 owner: true,
                 professional: true,

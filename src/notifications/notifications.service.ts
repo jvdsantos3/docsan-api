@@ -14,7 +14,7 @@ export class NotificationsService {
     private readonly notificationsQueue: Queue,
   ) {}
 
-  // Executa diariamente às 08:00
+  // Daily at 8:00 AM
   @Cron('0 8 * * *')
   async checkDailyNotifications() {
     const now = new Date()
@@ -29,10 +29,16 @@ export class NotificationsService {
     })
 
     for (const notification of notifications) {
-      await this.notificationsQueue.add('send-notification', {
-        documentId: notification.documentId,
-        scheduledAt: notification.scheduledAt,
-      })
+      await this.notificationsQueue.add(
+        'send-notification',
+        {
+          documentId: notification.documentId,
+          scheduledAt: notification.scheduledAt,
+        },
+        {
+          delay: 5000, // 5s
+        },
+      )
     }
   }
 }

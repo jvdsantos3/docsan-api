@@ -1,11 +1,17 @@
 import { HashGenerator } from '@/cryptography/hash-generator'
 import { Injectable } from '@nestjs/common'
-import { Professional } from '@prisma/client'
+import { Cnae, Professional } from '@prisma/client'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 import { AddressesRepository } from '@/database/repositories/addresses-repository'
 import { PrismaService } from '@/database/prisma.service'
 import { ProfessionalsRepository } from '@/database/repositories/professionals-repository'
 import { UsersRepository } from '@/database/repositories/users-repository'
+import { BranchesActivityRepository } from '@/database/repositories/branches-activity-repository'
+import { CnaesRepository } from '@/database/repositories/cnaes-repository'
+import { RegistryTypesRepository } from '@/database/repositories/registry-types-repository'
+import { BranchActivityNotFoundError } from './errors/branch-activity-not-found-error'
+import { CnaeNotFoundError } from './errors/cnae-not-found-error'
+import { RegistryTypeNotFoundError } from './errors/registry-type-not-found-error'
 
 interface RegisterProfessionalUseCaseRequest {
   name: string
@@ -14,11 +20,13 @@ interface RegisterProfessionalUseCaseRequest {
   email: string
   password: string
   phone: string
+  classification: 'PERSON' | 'COMPANY'
+  cnpj?: string
   branchActivityId: string
   registryTypeId: string
   registry: string
   registryUf: string
-  cnaeId: string
+  cnaeId?: string
   zipCode: string
   uf: string
   city: string
@@ -38,6 +46,9 @@ export class RegisterProfessionalUseCase {
     private addressRepository: AddressesRepository,
     private usersRepository: UsersRepository,
     private professionalsRepository: ProfessionalsRepository,
+    private branchesActivityRepository: BranchesActivityRepository,
+    private cnaesRepository: CnaesRepository,
+    private registryTypesRepository: RegistryTypesRepository,
     private hashGenerator: HashGenerator,
     private prisma: PrismaService,
   ) {}
@@ -49,6 +60,8 @@ export class RegisterProfessionalUseCase {
     email,
     password,
     phone,
+    classification,
+    cnpj,
     branchActivityId,
     registryTypeId,
     registry,
@@ -65,7 +78,7 @@ export class RegisterProfessionalUseCase {
     const userWithSameEmail = await this.usersRepository.findByEmail(email)
 
     if (userWithSameEmail) {
-      throw new UserAlreadyExistsError(email)
+      throw new UserAlreadyExistsError()
     }
 
     const professionalWithSameCpf =
@@ -73,6 +86,30 @@ export class RegisterProfessionalUseCase {
 
     if (professionalWithSameCpf) {
       throw new UserAlreadyExistsError()
+    }
+
+    const branchActivity =
+      await this.branchesActivityRepository.findById(branchActivityId)
+
+    if (!branchActivity) {
+      throw new BranchActivityNotFoundError()
+    }
+
+    let cnae: Cnae | null = null
+
+    if (cnaeId) {
+      cnae = await this.cnaesRepository.findById(cnaeId)
+
+      if (!cnae) {
+        throw new CnaeNotFoundError()
+      }
+    }
+
+    const registryType =
+      await this.registryTypesRepository.findById(registryTypeId)
+
+    if (!registryType) {
+      throw new RegistryTypeNotFoundError()
     }
 
     const hashedPassword = await this.hashGenerator.hash(password)
@@ -105,11 +142,13 @@ export class RegisterProfessionalUseCase {
           cpf,
           birthDate,
           phone,
-          branchActivityId,
-          registryTypeId,
+          classification,
+          cnpj,
+          branchActivityId: branchActivity.id,
+          registryTypeId: registryType.id,
           registry,
           registryUf,
-          cnaeId,
+          cnaeId: cnae ? cnae.id : null,
         },
         prisma,
       )
