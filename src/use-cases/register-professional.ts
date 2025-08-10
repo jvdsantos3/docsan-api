@@ -12,6 +12,8 @@ import { RegistryTypesRepository } from '@/database/repositories/registry-types-
 import { BranchActivityNotFoundError } from './errors/branch-activity-not-found-error'
 import { CnaeNotFoundError } from './errors/cnae-not-found-error'
 import { RegistryTypeNotFoundError } from './errors/registry-type-not-found-error'
+import { format, isBefore, isEqual, startOfDay } from 'date-fns'
+import { ProfessionalRejectedError } from './errors/professional-rejected-error'
 
 interface RegisterProfessionalUseCaseRequest {
   name: string
@@ -75,17 +77,56 @@ export class RegisterProfessionalUseCase {
     neighborhood,
     complement,
   }: RegisterProfessionalUseCaseRequest): Promise<RegisterProfessionalUseCaseResponse> {
+    const professionalWithSameCpf =
+      await this.professionalsRepository.findByCpf(cpf)
+
+    if (
+      professionalWithSameCpf &&
+      professionalWithSameCpf.status !== 'REJECTED'
+    ) {
+      throw new UserAlreadyExistsError()
+    }
+
+    if (
+      professionalWithSameCpf &&
+      professionalWithSameCpf.status === 'REJECTED'
+    ) {
+      const rejectedUntil = professionalWithSameCpf.rejectedUntil
+        ? startOfDay(professionalWithSameCpf.rejectedUntil)
+        : null
+
+      if (rejectedUntil) {
+        const today = startOfDay(new Date())
+
+        if (isBefore(rejectedUntil, today) || isEqual(rejectedUntil, today)) {
+          const updatedProfessional = await this.professionalsRepository.save({
+            id: professionalWithSameCpf.id,
+            status: 'PENDING',
+            rejectedUntil: null,
+          })
+
+          return {
+            professional: updatedProfessional,
+          }
+        }
+
+        throw new ProfessionalRejectedError(format(rejectedUntil, 'dd/MM/yyyy'))
+      }
+    }
+
     const userWithSameEmail = await this.usersRepository.findByEmail(email)
 
     if (userWithSameEmail) {
       throw new UserAlreadyExistsError()
     }
 
-    const professionalWithSameCpf =
-      await this.professionalsRepository.findByCpf(cpf)
+    if (cnpj) {
+      const professionalWithSameCnpj =
+        await this.professionalsRepository.findByCnpj(cnpj)
 
-    if (professionalWithSameCpf) {
-      throw new UserAlreadyExistsError()
+      if (professionalWithSameCnpj) {
+        throw new UserAlreadyExistsError()
+      }
     }
 
     const branchActivity =

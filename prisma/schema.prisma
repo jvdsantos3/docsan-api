@@ -18,6 +18,13 @@ enum PersonClassification {
   COMPANY
 }
 
+enum ProfessionalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  BANNED
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
@@ -26,11 +33,12 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  owner        Owner?        @relation("UserOwner")
-  professional Professional? @relation("UserProfessional")
-  admin        Admin?        @relation("UserAdmin")
-  actionLogs   ActionLog[]
-  chatHistory  ChatHistory[]
+  owner         Owner?                      @relation("UserOwner")
+  professional  Professional?               @relation("UserProfessional")
+  admin         Admin?                      @relation("UserAdmin")
+  actionLogs    ActionLog[]
+  chatHistory   ChatHistory[]
+  statusHistory ProfessionalStatusHistory[]
 
   @@map("users")
 }
@@ -117,6 +125,8 @@ model Professional {
   cnpj           String?              @unique
   registry       String
   registryUf     String               @map("registry_uf")
+  status         ProfessionalStatus   @default(PENDING)
+  rejectedUntil  DateTime?
   createdAt      DateTime             @default(now()) @map("created_at")
   updatedAt      DateTime             @updatedAt @map("updated_at")
 
@@ -135,9 +145,25 @@ model Professional {
   user   User   @relation("UserProfessional", fields: [userId], references: [id], onDelete: Cascade)
   userId String @unique @map("user_id")
 
-  companies ProfessionalCompany[]
+  companies     ProfessionalCompany[]
+  statusHistory ProfessionalStatusHistory[]
 
   @@map("professionals")
+}
+
+model ProfessionalStatusHistory {
+  id            String             @id @default(uuid())
+  status        ProfessionalStatus
+  reason        String?
+  rejectedUntil DateTime?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt @map("updated_at")
+
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  professionalId String
+
+  changedBy   User?   @relation(fields: [changedById], references: [id])
+  changedById String?
 }
 
 model Permission {

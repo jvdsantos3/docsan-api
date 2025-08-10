@@ -17,5 +17,11 @@ export class CreateProfessionalController {
     @Body(createProfessionalValidationPipe) body: CreateProfessionalBodySchema,
   ) {
     await this.registerProfessional.execute(body)
+
+    return {
+      message: 'Professional registered successfully.',
+      description:
+        'Your profile is being analyzed by our administrators, you will soon receive feedback on the analysis.',
+    }
   }
 }

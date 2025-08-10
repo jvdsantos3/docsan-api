@@ -31,11 +31,31 @@ export class ProfessionalsRepository {
     })
   }
 
+  async findByCnpj(cnpj: string): Promise<Professional | null> {
+    return await this.prisma.professional.findUnique({
+      where: {
+        cnpj,
+      },
+    })
+  }
+
   async create(
     data: Prisma.ProfessionalUncheckedCreateInput,
     prisma: Prisma.TransactionClient = this.prisma,
   ) {
     return await prisma.professional.create({
+      data,
+    })
+  }
+
+  async save(
+    data: Partial<Prisma.ProfessionalUncheckedCreateInput> & { id: string },
+    prisma: Prisma.TransactionClient = this.prisma,
+  ) {
+    return await prisma.professional.update({
+      where: {
+        id: data.id,
+      },
       data,
     })
   }

@@ -91,8 +91,15 @@ export class UsersRepository {
     return user
   }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string): Promise<Prisma.UserGetPayload<{
+    include: {
+      professional: true
+    }
+  }> | null> {
     const user = await this.prisma.user.findUnique({
+      include: {
+        professional: true,
+      },
       where: { email },
     })
 
