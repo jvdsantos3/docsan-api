@@ -40,9 +40,7 @@ export class CnaesRepository {
     active,
     filter,
   }: PaginationParams<Prisma.CnaeOrderByWithAggregationInput> & FetchFilters) {
-    const where: Prisma.CnaeWhereInput = {
-      isActive: true,
-    }
+    const where: Prisma.CnaeWhereInput = {}
 
     if (typeof active === 'boolean') {
       where.isActive = active

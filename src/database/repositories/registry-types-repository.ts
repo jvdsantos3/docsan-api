@@ -41,9 +41,7 @@ export class RegistryTypesRepository {
     filter,
   }: PaginationParams<Prisma.RegistryTypeOrderByWithAggregationInput> &
     FetchFilters) {
-    const where: Prisma.RegistryTypeWhereInput = {
-      isActive: true,
-    }
+    const where: Prisma.RegistryTypeWhereInput = {}
 
     if (typeof active === 'boolean') {
       where.isActive = active
