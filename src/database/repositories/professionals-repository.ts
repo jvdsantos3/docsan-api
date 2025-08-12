@@ -9,6 +9,51 @@ export interface FindManyFilters {
   filter?: string
 }
 
+export interface ProfessionalShow {
+  include: {
+    user: {
+      omit: {
+        id: true
+        password: true
+        role: true
+        createdAt: true
+        updatedAt: true
+      }
+    }
+    address: {
+      omit: {
+        id: true
+        createdAt: true
+        updatedAt: true
+      }
+    }
+    cnae: {
+      omit: {
+        id: true
+        createdAt: true
+        updatedAt: true
+        isActive: true
+      }
+    }
+    branchActivity: {
+      omit: {
+        id: true
+        createdAt: true
+        updatedAt: true
+        isActive: true
+      }
+    }
+    registryType: {
+      omit: {
+        id: true
+        createdAt: true
+        updatedAt: true
+        isActive: true
+      }
+    }
+  }
+}
+
 @Injectable()
 export class ProfessionalsRepository {
   constructor(private prisma: PrismaService) {}
@@ -78,6 +123,56 @@ export class ProfessionalsRepository {
     return await this.prisma.professional.count({
       where: {
         status: 'BANNED',
+      },
+    })
+  }
+
+  async show(id: string) {
+    return await this.prisma.professional.findUnique({
+      include: {
+        user: {
+          omit: {
+            id: true,
+            password: true,
+            role: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        address: {
+          omit: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        cnae: {
+          omit: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            isActive: true,
+          },
+        },
+        branchActivity: {
+          omit: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            isActive: true,
+          },
+        },
+        registryType: {
+          omit: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            isActive: true,
+          },
+        },
+      },
+      where: {
+        id,
       },
     })
   }

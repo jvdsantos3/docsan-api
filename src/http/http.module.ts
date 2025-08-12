@@ -86,8 +86,10 @@ import { DeleteRegistryTypeUseCase } from '@/use-cases/delete-registry-type'
 import { LogoutController } from './controllers/auth/logout.controller'
 import { FetchProfessionalsController } from './controllers/professionals/fetch-professionals.controller'
 import { FetchProfessionalsUseCase } from '@/use-cases/fetch-professionals'
-import { GetProfessionalssummaryController } from './controllers/professionals/get-professionals-summary.controller'
+import { GetProfessionalsSummaryController } from './controllers/professionals/get-professionals-summary.controller'
 import { GetProfessionalsSummaryUseCase } from '@/use-cases/get-professionals-summary'
+import { GetProfessionalController } from './controllers/professionals/get-professional.controller'
+import { GetProfessionalUseCase } from '@/use-cases/get-professional'
 
 @Module({
   imports: [
@@ -139,7 +141,8 @@ import { GetProfessionalsSummaryUseCase } from '@/use-cases/get-professionals-su
     EditBranchActivityController,
     DeleteBranchActivityController,
     FetchProfessionalsController,
-    GetProfessionalssummaryController,
+    GetProfessionalsSummaryController,
+    GetProfessionalController,
   ],
   providers: [
     EnvService,
@@ -184,6 +187,7 @@ import { GetProfessionalsSummaryUseCase } from '@/use-cases/get-professionals-su
     DeleteBranchActivityUseCase,
     FetchProfessionalsUseCase,
     GetProfessionalsSummaryUseCase,
+    GetProfessionalUseCase,
   ],
 })
 export class HttpModule {}

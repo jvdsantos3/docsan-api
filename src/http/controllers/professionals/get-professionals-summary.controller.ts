@@ -5,7 +5,7 @@ import { ReadProfessionalPolicyHandler } from '@/casl/policies/read-professional
 import { GetProfessionalsSummaryUseCase } from '@/use-cases/get-professionals-summary'
 
 @Controller('/professionals/summary')
-export class GetProfessionalssummaryController {
+export class GetProfessionalsSummaryController {
   constructor(
     private getProfessionalsSummary: GetProfessionalsSummaryUseCase,
   ) {}
