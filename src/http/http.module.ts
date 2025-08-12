@@ -90,6 +90,9 @@ import { GetProfessionalsSummaryController } from './controllers/professionals/g
 import { GetProfessionalsSummaryUseCase } from '@/use-cases/get-professionals-summary'
 import { GetProfessionalController } from './controllers/professionals/get-professional.controller'
 import { GetProfessionalUseCase } from '@/use-cases/get-professional'
+import { ApproveProfessionalController } from './controllers/professionals/approve-professional.controller'
+import { ApproveProfessionalUseCase } from '@/use-cases/approve-professional'
+import { MailModule } from '@/mail/mail.module'
 
 @Module({
   imports: [
@@ -143,6 +146,7 @@ import { GetProfessionalUseCase } from '@/use-cases/get-professional'
     FetchProfessionalsController,
     GetProfessionalsSummaryController,
     GetProfessionalController,
+    ApproveProfessionalController,
   ],
   providers: [
     EnvService,
@@ -188,6 +192,7 @@ import { GetProfessionalUseCase } from '@/use-cases/get-professional'
     FetchProfessionalsUseCase,
     GetProfessionalsSummaryUseCase,
     GetProfessionalUseCase,
+    ApproveProfessionalUseCase,
   ],
 })
 export class HttpModule {}

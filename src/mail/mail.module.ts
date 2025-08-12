@@ -6,5 +6,6 @@ import { EnvService } from '@/env/env.service'
 @Module({
   imports: [ScheduleModule],
   providers: [MailService, EnvService],
+  exports: [MailService],
 })
 export class MailModule {}

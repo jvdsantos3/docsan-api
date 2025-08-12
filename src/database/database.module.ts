@@ -13,6 +13,7 @@ import { ChatHistoriesRepository } from './repositories/chat-histories-repositor
 import { CnaesRepository } from './repositories/cnaes-repository'
 import { BranchesActivityRepository } from './repositories/branches-activity-repository'
 import { RegistryTypesRepository } from './repositories/registry-types-repository'
+import { ProfessionalStatusHistoriesRepository } from './repositories/professional-status-histories-repository'
 
 @Module({
   providers: [
@@ -30,6 +31,7 @@ import { RegistryTypesRepository } from './repositories/registry-types-repositor
     CnaesRepository,
     BranchesActivityRepository,
     RegistryTypesRepository,
+    ProfessionalStatusHistoriesRepository,
   ],
   exports: [
     PrismaService,
@@ -46,6 +48,7 @@ import { RegistryTypesRepository } from './repositories/registry-types-repositor
     CnaesRepository,
     BranchesActivityRepository,
     RegistryTypesRepository,
+    ProfessionalStatusHistoriesRepository,
   ],
 })
 export class DatabaseModule {}
