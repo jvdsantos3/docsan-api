@@ -46,6 +46,38 @@ export class ProfessionalsRepository {
     })
   }
 
+  async getApprovedCount() {
+    return await this.prisma.professional.count({
+      where: {
+        status: 'APPROVED',
+      },
+    })
+  }
+
+  async getRejectedCount() {
+    return await this.prisma.professional.count({
+      where: {
+        status: 'REJECTED',
+      },
+    })
+  }
+
+  async getPendingCount() {
+    return await this.prisma.professional.count({
+      where: {
+        status: 'PENDING',
+      },
+    })
+  }
+
+  async getBannedCount() {
+    return await this.prisma.professional.count({
+      where: {
+        status: 'BANNED',
+      },
+    })
+  }
+
   async fetchPagination({
     page,
     limit,

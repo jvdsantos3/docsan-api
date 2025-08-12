@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common'
+import { Controller, Get, Query, UseGuards } from '@nestjs/common'
 import { PoliciesGuard } from '@/casl/policies.guard'
 import { CheckPolicies } from '@/casl/check-policies.decorator'
 import {
