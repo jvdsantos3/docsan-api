@@ -1,6 +1,13 @@
 import { Prisma, Professional } from '@prisma/client'
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
+import { PaginationParams } from '../interfaces/pagination-params'
+import { paginate } from '../pagination'
+
+export interface FindManyFilters {
+  status?: 'APPROVED' | 'REJECTED' | 'PENDING' | 'BANNED'
+  filter?: string
+}
 
 @Injectable()
 export class ProfessionalsRepository {
@@ -36,6 +43,87 @@ export class ProfessionalsRepository {
       where: {
         cnpj,
       },
+    })
+  }
+
+  async fetchPagination({
+    page,
+    limit,
+    order = 'desc',
+    orderBy = 'createdAt',
+    status,
+    filter,
+  }: PaginationParams<'name' | 'cpf' | 'status' | 'email' | 'createdAt'> &
+    FindManyFilters) {
+    const where: Prisma.ProfessionalWhereInput = {}
+
+    if (status) {
+      where.status = status
+    }
+
+    if (filter) {
+      where.OR = [
+        {
+          name: {
+            contains: filter,
+            mode: 'insensitive',
+          },
+        },
+        {
+          cpf: {
+            contains: filter,
+            mode: 'insensitive',
+          },
+        },
+        {
+          user: {
+            email: {
+              contains: filter,
+              mode: 'insensitive',
+            },
+          },
+        },
+      ]
+    }
+
+    const [professionals, total] = await Promise.all([
+      this.prisma.professional.findMany({
+        where,
+        orderBy: {
+          [orderBy]: order,
+        },
+        skip: (page - 1) * (limit ?? 15),
+        take: limit ?? 15,
+        include: {
+          user: {
+            omit: {
+              password: true,
+              role: true,
+            },
+          },
+        },
+      }),
+      this.prisma.professional.count({
+        where,
+      }),
+    ])
+
+    return paginate<
+      Prisma.ProfessionalGetPayload<{
+        include: {
+          user: {
+            omit: {
+              password: true
+              role: true
+            }
+          }
+        }
+      }>
+    >({
+      data: professionals,
+      total,
+      page,
+      limit,
     })
   }
 

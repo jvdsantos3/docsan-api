@@ -8,6 +8,7 @@ import {
   RegistryType,
   Cnae,
   BranchActivity,
+  Professional,
 } from '@prisma/client'
 import { PrismaService } from '@/database/prisma.service'
 import { UserPayload } from '@/auth/jwt.strategy'
@@ -20,6 +21,7 @@ type AppSubjects =
       Cnae: Cnae
       BranchActivity: BranchActivity
       RegistryType: RegistryType
+      Professional: Professional
     }>
 
 export type AppAbility = PureAbility<[Action, AppSubjects], PrismaQuery>

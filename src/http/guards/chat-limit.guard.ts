@@ -24,7 +24,6 @@ export class ChatLimitGuard implements CanActivate {
     }
 
     const ip = this.getClientIp(request)
-    console.log('Client IP:', ip)
 
     if (!ip) {
       throw new HttpException(

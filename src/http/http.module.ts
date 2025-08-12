@@ -11,7 +11,7 @@ import { DeleteDocumentTypeUseCase } from '@/use-cases/delete-document-type'
 import { GetDocumentTypeByIdUseCase } from '@/use-cases/get-document-type-by-id'
 import { EditDocumentTypeUseCase } from '@/use-cases/edit-document-type'
 import { RegisterProfessionalUseCase } from '@/use-cases/register-professional'
-import { CreateProfessionalController } from './controllers/auth/create-professional.controller'
+import { CreateProfessionalController } from './controllers/professionals/create-professional.controller'
 import { StorageModule } from '@/storage/storage.module'
 import { ExtractDataController } from './controllers/document/extract-data.controller'
 import { ExtractDataUseCase } from '@/use-cases/extract-data'
@@ -84,6 +84,8 @@ import { EditRegistryTypeUseCase } from '@/use-cases/edit-registry-type'
 import { DeleteRegistryTypeController } from './controllers/registry-type/delete-registry-type.controller'
 import { DeleteRegistryTypeUseCase } from '@/use-cases/delete-registry-type'
 import { LogoutController } from './controllers/auth/logout.controller'
+import { FetchProfessionalsController } from './controllers/professionals/fetch-professionals.controller'
+import { FetchProfessionalsUseCase } from '@/use-cases/fetch-professionals'
 
 @Module({
   imports: [
@@ -134,6 +136,7 @@ import { LogoutController } from './controllers/auth/logout.controller'
     CreateBranchActivityController,
     EditBranchActivityController,
     DeleteBranchActivityController,
+    FetchProfessionalsController,
   ],
   providers: [
     EnvService,
@@ -176,6 +179,7 @@ import { LogoutController } from './controllers/auth/logout.controller'
     CreateBranchActivityUseCase,
     EditBranchActivityUseCase,
     DeleteBranchActivityUseCase,
+    FetchProfessionalsUseCase,
   ],
 })
 export class HttpModule {}
