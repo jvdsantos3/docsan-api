@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common'
 
 interface GetProfessionalsSummaryUseCaseResponse {
   summary: {
+    total: number
     totalApproved: number
     totalPending: number
     totalRejected: number
@@ -16,6 +17,7 @@ export class GetProfessionalsSummaryUseCase {
 
   async execute(): Promise<GetProfessionalsSummaryUseCaseResponse> {
     const summary = {
+      total: await this.professionalsRepository.getProfessionalsCount(),
       totalApproved: await this.professionalsRepository.getApprovedCount(),
       totalPending: await this.professionalsRepository.getPendingCount(),
       totalRejected: await this.professionalsRepository.getRejectedCount(),

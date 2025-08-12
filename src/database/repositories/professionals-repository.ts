@@ -46,6 +46,10 @@ export class ProfessionalsRepository {
     })
   }
 
+  async getProfessionalsCount() {
+    return await this.prisma.professional.count()
+  }
+
   async getApprovedCount() {
     return await this.prisma.professional.count({
       where: {
