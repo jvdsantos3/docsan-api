@@ -41,9 +41,7 @@ export class BranchesActivityRepository {
     filter,
   }: PaginationParams<Prisma.BranchActivityOrderByWithAggregationInput> &
     FetchFilters) {
-    const where: Prisma.BranchActivityWhereInput = {
-      isActive: true,
-    }
+    const where: Prisma.BranchActivityWhereInput = {}
 
     if (typeof active === 'boolean') {
       where.isActive = active
