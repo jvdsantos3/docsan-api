@@ -136,13 +136,13 @@ model Professional {
   addressId String  @unique @map("address_id")
 
   registryType   RegistryType @relation(fields: [registryTypeId], references: [id])
-  registryTypeId String       @unique @map("registry_type_id")
+  registryTypeId String       @map("registry_type_id")
 
   cnae   Cnae?   @relation(fields: [cnaeId], references: [id])
-  cnaeId String? @unique @map("cnae_id")
+  cnaeId String? @map("cnae_id")
 
   branchActivity   BranchActivity @relation(fields: [branchActivityId], references: [id])
-  branchActivityId String         @unique @map("branch_activity_id")
+  branchActivityId String         @map("branch_activity_id")
 
   user   User   @relation("UserProfessional", fields: [userId], references: [id], onDelete: Cascade)
   userId String @unique @map("user_id")

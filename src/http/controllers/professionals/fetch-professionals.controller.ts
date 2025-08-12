@@ -35,6 +35,8 @@ export class FetchProfessionalsController {
       filter,
     })
 
-    return professionals
+    return {
+      professionals,
+    }
   }
 }
