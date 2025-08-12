@@ -67,7 +67,7 @@ export class CnaesRepository {
       this.prisma.cnae.findMany({
         where,
         orderBy: {
-          code: order,
+          description: order,
         },
         take: limit,
         skip: (page - 1) * limit,
