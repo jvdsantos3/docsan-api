@@ -260,8 +260,10 @@ export class ProfessionalsRepository {
 
   async create(
     data: Prisma.ProfessionalUncheckedCreateInput,
-    prisma: Prisma.TransactionClient = this.prisma,
+    tx?: Prisma.TransactionClient,
   ) {
+    const prisma = tx || this.prisma
+
     return await prisma.professional.create({
       data,
     })
@@ -269,8 +271,10 @@ export class ProfessionalsRepository {
 
   async save(
     data: Partial<Prisma.ProfessionalUncheckedCreateInput> & { id: string },
-    prisma: Prisma.TransactionClient = this.prisma,
+    tx: Prisma.TransactionClient = this.prisma,
   ) {
+    const prisma = tx || this.prisma
+
     return await prisma.professional.update({
       where: {
         id: data.id,

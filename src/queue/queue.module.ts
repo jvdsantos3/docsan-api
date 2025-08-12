@@ -3,6 +3,8 @@ import { BullModule } from '@nestjs/bull'
 import { QUEUE_NAMES } from './queue.constants'
 import { EnvService } from '@/env/env.service'
 import { EnvModule } from '@/env/env.module'
+import { MailProcessor } from './processors/mail.processor'
+import { MailService } from '@/mail/mail.service'
 
 @Global()
 @Module({
@@ -21,11 +23,16 @@ import { EnvModule } from '@/env/env.module'
         },
       }),
     }),
-    BullModule.registerQueue({
-      name: QUEUE_NAMES.NOTIFICATIONS,
-    }),
+    BullModule.registerQueue(
+      {
+        name: QUEUE_NAMES.NOTIFICATIONS,
+      },
+      {
+        name: QUEUE_NAMES.MAILS,
+      },
+    ),
   ],
   exports: [BullModule],
-  providers: [EnvService],
+  providers: [EnvService, MailProcessor, MailService],
 })
 export class QueueModule {}
