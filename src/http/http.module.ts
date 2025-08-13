@@ -92,7 +92,8 @@ import { GetProfessionalController } from './controllers/professionals/get-profe
 import { GetProfessionalUseCase } from '@/use-cases/get-professional'
 import { ApproveProfessionalController } from './controllers/professionals/approve-professional.controller'
 import { ApproveProfessionalUseCase } from '@/use-cases/approve-professional'
-import { MailModule } from '@/mail/mail.module'
+import { CahngeBanProfessionalController } from './controllers/professionals/ban-professional.controller'
+import { ChangeBanProfessionalUseCase } from '@/use-cases/ban-professional'
 
 @Module({
   imports: [
@@ -147,6 +148,7 @@ import { MailModule } from '@/mail/mail.module'
     GetProfessionalsSummaryController,
     GetProfessionalController,
     ApproveProfessionalController,
+    CahngeBanProfessionalController,
   ],
   providers: [
     EnvService,
@@ -193,6 +195,7 @@ import { MailModule } from '@/mail/mail.module'
     GetProfessionalsSummaryUseCase,
     GetProfessionalUseCase,
     ApproveProfessionalUseCase,
+    ChangeBanProfessionalUseCase,
   ],
 })
 export class HttpModule {}
