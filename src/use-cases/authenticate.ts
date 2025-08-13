@@ -4,9 +4,9 @@ import { Injectable } from '@nestjs/common'
 import { UsersRepository } from '@/database/repositories/users-repository'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
 import { ProfessionalPendingError } from './errors/professional-pending-error'
-import { ProfessionalRejectedError } from './errors/professional-rejected-error'
 import { format } from 'date-fns'
 import { ProfessionalBannedError } from './errors/professional-banned-error'
+import { ProfessionalRejectedError } from './errors/professional-rejected-error'
 
 interface AuthenticateUseCaseRequest {
   email: string
@@ -42,13 +42,8 @@ export class AuthenticateUseCase {
       switch (professional.status) {
         case 'PENDING':
           throw new ProfessionalPendingError()
-        case 'REJECTED': {
-          if (professional.rejectedUntil) {
-            throw new ProfessionalRejectedError(
-              format(professional.rejectedUntil, 'dd/MM/yyyy'),
-            )
-          }
-        }
+        case 'REJECTED':
+          throw new ProfessionalRejectedError()
         case 'BANNED':
           throw new ProfessionalBannedError()
       }

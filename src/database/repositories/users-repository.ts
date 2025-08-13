@@ -110,9 +110,25 @@ export class UsersRepository {
 
   async create(
     data: Prisma.UserCreateInput,
-    prisma: Prisma.TransactionClient = this.prisma,
+    tx?: Prisma.TransactionClient,
   ): Promise<User> {
+    const prisma = tx || this.prisma
+
     return await prisma.user.create({
+      data,
+    })
+  }
+
+  async save(
+    data: Partial<Prisma.UserUpdateInput> & { id: string },
+    tx?: Prisma.TransactionClient,
+  ) {
+    const prisma = tx || this.prisma
+
+    return await prisma.user.update({
+      where: {
+        id: data.id,
+      },
       data,
     })
   }

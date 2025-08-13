@@ -128,7 +128,6 @@ model Professional {
   registry       String
   registryUf     String               @map("registry_uf")
   status         ProfessionalStatus   @default(PENDING)
-  rejectedUntil  DateTime?
   createdAt      DateTime             @default(now()) @map("created_at")
   updatedAt      DateTime             @updatedAt @map("updated_at")
 
@@ -157,7 +156,6 @@ model ProfessionalStatusHistory {
   id            String             @id @default(uuid())
   status        ProfessionalStatus
   reason        String?
-  rejectedUntil DateTime?
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt @map("updated_at")
 

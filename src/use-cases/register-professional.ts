@@ -12,8 +12,6 @@ import { RegistryTypesRepository } from '@/database/repositories/registry-types-
 import { BranchActivityNotFoundError } from './errors/branch-activity-not-found-error'
 import { CnaeNotFoundError } from './errors/cnae-not-found-error'
 import { RegistryTypeNotFoundError } from './errors/registry-type-not-found-error'
-import { format, isBefore, isEqual, startOfDay } from 'date-fns'
-import { ProfessionalRejectedError } from './errors/professional-rejected-error'
 
 interface RegisterProfessionalUseCaseRequest {
   name: string
@@ -87,30 +85,49 @@ export class RegisterProfessionalUseCase {
       throw new UserAlreadyExistsError()
     }
 
+    let cnae: Cnae | null = null
+
+    if (cnaeId) {
+      cnae = await this.cnaesRepository.findById(cnaeId)
+
+      if (!cnae) {
+        throw new CnaeNotFoundError()
+      }
+    }
+
     if (
       professionalWithSameCpf &&
       professionalWithSameCpf.status === 'REJECTED'
     ) {
-      const rejectedUntil = professionalWithSameCpf.rejectedUntil
-        ? startOfDay(professionalWithSameCpf.rejectedUntil)
-        : null
+      const updatedProfessional = await this.professionalsRepository.save({
+        id: professionalWithSameCpf.id,
+        status: 'PENDING',
+        name,
+        cpf,
+        birthDate,
+        phone,
+        classification,
+        cnpj,
+        branchActivityId,
+        registryTypeId,
+        registry,
+        registryUf,
+        cnaeId: cnae ? cnae.id : null,
+      })
 
-      if (rejectedUntil) {
-        const today = startOfDay(new Date())
+      await this.addressRepository.save({
+        id: professionalWithSameCpf.addressId,
+        zipCode,
+        uf,
+        city,
+        street,
+        number,
+        neighborhood,
+        complement,
+      })
 
-        if (isBefore(rejectedUntil, today) || isEqual(rejectedUntil, today)) {
-          const updatedProfessional = await this.professionalsRepository.save({
-            id: professionalWithSameCpf.id,
-            status: 'PENDING',
-            rejectedUntil: null,
-          })
-
-          return {
-            professional: updatedProfessional,
-          }
-        }
-
-        throw new ProfessionalRejectedError(format(rejectedUntil, 'dd/MM/yyyy'))
+      return {
+        professional: updatedProfessional,
       }
     }
 
@@ -134,16 +151,6 @@ export class RegisterProfessionalUseCase {
 
     if (!branchActivity) {
       throw new BranchActivityNotFoundError()
-    }
-
-    let cnae: Cnae | null = null
-
-    if (cnaeId) {
-      cnae = await this.cnaesRepository.findById(cnaeId)
-
-      if (!cnae) {
-        throw new CnaeNotFoundError()
-      }
     }
 
     const registryType =
