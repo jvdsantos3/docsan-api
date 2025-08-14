@@ -96,6 +96,8 @@ import { CahngeBanProfessionalController } from './controllers/professionals/ban
 import { ChangeBanProfessionalUseCase } from '@/use-cases/ban-professional'
 import { RejectProfessionalController } from './controllers/professionals/reject-professional.controller'
 import { RejectProfessionalUseCase } from '@/use-cases/reject-professional'
+import { AuthenticateGoogleController } from './controllers/auth/authenticate-google.controller'
+import { AuthenticateGoogleUseCase } from '@/use-cases/authenticate-google'
 
 @Module({
   imports: [
@@ -109,6 +111,7 @@ import { RejectProfessionalUseCase } from '@/use-cases/reject-professional'
     CreateCompanyController,
     CreateProfessionalController,
     AuthenticateController,
+    AuthenticateGoogleController,
     LogoutController,
     RefreshController,
     ProfileController,
@@ -159,6 +162,7 @@ import { RejectProfessionalUseCase } from '@/use-cases/reject-professional'
     RegisterCompanyUseCase,
     RegisterProfessionalUseCase,
     AuthenticateUseCase,
+    AuthenticateGoogleUseCase,
     RefreshUseCase,
     GetProfileUseCase,
     CreateDocumentTypeUseCase,
