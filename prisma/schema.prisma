@@ -33,12 +33,13 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  owner         Owner?                      @relation("UserOwner")
-  professional  Professional?               @relation("UserProfessional")
-  admin         Admin?                      @relation("UserAdmin")
-  actionLogs    ActionLog[]
-  chatHistory   ChatHistory[]
-  statusHistory ProfessionalStatusHistory[]
+  owner               Owner?                      @relation("UserOwner")
+  professional        Professional?               @relation("UserProfessional")
+  admin               Admin?                      @relation("UserAdmin")
+  actionLogs          ActionLog[]
+  chatHistory         ChatHistory[]
+  statusHistory       ProfessionalStatusHistory[]
+  passwordResetTokens PasswordResetToken[]
 
   @@map("users")
 }
@@ -153,11 +154,11 @@ model Professional {
 }
 
 model ProfessionalStatusHistory {
-  id            String             @id @default(uuid())
-  status        ProfessionalStatus
-  reason        String?
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt @map("updated_at")
+  id        String             @id @default(uuid())
+  status    ProfessionalStatus
+  reason    String?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt @map("updated_at")
 
   professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
   professionalId String
@@ -356,4 +357,18 @@ model BranchActivity {
   professionals Professional[]
 
   @@map("branches_activity")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  token     String
+  expiresAt DateTime @map("expires_at")
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  @@map("password_reset_tokens")
 }

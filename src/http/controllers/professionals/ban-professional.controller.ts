@@ -13,7 +13,7 @@ import { CurrentUser } from '@/auth/current-user-decorator'
 import { UserPayload } from '@/auth/jwt.strategy'
 
 @Controller('/professionals/:professionalId/change-ban')
-export class CahngeBanProfessionalController {
+export class ChangeBanProfessionalController {
   constructor(private changeBanProfessional: ChangeBanProfessionalUseCase) {}
 
   @Patch()

@@ -92,10 +92,14 @@ import { GetProfessionalController } from './controllers/professionals/get-profe
 import { GetProfessionalUseCase } from '@/use-cases/get-professional'
 import { ApproveProfessionalController } from './controllers/professionals/approve-professional.controller'
 import { ApproveProfessionalUseCase } from '@/use-cases/approve-professional'
-import { CahngeBanProfessionalController } from './controllers/professionals/ban-professional.controller'
+import { ChangeBanProfessionalController } from './controllers/professionals/ban-professional.controller'
 import { ChangeBanProfessionalUseCase } from '@/use-cases/ban-professional'
 import { RejectProfessionalController } from './controllers/professionals/reject-professional.controller'
 import { RejectProfessionalUseCase } from '@/use-cases/reject-professional'
+import { RequestPasswordResetController } from './controllers/auth/request-passoword-reset.controller'
+import { RequestPasswordResetUseCase } from '@/use-cases/request-password-reset'
+import { ResetPasswordUseCase } from '@/use-cases/reset-password'
+import { ResetPasswordController } from './controllers/auth/reset-password.controller'
 
 @Module({
   imports: [
@@ -150,8 +154,10 @@ import { RejectProfessionalUseCase } from '@/use-cases/reject-professional'
     GetProfessionalsSummaryController,
     GetProfessionalController,
     ApproveProfessionalController,
-    CahngeBanProfessionalController,
+    ChangeBanProfessionalController,
     RejectProfessionalController,
+    RequestPasswordResetController,
+    ResetPasswordController,
   ],
   providers: [
     EnvService,
@@ -200,6 +206,8 @@ import { RejectProfessionalUseCase } from '@/use-cases/reject-professional'
     ApproveProfessionalUseCase,
     ChangeBanProfessionalUseCase,
     RejectProfessionalUseCase,
+    RequestPasswordResetUseCase,
+    ResetPasswordUseCase,
   ],
 })
 export class HttpModule {}

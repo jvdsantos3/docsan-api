@@ -19,7 +19,11 @@ export const envSchema = z.object({
   VOLUME_PATH: z.string(),
   APP_PORT: z.coerce.number().optional().default(3333),
   CHAT_LIMIT: z.coerce.number().optional().default(3),
-  CHAT_LIMIT_EXPIRE: z.coerce.number().optional().default(60 * 60 * 24 * 7), // 7d
+  CHAT_LIMIT_EXPIRE: z.coerce
+    .number()
+    .optional()
+    .default(60 * 60 * 24 * 7), // 7d
+  CLIENT_URL: z.string().url(),
 })
 
 export type Env = z.infer<typeof envSchema>

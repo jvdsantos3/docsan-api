@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common'
 import { UsersRepository } from '@/database/repositories/users-repository'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
 import { ProfessionalPendingError } from './errors/professional-pending-error'
-import { format } from 'date-fns'
 import { ProfessionalBannedError } from './errors/professional-banned-error'
 import { ProfessionalRejectedError } from './errors/professional-rejected-error'
 

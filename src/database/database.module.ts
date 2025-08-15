@@ -14,6 +14,7 @@ import { CnaesRepository } from './repositories/cnaes-repository'
 import { BranchesActivityRepository } from './repositories/branches-activity-repository'
 import { RegistryTypesRepository } from './repositories/registry-types-repository'
 import { ProfessionalStatusHistoriesRepository } from './repositories/professional-status-histories-repository'
+import { PasswordResetTokensRepository } from './repositories/password-reset-tokens-repository'
 
 @Module({
   providers: [
@@ -32,6 +33,7 @@ import { ProfessionalStatusHistoriesRepository } from './repositories/profession
     BranchesActivityRepository,
     RegistryTypesRepository,
     ProfessionalStatusHistoriesRepository,
+    PasswordResetTokensRepository,
   ],
   exports: [
     PrismaService,
@@ -49,6 +51,7 @@ import { ProfessionalStatusHistoriesRepository } from './repositories/profession
     BranchesActivityRepository,
     RegistryTypesRepository,
     ProfessionalStatusHistoriesRepository,
+    PasswordResetTokensRepository,
   ],
 })
 export class DatabaseModule {}

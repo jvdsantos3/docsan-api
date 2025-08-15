@@ -66,7 +66,7 @@ export class RejectProfessionalUseCase {
     })
 
     await this.mailsQueue.add(
-      'send-approval-email',
+      'send-email',
       {
         to: professional.user.email,
         subject: 'Cadastro reprovado.',

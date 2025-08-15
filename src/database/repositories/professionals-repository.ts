@@ -271,7 +271,7 @@ export class ProfessionalsRepository {
 
   async save(
     data: Partial<Prisma.ProfessionalUncheckedCreateInput> & { id: string },
-    tx: Prisma.TransactionClient = this.prisma,
+    tx?: Prisma.TransactionClient,
   ) {
     const prisma = tx || this.prisma
 
