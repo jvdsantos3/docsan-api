@@ -100,6 +100,8 @@ import { RequestPasswordResetController } from './controllers/auth/request-passo
 import { RequestPasswordResetUseCase } from '@/use-cases/request-password-reset'
 import { ResetPasswordUseCase } from '@/use-cases/reset-password'
 import { ResetPasswordController } from './controllers/auth/reset-password.controller'
+import { AuthenticateGoogleController } from './controllers/auth/authenticate-google.controller'
+import { AuthenticateGoogleUseCase } from '@/use-cases/authenticate-google'
 
 @Module({
   imports: [
@@ -113,6 +115,7 @@ import { ResetPasswordController } from './controllers/auth/reset-password.contr
     CreateCompanyController,
     CreateProfessionalController,
     AuthenticateController,
+    AuthenticateGoogleController,
     LogoutController,
     RefreshController,
     ProfileController,
@@ -165,6 +168,7 @@ import { ResetPasswordController } from './controllers/auth/reset-password.contr
     RegisterCompanyUseCase,
     RegisterProfessionalUseCase,
     AuthenticateUseCase,
+    AuthenticateGoogleUseCase,
     RefreshUseCase,
     GetProfileUseCase,
     CreateDocumentTypeUseCase,
