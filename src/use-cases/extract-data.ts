@@ -3,6 +3,7 @@ import { InvalidDocumentTypeError } from './errors/invalid-document-type-error'
 import { DocumentTypesRepository } from '@/database/repositories/document-types-repository'
 import { DocumentTypeNotFoundError } from './errors/document-type-not-found-error'
 import { GeminiService } from '@/gemini/gemini.service'
+import { Field } from './interfaces/document'
 
 interface ExtractDataUseCaseRequest {
   documentTypeId: string
@@ -42,8 +43,10 @@ export class ExtractDataUseCase {
       throw new DocumentTypeNotFoundError()
     }
 
-    const response = await this.geminiService.generate(documentType.prompt, fileType, body)
+    const fields = documentType.metadata as unknown as Field[] || []
+    const keys = fields.map((field) => field.name.trim())
 
+    const response = await this.geminiService.generate(documentType.prompt, keys, fileType, body)
     const extractData = JSON.parse(response) as ExtractedField[]
 
     return { fields: extractData }

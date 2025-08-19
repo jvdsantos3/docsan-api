@@ -12,6 +12,7 @@ export class GeminiService {
 
   async generate(
     prompt: string,
+    keys: string[],
     fileType: string,
     body: Buffer,
   ): Promise<string> {
@@ -40,7 +41,7 @@ export class GeminiService {
               },
             },
             {
-              text: `${prompt} - Formato de retorno desejado: [{ "name": [Nome do campo], "value": [Valor coletado] }] caso não consiga coletar o valor coloque null, colete somente os campos passados e ignore o restante.`,
+              text: `${prompt} - Formato de retorno desejado: [{ "name": [Nome do campo], "value": [Valor coletado] }] caso não consiga coletar o valor coloque null, colete somente os campos passados e ignore o restante. Essas são as chaves: ${keys.join(', ')} deve respeitar o case sensitive delas.`,
             },
           ],
         },
