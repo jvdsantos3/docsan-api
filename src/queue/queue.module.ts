@@ -3,12 +3,13 @@ import { BullModule } from '@nestjs/bull'
 import { QUEUE_NAMES } from './queue.constants'
 import { EnvService } from '@/env/env.service'
 import { EnvModule } from '@/env/env.module'
+import { MailModule } from '@/mail/mail.module'
 import { MailProcessor } from './processors/mail.processor'
-import { MailService } from '@/mail/mail.service'
 
 @Global()
 @Module({
   imports: [
+    MailModule,
     BullModule.forRootAsync({
       imports: [EnvModule],
       inject: [EnvService],
@@ -32,7 +33,7 @@ import { MailService } from '@/mail/mail.service'
       },
     ),
   ],
+  providers: [MailProcessor],
   exports: [BullModule],
-  providers: [EnvService, MailProcessor, MailService],
 })
 export class QueueModule {}

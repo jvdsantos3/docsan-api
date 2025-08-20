@@ -12,7 +12,10 @@ import { RegistryTypesRepository } from '@/database/repositories/registry-types-
 import { BranchActivityNotFoundError } from './errors/branch-activity-not-found-error'
 import { CnaeNotFoundError } from './errors/cnae-not-found-error'
 import { RegistryTypeNotFoundError } from './errors/registry-type-not-found-error'
-
+import { InjectQueue } from '@nestjs/bull'
+import { QUEUE_NAMES } from '@/queue/queue.constants'
+import type { Queue } from 'bull'
+                                                                                                           
 interface RegisterProfessionalUseCaseRequest {
   name: string
   cpf: string
@@ -51,6 +54,7 @@ export class RegisterProfessionalUseCase {
     private registryTypesRepository: RegistryTypesRepository,
     private hashGenerator: HashGenerator,
     private prisma: PrismaService,
+    @InjectQueue(QUEUE_NAMES.MAILS) private mailQueue: Queue,
   ) {}
 
   async execute({
@@ -162,7 +166,7 @@ export class RegisterProfessionalUseCase {
 
     const hashedPassword = await this.hashGenerator.hash(password)
 
-    const professional = await this.prisma.$transaction(async (prisma) => {
+    const {user, professional} = await this.prisma.$transaction(async (prisma) => {
       const address = await this.addressRepository.create(
         {
           zipCode,
@@ -201,8 +205,26 @@ export class RegisterProfessionalUseCase {
         prisma,
       )
 
-      return professional
+      return {
+        user,
+        professional,
+      }
     })
+
+    await this.mailQueue.add(
+      'send-email',
+      {
+        to: user.email,
+        subject: 'Cadastro em análise.',
+        template: 'professional-pending',
+        context: {
+          name: professional.name,
+        },
+      },
+      {
+        delay: 3000,
+      },
+    )
 
     return {
       professional,

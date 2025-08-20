@@ -1,29 +1,23 @@
-import { EnvService } from '@/env/env.service'
 import { Injectable } from '@nestjs/common'
-import * as nodemailer from 'nodemailer'
+import { MailerService } from '@nestjs-modules/mailer'
+
+export interface SendMailData {
+  to: string
+  subject: string
+  template: string
+  context?: Record<string, unknown>
+}
 
 @Injectable()
 export class MailService {
-  private transporter: nodemailer.Transporter
+  constructor(private readonly mailerService: MailerService) {}
 
-  constructor(private env: EnvService) {
-    this.transporter = nodemailer.createTransport({
-      host: this.env.get('MAIL_HOST'),
-      port: this.env.get('MAIL_PORT'),
-      secure: false, // true para 465, false para outras
-      auth: {
-        user: this.env.get('MAIL_USER'),
-        pass: this.env.get('MAIL_PASSWORD'), 
-      },
-    })
-  }
-
-  async sendMail(to: string, subject: string, html: string) {
-    await this.transporter.sendMail({
-      from: 'docsan@gmail.com',
-      to,
-      subject,
-      html,
+  async sendMail(data: SendMailData) {
+    await this.mailerService.sendMail({
+      to: data.to,
+      subject: data.subject,
+      template: data.template,
+      context: data.context,
     })
   }
 }

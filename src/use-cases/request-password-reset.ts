@@ -56,11 +56,10 @@ export class RequestPasswordResetUseCase {
       {
         to: user.email,
         subject: 'Recuperação de senha.',
-        html: `
-          <p>Olá,</p>
-          <p>Você solicitou a recuperação de sua senha. Clique no link abaixo para redefini-la:</p>
-          <p><a href="${resetLink}">${resetLink}</a></p>
-        `,
+        template: 'reset-password',
+        context: {
+          resetLink,
+        }
       },
       {
         delay: 3000,

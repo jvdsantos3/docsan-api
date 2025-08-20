@@ -9,7 +9,8 @@ export class MailProcessor {
 
   @Process('send-email')
   async handleSendApprovalEmail(job: Job) {
-    const { to, subject, html } = job.data
-    await this.mailService.sendMail(to, subject, html)
+    const { to, subject, template, context } = job.data
+
+    await this.mailService.sendMail({ to, subject, template, context })
   }
 }

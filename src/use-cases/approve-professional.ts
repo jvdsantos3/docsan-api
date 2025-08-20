@@ -20,7 +20,7 @@ interface ApproveProfessionalUseCaseRequest {
 export class ApproveProfessionalUseCase {
   constructor(
     private prisma: PrismaService,
-    @InjectQueue(QUEUE_NAMES.MAILS) private mailsQueue: Queue,
+    @InjectQueue(QUEUE_NAMES.MAILS) private mailQueue: Queue,
     private usersRepository: UsersRepository,
     private professionalsRepository: ProfessionalsRepository,
     private professionalStatusHistoriesRepository: ProfessionalStatusHistoriesRepository,
@@ -65,15 +65,15 @@ export class ApproveProfessionalUseCase {
       )
     })
 
-    await this.mailsQueue.add(
+    await this.mailQueue.add(
       'send-email',
       {
         to: professional.user.email,
         subject: 'Cadastro aprovado.',
-        html: `<p>Olá ${professional.name},</p>
-        <p>Seu cadastro como profissional foi aprovado com sucesso.</p>
-        <p>Atenciosamente,</p>
-        <p>Docsan</p>`,
+        template: 'approved-professional',
+        context: {
+          name: professional.name,
+        },
       },
       {
         delay: 3000,

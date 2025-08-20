@@ -102,6 +102,8 @@ import { ResetPasswordUseCase } from '@/use-cases/reset-password'
 import { ResetPasswordController } from './controllers/auth/reset-password.controller'
 import { AuthenticateGoogleController } from './controllers/auth/authenticate-google.controller'
 import { AuthenticateGoogleUseCase } from '@/use-cases/authenticate-google'
+import { MailModule } from '@/mail/mail.module'
+import { MailService } from '@/mail/mail.service'
 
 @Module({
   imports: [
@@ -110,6 +112,7 @@ import { AuthenticateGoogleUseCase } from '@/use-cases/authenticate-google'
     DatabaseModule,
     StorageModule,
     GeminiModule,
+    MailModule,
   ],
   controllers: [
     CreateCompanyController,

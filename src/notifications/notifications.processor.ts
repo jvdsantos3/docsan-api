@@ -41,16 +41,16 @@ export class NotificationsProcessor {
     const email = document.company.owner.user.email
 
     try {
-      await this.mailService.sendMail(
-        email,
-        'Lembrete de vencimento de documento',
-        `
-        <p>Olá,</p>
-        <p>O documento <strong>${document.name}</strong> está agendado para vencimento em breve.</p>
-        <p>Data de vencimento: <strong>${new Date(document.duedate).toLocaleDateString()}</strong></p>
-        <p>Esse é um lembrete automático do sistema.</p>
-      `,
-      )
+      // await this.mailService.sendMail(
+      //   email,
+      //   'Lembrete de vencimento de documento',
+      //   `
+      //   <p>Olá,</p>
+      //   <p>O documento <strong>${document.name}</strong> está agendado para vencimento em breve.</p>
+      //   <p>Data de vencimento: <strong>${new Date(document.duedate).toLocaleDateString()}</strong></p>
+      //   <p>Esse é um lembrete automático do sistema.</p>
+      // `,
+      // )
     } catch (err: any) {
       throw new Error(err.getMessage())
     }

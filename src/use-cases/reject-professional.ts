@@ -20,7 +20,7 @@ interface RejectProfessionalUseCaseRequest {
 export class RejectProfessionalUseCase {
   constructor(
     private prisma: PrismaService,
-    @InjectQueue(QUEUE_NAMES.MAILS) private mailsQueue: Queue,
+    @InjectQueue(QUEUE_NAMES.MAILS) private mailQueue: Queue,
     private usersRepository: UsersRepository,
     private professionalsRepository: ProfessionalsRepository,
     private professionalStatusHistoriesRepository: ProfessionalStatusHistoriesRepository,
@@ -65,16 +65,16 @@ export class RejectProfessionalUseCase {
       )
     })
 
-    await this.mailsQueue.add(
+    await this.mailQueue.add(
       'send-email',
       {
         to: professional.user.email,
         subject: 'Cadastro reprovado.',
-        html: `<p>Olá ${professional.name},</p>
-        <p>Seu cadastro como profissional foi reprovado.</p>
-        <p>${reason}</p>
-        <p>Atenciosamente,</p>
-        <p>Docsan</p>`,
+        template: 'rejected-professional',
+        context: {
+          name: professional.name,
+          reason,
+        },
       },
       {
         delay: 3000,
