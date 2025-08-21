@@ -5,9 +5,11 @@ import { MailService } from './mail.service'
 import { EnvModule } from '@/env/env.module'
 import { EnvService } from '@/env/env.service'
 import { join } from 'node:path'
+import { ZohoService } from './zoho.service'
 
 @Module({
   imports: [
+    EnvModule,
     MailerModule.forRootAsync({
       imports: [EnvModule],
       inject: [EnvService],
@@ -34,7 +36,7 @@ import { join } from 'node:path'
       }),
     }),
   ],
-  providers: [MailService],
-  exports: [MailService],
+  providers: [MailService, ZohoService],
+  exports: [MailService, ZohoService],
 })
 export class MailModule {}

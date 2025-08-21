@@ -59,10 +59,15 @@ export class RequestPasswordResetUseCase {
         template: 'reset-password',
         context: {
           resetLink,
-        }
+        },
       },
       {
         delay: 3000,
+        attempts: 3,
+        backoff: {
+          type: 'fixer',
+          delay: 30000,
+        },
       },
     )
   }

@@ -78,6 +78,11 @@ export class RejectProfessionalUseCase {
       },
       {
         delay: 3000,
+        attempts: 3,
+        backoff: {
+          type: 'fixer',
+          delay: 30000,
+        },
       },
     )
   }

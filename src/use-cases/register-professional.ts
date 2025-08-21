@@ -15,7 +15,7 @@ import { RegistryTypeNotFoundError } from './errors/registry-type-not-found-erro
 import { InjectQueue } from '@nestjs/bull'
 import { QUEUE_NAMES } from '@/queue/queue.constants'
 import type { Queue } from 'bull'
-                                                                                                           
+
 interface RegisterProfessionalUseCaseRequest {
   name: string
   cpf: string
@@ -166,50 +166,52 @@ export class RegisterProfessionalUseCase {
 
     const hashedPassword = await this.hashGenerator.hash(password)
 
-    const {user, professional} = await this.prisma.$transaction(async (prisma) => {
-      const address = await this.addressRepository.create(
-        {
-          zipCode,
-          uf,
-          city,
-          street,
-          number,
-          neighborhood,
-          complement,
-        },
-        prisma,
-      )
+    const { user, professional } = await this.prisma.$transaction(
+      async (prisma) => {
+        const address = await this.addressRepository.create(
+          {
+            zipCode,
+            uf,
+            city,
+            street,
+            number,
+            neighborhood,
+            complement,
+          },
+          prisma,
+        )
 
-      const user = await this.usersRepository.create({
-        email: email,
-        password: hashedPassword,
-        role: 'PROFESSIONAL',
-      })
+        const user = await this.usersRepository.create({
+          email: email,
+          password: hashedPassword,
+          role: 'PROFESSIONAL',
+        })
 
-      const professional = await this.professionalsRepository.create(
-        {
-          addressId: address.id,
-          userId: user.id,
-          name,
-          cpf,
-          birthDate,
-          phone,
-          classification,
-          cnpj,
-          branchActivityId: branchActivity.id,
-          registryTypeId: registryType.id,
-          registry,
-          registryUf,
-          cnaeId: cnae ? cnae.id : null,
-        },
-        prisma,
-      )
+        const professional = await this.professionalsRepository.create(
+          {
+            addressId: address.id,
+            userId: user.id,
+            name,
+            cpf,
+            birthDate,
+            phone,
+            classification,
+            cnpj,
+            branchActivityId: branchActivity.id,
+            registryTypeId: registryType.id,
+            registry,
+            registryUf,
+            cnaeId: cnae ? cnae.id : null,
+          },
+          prisma,
+        )
 
-      return {
-        user,
-        professional,
-      }
-    })
+        return {
+          user,
+          professional,
+        }
+      },
+    )
 
     await this.mailQueue.add(
       'send-email',
@@ -223,6 +225,11 @@ export class RegisterProfessionalUseCase {
       },
       {
         delay: 3000,
+        attempts: 3,
+        backoff: {
+          type: 'fixer',
+          delay: 30000,
+        },
       },
     )
 

@@ -77,6 +77,11 @@ export class ApproveProfessionalUseCase {
       },
       {
         delay: 3000,
+        attempts: 3,
+        backoff: {
+          type: 'fixer',
+          delay: 30000,
+        },
       },
     )
   }
