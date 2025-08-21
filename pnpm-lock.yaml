@@ -77,6 +77,9 @@ importers:
       google-auth-library:
         specifier: ^10.2.1
         version: 10.2.1
+      handlebars:
+        specifier: ^4.7.8
+        version: 4.7.8
       hbs:
         specifier: ^4.2.0
         version: 4.2.0
@@ -8596,7 +8599,6 @@ snapshots:
       wordwrap: 1.0.0
     optionalDependencies:
       uglify-js: 3.19.3
-    optional: true
 
   has-flag@4.0.0: {}
 
