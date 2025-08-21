@@ -5,9 +5,8 @@ import { EnvModule } from './env/env.module'
 import { AuthModule } from './auth/auth.module'
 import { HttpModule } from './http/http.module'
 import { EventModule } from './events/event.module'
-import { ScheduleModule } from '@nestjs/schedule'
 import { QueueModule } from './queue/queue.module'
-import { NotificationsModule } from './notifications/notifications.module'
+import { SchedulesModule } from './schedules/schedules.module'
 import { MailModule } from './mail/mail.module'
 
 @Module({
@@ -16,14 +15,13 @@ import { MailModule } from './mail/mail.module'
       validate: (env) => envSchema.parse(env),
       isGlobal: true,
     }),
-    ScheduleModule.forRoot(),
     EventModule,
     AuthModule,
     HttpModule,
     EnvModule,
     QueueModule,
     MailModule,
-    NotificationsModule,
+    SchedulesModule,
   ],
 })
 export class AppModule {}
