@@ -25,6 +25,12 @@ export class ServicesRepository {
     })
   }
 
+  async fetchPaginate() {
+    const services = this.prisma.service.findMany({})
+
+    return services
+  }
+
   async create(
     data: Prisma.ServiceCreateInput,
     tx?: Prisma.TransactionClient,

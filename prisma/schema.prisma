@@ -378,15 +378,15 @@ model PasswordResetToken {
 }
 
 model Service {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  summary     String
-  description String
-  imageUrl    String   @map("image_url")
-  active      Boolean  @default(true)
-  featured    Boolean  @default(false)
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id            String   @id @default(uuid())
+  name          String   @unique
+  summary       String
+  description   String
+  imageUrl      String   @map("image_url")
+  isActive      Boolean  @default(true) @map("is_active")
+  isHighlighted Boolean  @default(false) @map("is_highlighted")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 
   professionals ProfessionalService[]
 

@@ -107,6 +107,8 @@ import { CreateServicesController } from './controllers/services/create-service.
 import { CreateServiceUseCase } from '@/use-cases/create-service'
 import { EditServiceController } from './controllers/services/edit-service.controller'
 import { EditServiceUseCase } from '@/use-cases/edit-service'
+import { FetchServiceController } from './controllers/services/fetch-service.controller'
+import { FetchServiceUseCase } from '@/use-cases/fetch-service'
 
 @Module({
   imports: [
@@ -169,6 +171,7 @@ import { EditServiceUseCase } from '@/use-cases/edit-service'
     ResetPasswordController,
     CreateServicesController,
     EditServiceController,
+    FetchServiceController,
   ],
   providers: [
     EnvService,
@@ -222,6 +225,7 @@ import { EditServiceUseCase } from '@/use-cases/edit-service'
     ResetPasswordUseCase,
     CreateServiceUseCase,
     EditServiceUseCase,
+    FetchServiceUseCase,
   ],
 })
 export class HttpModule {}

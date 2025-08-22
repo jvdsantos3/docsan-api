@@ -5,8 +5,8 @@ import { PoliciesGuard } from '@/casl/policies.guard'
 import {
   editServiceParamsValidationPipe,
   editServiceValidationPipe,
-  type EditServiceBodySchema,
-  type EditServiceParamsSchema,
+  EditServiceBodySchema,
+  EditServiceParamsSchema,
 } from '@/http/schemas/edit-service-schema'
 import { EditServiceUseCase } from '@/use-cases/edit-service'
 import {
@@ -33,7 +33,6 @@ export class EditServiceController {
   @UseGuards(PoliciesGuard)
   @CheckPolicies(new UpdateServicePolicyHandler())
   @UseInterceptors(FileInterceptor('file'))
-  @HttpCode(200)
   async handle(
     @Param(editServiceParamsValidationPipe)
     { serviceId }: EditServiceParamsSchema,
