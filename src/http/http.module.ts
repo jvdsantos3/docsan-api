@@ -103,7 +103,10 @@ import { ResetPasswordController } from './controllers/auth/reset-password.contr
 import { AuthenticateGoogleController } from './controllers/auth/authenticate-google.controller'
 import { AuthenticateGoogleUseCase } from '@/use-cases/authenticate-google'
 import { MailModule } from '@/mail/mail.module'
-import { MailService } from '@/mail/mail.service'
+import { CreateServicesController } from './controllers/services/create-service.controller'
+import { CreateServiceUseCase } from '@/use-cases/create-service'
+import { EditServiceController } from './controllers/services/edit-service.controller'
+import { EditServiceUseCase } from '@/use-cases/edit-service'
 
 @Module({
   imports: [
@@ -164,6 +167,8 @@ import { MailService } from '@/mail/mail.service'
     RejectProfessionalController,
     RequestPasswordResetController,
     ResetPasswordController,
+    CreateServicesController,
+    EditServiceController,
   ],
   providers: [
     EnvService,
@@ -215,6 +220,8 @@ import { MailService } from '@/mail/mail.service'
     RejectProfessionalUseCase,
     RequestPasswordResetUseCase,
     ResetPasswordUseCase,
+    CreateServiceUseCase,
+    EditServiceUseCase,
   ],
 })
 export class HttpModule {}

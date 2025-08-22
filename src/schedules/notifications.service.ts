@@ -17,7 +17,6 @@ export class NotificationsService {
   @Cron('0 8 * * *')
   async checkDailyNotifications() {
     const now = new Date()
-    console.log(now)
 
     const notifications = await this.prisma.documentNotification.findMany({
       where: {

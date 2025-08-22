@@ -237,8 +237,10 @@ export class DocumentsRepository {
 
   async save(
     data: Partial<Prisma.DocumentUncheckedUpdateInput> & { id: string },
-    prisma: Prisma.TransactionClient = this.prisma,
+    tx?: Prisma.TransactionClient,
   ) {
+    const prisma = tx || this.prisma
+
     return await prisma.document.update({
       where: {
         id: data.id,
@@ -249,8 +251,10 @@ export class DocumentsRepository {
 
   async create(
     data: Prisma.DocumentUncheckedCreateInput,
-    prisma: Prisma.TransactionClient = this.prisma,
+    tx?: Prisma.TransactionClient,
   ) {
+    const prisma = tx || this.prisma
+
     return await prisma.document.create({
       data,
     })

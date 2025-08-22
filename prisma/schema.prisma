@@ -149,6 +149,7 @@ model Professional {
 
   companies     ProfessionalCompany[]
   statusHistory ProfessionalStatusHistory[]
+  services      ProfessionalService[]
 
   @@map("professionals")
 }
@@ -290,6 +291,9 @@ model ActionLog {
   branchActivity   BranchActivity? @relation(fields: [branchActivityId], references: [id])
   branchActivityId String?
 
+  service   Service? @relation(fields: [serviceId], references: [id])
+  serviceId String?
+
   @@map("action_logs")
 }
 
@@ -371,4 +375,38 @@ model PasswordResetToken {
   userId String @map("user_id")
 
   @@map("password_reset_tokens")
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  summary     String
+  description String
+  imageUrl    String   @map("image_url")
+  active      Boolean  @default(true)
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  professionals ProfessionalService[]
+
+  ActionLog ActionLog[]
+
+  @@map("services")
+}
+
+model ProfessionalService {
+  id String @id @default(uuid())
+
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  professionalId String       @map("professional_id")
+
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  serviceId String  @map("service_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([professionalId, serviceId])
+  @@map("professional_services")
 }

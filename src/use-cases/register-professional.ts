@@ -8,13 +8,13 @@ import { ProfessionalsRepository } from '@/database/repositories/professionals-r
 import { UsersRepository } from '@/database/repositories/users-repository'
 import { BranchesActivityRepository } from '@/database/repositories/branches-activity-repository'
 import { CnaesRepository } from '@/database/repositories/cnaes-repository'
-import { RegistryTypesRepository } from '@/database/repositories/registry-types-repository'
 import { BranchActivityNotFoundError } from './errors/branch-activity-not-found-error'
 import { CnaeNotFoundError } from './errors/cnae-not-found-error'
 import { RegistryTypeNotFoundError } from './errors/registry-type-not-found-error'
 import { InjectQueue } from '@nestjs/bull'
 import { QUEUE_NAMES } from '@/queue/queue.constants'
-import type { Queue } from 'bull'
+import { Queue } from 'bull'
+import { RegistryTypesRepository } from '@/database/repositories/registry-types-repository'
 
 interface RegisterProfessionalUseCaseRequest {
   name: string
