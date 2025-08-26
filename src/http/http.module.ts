@@ -113,6 +113,10 @@ import { GetServiceController } from './controllers/services/get-service.control
 import { GetServiceUseCase } from '@/use-cases/get-service'
 import { DeleteServiceController } from './controllers/services/delete-service.controller'
 import { DeleteServiceUseCase } from '@/use-cases/delete-service'
+import { ToggleServiceActiveController } from './controllers/services/toggle-service-active.controller'
+import { ToggleServiceActiveUseCase } from '@/use-cases/toggle-service-active'
+import { ToggleServiceHighlightController } from './controllers/services/toggle-service-highlighted.controller'
+import { ToggleServiceHighlightUseCase } from '@/use-cases/toggle-service-highlighted'
 
 @Module({
   imports: [
@@ -178,6 +182,8 @@ import { DeleteServiceUseCase } from '@/use-cases/delete-service'
     FetchServiceController,
     GetServiceController,
     DeleteServiceController,
+    ToggleServiceActiveController,
+    ToggleServiceHighlightController,
   ],
   providers: [
     EnvService,
@@ -234,6 +240,8 @@ import { DeleteServiceUseCase } from '@/use-cases/delete-service'
     FetchServiceUseCase,
     GetServiceUseCase,
     DeleteServiceUseCase,
+    ToggleServiceActiveUseCase,
+    ToggleServiceHighlightUseCase,
   ],
 })
 export class HttpModule {}
