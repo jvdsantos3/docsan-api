@@ -55,9 +55,9 @@ export class CreateServicesController {
       name,
       summary,
       description,
-      fileType: file.mimetype,
-      fileName: file.originalname,
-      body: file.buffer,
+      fileName: file?.originalname,
+      fileType: file?.mimetype,
+      body: file?.buffer,
     })
 
     return {

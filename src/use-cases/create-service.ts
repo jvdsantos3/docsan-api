@@ -15,9 +15,9 @@ interface CreateServiceUseCaseRequest {
   name: string
   summary: string
   description: string
-  fileName: string
-  fileType: string
-  body: Buffer
+  fileName?: string
+  fileType?: string
+  body?: Buffer
 }
 
 interface CreateServiceUseCaseResponse {
@@ -54,17 +54,23 @@ export class CreateServiceUseCase {
       throw new ServiceAlreadyExistsError(name)
     }
 
-    const { url } = await this.uploader.upload({
-      fileName: `services/images/${randomUUID()}-${fileName}`,
-      fileType,
-      body,
-    })
+    let imageUrl: string | null = null
+
+    if (fileName && fileType && body) {
+      const { url } = await this.uploader.upload({
+        fileName: `services/images/${randomUUID()}-${fileName}`,
+        fileType,
+        body,
+      })
+
+      imageUrl = url
+    }
 
     const data: Prisma.ServiceCreateInput = {
       name,
       summary,
       description,
-      imageUrl: url,
+      imageUrl,
     }
 
     const service = await this.servicesRepository.create(data)
