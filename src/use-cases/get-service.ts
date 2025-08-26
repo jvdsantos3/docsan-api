@@ -9,7 +9,7 @@ interface GetServiceUseCaseRequest {
 }
 
 interface GetServiceUseCaseResponse {
-  service: Service & { imageBase64?: string }
+  service: Service & { imageBase64: string | null }
 }
 
 @Injectable()
@@ -28,7 +28,7 @@ export class GetServiceUseCase {
       throw new ServiceNotFoundError()
     }
 
-    let imageBase64: string | undefined
+    let imageBase64: string | null = null
 
     if (service.imageUrl) {
       try {

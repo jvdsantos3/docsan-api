@@ -21,11 +21,13 @@ export class CreateRegistryTypeController {
   async handle(
     @CurrentUser() user: UserPayload,
     @Body(createRegistryTypeValidationPipe)
-    { name }: CreateRegistryTypeBodySchema,
+    { branchActivityId, name, fullName }: CreateRegistryTypeBodySchema,
   ) {
     await this.createRegistryType.execute({
       user,
+      branchActivityId,
       name,
+      fullName,
     })
   }
 }

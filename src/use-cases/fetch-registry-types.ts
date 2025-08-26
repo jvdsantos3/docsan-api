@@ -1,7 +1,7 @@
 import { RegistryTypesRepository } from '@/database/repositories/registry-types-repository'
 import { PaginationResponse } from '../database/interfaces/pagination-params'
 import { Injectable } from '@nestjs/common'
-import { Cnae, Prisma, RegistryType } from '@prisma/client'
+import { RegistryType } from '@prisma/client'
 
 interface FetchRegistryTypesUseCaseRequest {
   page: number
@@ -9,6 +9,7 @@ interface FetchRegistryTypesUseCaseRequest {
   order?: 'desc' | 'asc'
   active?: boolean
   filter?: string
+  branchActivityId?: string
 }
 
 interface FetchRegistryTypesUseCaseResponse {
@@ -25,6 +26,7 @@ export class FetchRegistryTypesUseCase {
     order,
     active,
     filter,
+    branchActivityId,
   }: FetchRegistryTypesUseCaseRequest): Promise<FetchRegistryTypesUseCaseResponse> {
     const registryTypes = await this.registryTypesRepository.fetchPagination({
       page,
@@ -32,6 +34,7 @@ export class FetchRegistryTypesUseCase {
       order,
       active,
       filter,
+      branchActivityId,
     })
 
     return {

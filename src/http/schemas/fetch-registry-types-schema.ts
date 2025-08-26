@@ -16,11 +16,12 @@ const FetchRegistryTypesQuerySchema = z.object({
     .pipe(z.number().min(1)),
   order: z.enum(['desc', 'asc']).optional(),
   active: z.preprocess((val) => {
-      if (val === 'true') return true
-      if (val === 'false') return false
-      return val
-    }, z.boolean().optional()),
+    if (val === 'true') return true
+    if (val === 'false') return false
+    return val
+  }, z.boolean().optional()),
   filter: z.string().optional(),
+  branchActivityId: z.string().uuid().optional(),
 })
 
 export const fetchRegistryTypesQueryValidationPipe = new ZodValidationPipe(

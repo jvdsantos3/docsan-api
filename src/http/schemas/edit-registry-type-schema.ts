@@ -15,6 +15,7 @@ export const editRegistryTypeParamsValidationPipe = new ZodValidationPipe(
 
 const editRegistryTypeBodySchema = z.object({
   name: z.string(),
+  fullName: z.string(),
 })
 
 export const editRegistryTypeBodyValidationPipe = new ZodValidationPipe(

@@ -24,12 +24,13 @@ export class EditRegistryTypeController {
     @Param(editRegistryTypeParamsValidationPipe)
     { registryTypeId }: EditRegistryTypeParamsSchema,
     @Body(editRegistryTypeBodyValidationPipe)
-    { name }: EditRegistryTypeBodySchema,
+    { name, fullName }: EditRegistryTypeBodySchema,
   ) {
     await this.editRegistry.execute({
       user,
       registryTypeId,
       name,
+      fullName,
     })
   }
 }

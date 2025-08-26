@@ -7,6 +7,7 @@ import { paginate } from '../pagination'
 export interface FetchFilters {
   filter?: string
   active?: boolean
+  branchActivityId?: string
 }
 
 @Injectable()
@@ -25,10 +26,13 @@ export class RegistryTypesRepository {
     })
   }
 
-  async findByName(name: string) {
+  async findByName(branchActivityId: string, name: string) {
     return await this.prisma.registryType.findUnique({
       where: {
-        name,
+        name_branchActivityId: {
+          branchActivityId,
+          name,
+        },
       },
     })
   }
@@ -39,9 +43,14 @@ export class RegistryTypesRepository {
     order = 'asc',
     active,
     filter,
+    branchActivityId,
   }: PaginationParams<Prisma.RegistryTypeOrderByWithAggregationInput> &
     FetchFilters) {
     const where: Prisma.RegistryTypeWhereInput = {}
+
+    if (branchActivityId) {
+      where.branchActivityId = branchActivityId
+    }
 
     if (typeof active === 'boolean') {
       where.isActive = active
@@ -75,7 +84,7 @@ export class RegistryTypesRepository {
   }
 
   async create(
-    data: Prisma.RegistryTypeCreateInput,
+    data: Prisma.RegistryTypeUncheckedCreateInput,
     prisma: Prisma.TransactionClient = this.prisma,
   ) {
     return await prisma.registryType.create({

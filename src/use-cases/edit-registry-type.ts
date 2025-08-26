@@ -11,6 +11,7 @@ interface EditRegistryTypeUseCaseRequest {
   user: UserPayload
   registryTypeId: string
   name: string
+  fullName: string
 }
 
 interface EditRegistryTypeUseCaseResponse {
@@ -28,6 +29,7 @@ export class EditRegistryTypeUseCase {
     user,
     registryTypeId,
     name,
+    fullName,
   }: EditRegistryTypeUseCaseRequest): Promise<EditRegistryTypeUseCaseResponse> {
     const currentRegistryType =
       await this.registryTypesRepository.findById(registryTypeId)
@@ -37,7 +39,10 @@ export class EditRegistryTypeUseCase {
     }
 
     const registryTypeWithSameName =
-      await this.registryTypesRepository.findByName(name)
+      await this.registryTypesRepository.findByName(
+        currentRegistryType.branchActivityId,
+        name,
+      )
 
     if (registryTypeWithSameName && currentRegistryType.name !== name) {
       throw new RegistryTypeAlreadyExistsError(name)
@@ -46,6 +51,7 @@ export class EditRegistryTypeUseCase {
     const newRegistryType = await this.registryTypesRepository.save({
       id: registryTypeId,
       name,
+      fullName,
     })
 
     this.eventEmitter.emit(
