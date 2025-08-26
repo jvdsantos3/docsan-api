@@ -64,7 +64,7 @@ export class ServicesRepository {
     filter,
   }: PaginationParams<Prisma.ServiceOrderByWithAggregationInput> &
     ServiceFetchFilters & {
-      orderBy?: 'name' | 'isActive' | 'isHighlighted' | 'status' | 'createdAt'
+      orderBy?: 'name' | 'isActive' | 'isHighlighted' | 'createdAt'
     }) {
     const where: Prisma.ServiceWhereInput = {}
 

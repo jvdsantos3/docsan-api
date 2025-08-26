@@ -16,7 +16,7 @@ const fetchServiceQuerySchema = z.object({
     .pipe(z.number().min(1)),
   order: z.enum(['desc', 'asc']).optional(),
   orderBy: z
-    .enum(['name', 'isActive', 'isHighlighted', 'status', 'createdAt'])
+    .enum(['name', 'isActive', 'isHighlighted', 'createdAt'])
     .optional(),
   status: z.preprocess((val) => {
     if (val === 'true') return true

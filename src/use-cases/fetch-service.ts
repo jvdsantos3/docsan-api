@@ -7,7 +7,7 @@ interface FetchServiceUseCaseRequest {
   page: number
   limit?: number
   order?: 'asc' | 'desc'
-  orderBy?: 'name' | 'isActive' | 'isHighlighted' | 'status' | 'createdAt'
+  orderBy?: 'name' | 'isActive' | 'isHighlighted' | 'createdAt'
   status?: boolean
   highlight?: boolean
   filter?: string
