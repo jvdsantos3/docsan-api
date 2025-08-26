@@ -109,6 +109,10 @@ import { EditServiceController } from './controllers/services/edit-service.contr
 import { EditServiceUseCase } from '@/use-cases/edit-service'
 import { FetchServiceController } from './controllers/services/fetch-service.controller'
 import { FetchServiceUseCase } from '@/use-cases/fetch-service'
+import { GetServiceController } from './controllers/services/get-service.controller'
+import { GetServiceUseCase } from '@/use-cases/get-service'
+import { DeleteServiceController } from './controllers/services/delete-service.controller'
+import { DeleteServiceUseCase } from '@/use-cases/delete-service'
 
 @Module({
   imports: [
@@ -172,6 +176,8 @@ import { FetchServiceUseCase } from '@/use-cases/fetch-service'
     CreateServicesController,
     EditServiceController,
     FetchServiceController,
+    GetServiceController,
+    DeleteServiceController,
   ],
   providers: [
     EnvService,
@@ -226,6 +232,8 @@ import { FetchServiceUseCase } from '@/use-cases/fetch-service'
     CreateServiceUseCase,
     EditServiceUseCase,
     FetchServiceUseCase,
+    GetServiceUseCase,
+    DeleteServiceUseCase,
   ],
 })
 export class HttpModule {}

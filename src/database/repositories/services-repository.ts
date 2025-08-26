@@ -20,7 +20,28 @@ export class ServicesRepository {
         id,
       },
       include: {
-        professionals: true,
+        professionals: {
+          omit: {
+            createdAt: true,
+            updatedAt: true,
+            serviceId: true,
+            professionalId: true,
+          },
+          include: {
+            professional: {
+              omit: {
+                createdAt: true,
+                updatedAt: true,
+                userId: true,
+                addressId: true,
+                branchActivityId: true,
+                cnaeId: true,
+                registryTypeId: true,
+                status: true,
+              },
+            },
+          },
+        },
       },
     })
   }
@@ -122,6 +143,16 @@ export class ServicesRepository {
         id: data.id,
       },
       data,
+    })
+  }
+
+  async delete(id: string, tx?: Prisma.TransactionClient) {
+    const prisma = tx || this.prisma
+
+    return await prisma.service.delete({
+      where: {
+        id,
+      },
     })
   }
 }
