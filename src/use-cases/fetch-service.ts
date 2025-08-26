@@ -1,7 +1,7 @@
 import { ServicesRepository } from '@/database/repositories/services-repository'
 import { PaginationResponse } from '../database/interfaces/pagination-params'
 import { Injectable } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
+import { Service } from '@prisma/client'
 
 interface FetchServiceUseCaseRequest {
   page: number
@@ -14,28 +14,7 @@ interface FetchServiceUseCaseRequest {
 }
 
 interface FetchServiceUseCaseResponse {
-  services: PaginationResponse<
-    Prisma.ServiceGetPayload<{
-      include: {
-        professionals: {
-          omit: {
-            serviceId: true
-            createdAt: true
-            updatedAt: true
-            professionalId: true
-          }
-          include: {
-            professional: {
-              omit: {
-                createdAt: true
-                updatedAt: true
-              }
-            }
-          }
-        }
-      }
-    }>
-  >
+  services: PaginationResponse<Service>
 }
 
 @Injectable()

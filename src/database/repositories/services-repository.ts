@@ -48,7 +48,6 @@ export class ServicesRepository {
     const where: Prisma.ServiceWhereInput = {}
 
     if (typeof status === 'boolean') {
-      console.log(status)
       where.isActive = status
     }
 
@@ -81,24 +80,6 @@ export class ServicesRepository {
 
     const [services, total] = await Promise.all([
       this.prisma.service.findMany({
-        include: {
-          professionals: {
-            omit: {
-              serviceId: true,
-              createdAt: true,
-              updatedAt: true,
-              professionalId: true,
-            },
-            include: {
-              professional: {
-                omit: {
-                  createdAt: true,
-                  updatedAt: true,
-                },
-              },
-            },
-          },
-        },
         where,
         orderBy: {
           [orderBy]: order,
@@ -109,28 +90,7 @@ export class ServicesRepository {
       this.prisma.service.count({ where }),
     ])
 
-    return paginate<
-      Prisma.ServiceGetPayload<{
-        include: {
-          professionals: {
-            omit: {
-              serviceId: true
-              createdAt: true
-              updatedAt: true
-              professionalId: true
-            }
-            include: {
-              professional: {
-                omit: {
-                  createdAt: true
-                  updatedAt: true
-                }
-              }
-            }
-          }
-        }
-      }>
-    >({
+    return paginate<Service>({
       data: services,
       total,
       page,
