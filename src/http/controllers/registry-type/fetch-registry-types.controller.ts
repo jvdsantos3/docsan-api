@@ -14,7 +14,7 @@ export class FetchRegistryTypesController {
   @Public()
   async handle(
     @Query(fetchRegistryTypesQueryValidationPipe)
-    { page, limit, order, active, filter }: FetchRegistryTypesQuerySchema,
+    { page, limit, order, active, branchActivityId, filter }: FetchRegistryTypesQuerySchema,
   ) {
     const { registryTypes } = await this.fetchRegistryTypes.execute({
       page,
@@ -22,6 +22,7 @@ export class FetchRegistryTypesController {
       order,
       active,
       filter,
+      branchActivityId,
     })
 
     return {
