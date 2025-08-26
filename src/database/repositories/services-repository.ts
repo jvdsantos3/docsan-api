@@ -1,6 +1,14 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@/database/prisma.service'
 import { Prisma, Service } from '@prisma/client'
+import { PaginationParams } from '../interfaces/pagination-params'
+import { paginate } from '../pagination'
+
+export interface ServiceFetchFilters {
+  filter?: string
+  status?: boolean
+  highlight?: boolean
+}
 
 @Injectable()
 export class ServicesRepository {
@@ -25,10 +33,109 @@ export class ServicesRepository {
     })
   }
 
-  async fetchPaginate() {
-    const services = this.prisma.service.findMany({})
+  async fetchPagination({
+    page,
+    limit = 15,
+    order = 'asc',
+    orderBy = 'name',
+    status,
+    highlight,
+    filter,
+  }: PaginationParams<Prisma.ServiceOrderByWithAggregationInput> &
+    ServiceFetchFilters & {
+      orderBy?: 'name' | 'isActive' | 'isHighlighted' | 'status' | 'createdAt'
+    }) {
+    const where: Prisma.ServiceWhereInput = {}
 
-    return services
+    if (typeof status === 'boolean') {
+      console.log(status)
+      where.isActive = status
+    }
+
+    if (typeof highlight === 'boolean') {
+      where.isHighlighted = highlight
+    }
+
+    if (filter) {
+      where.OR = [
+        {
+          name: {
+            contains: filter,
+            mode: 'insensitive',
+          },
+        },
+        {
+          summary: {
+            contains: filter,
+            mode: 'insensitive',
+          },
+        },
+        {
+          description: {
+            contains: filter,
+            mode: 'insensitive',
+          },
+        },
+      ]
+    }
+
+    const [services, total] = await Promise.all([
+      this.prisma.service.findMany({
+        include: {
+          professionals: {
+            omit: {
+              serviceId: true,
+              createdAt: true,
+              updatedAt: true,
+              professionalId: true,
+            },
+            include: {
+              professional: {
+                omit: {
+                  createdAt: true,
+                  updatedAt: true,
+                },
+              },
+            },
+          },
+        },
+        where,
+        orderBy: {
+          [orderBy]: order,
+        },
+        take: limit,
+        skip: (page - 1) * limit,
+      }),
+      this.prisma.service.count({ where }),
+    ])
+
+    return paginate<
+      Prisma.ServiceGetPayload<{
+        include: {
+          professionals: {
+            omit: {
+              serviceId: true
+              createdAt: true
+              updatedAt: true
+              professionalId: true
+            }
+            include: {
+              professional: {
+                omit: {
+                  createdAt: true
+                  updatedAt: true
+                }
+              }
+            }
+          }
+        }
+      }>
+    >({
+      data: services,
+      total,
+      page,
+      limit,
+    })
   }
 
   async create(

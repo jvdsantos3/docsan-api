@@ -1,4 +1,4 @@
-import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { Injectable } from '@nestjs/common'
 import { EnvService } from '../../env/env.service'
 import { Uploader, UploadParams } from '../upload'
@@ -58,6 +58,19 @@ export class R2Storage implements Uploader {
     return {
       body,
       contentType: ContentType || 'application/octet-stream',
+    }
+  }
+
+  async delete(url: string): Promise<void> {
+    try {
+      await this.client.send(
+        new DeleteObjectCommand({
+          Bucket: this.envService.get('AWS_BUCKET_NAME'),
+          Key: url,
+        }),
+      )
+    } catch (error) {
+      console.warn(`Arquivo não encontrado para deleção no R2: ${url}`)
     }
   }
 }

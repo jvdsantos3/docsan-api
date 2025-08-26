@@ -18,8 +18,16 @@ const fetchServiceQuerySchema = z.object({
   orderBy: z
     .enum(['name', 'isActive', 'isHighlighted', 'status', 'createdAt'])
     .optional(),
-  status: z.boolean().optional(),
-  highlight: z.boolean().optional(),
+  status: z.preprocess((val) => {
+    if (val === 'true') return true
+    if (val === 'false') return false
+    return val
+  }, z.boolean().optional()),
+  highlight: z.preprocess((val) => {
+    if (val === 'true') return true
+    if (val === 'false') return false
+    return val
+  }, z.boolean().optional()),
   filter: z.string().optional(),
 })
 

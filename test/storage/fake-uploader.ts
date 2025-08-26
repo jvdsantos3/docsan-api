@@ -19,4 +19,18 @@ export class FakeUploader implements Uploader {
 
     return { url }
   }
+
+  async get(url: string): Promise<{ body: Buffer; contentType: string }> {
+    return {
+      body: Buffer.from('fake file content'),
+      contentType: 'application/octet-stream',
+    }
+  }
+
+  async delete(url: string): Promise<void> {
+    const index = this.uploads.findIndex(upload => upload.url === url)
+    if (index !== -1) {
+      this.uploads.splice(index, 1)
+    }
+  }
 }

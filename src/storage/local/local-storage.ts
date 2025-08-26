@@ -33,6 +33,16 @@ export class LocalStorage implements Uploader {
     return { body, contentType }
   }
 
+  async delete(url: string): Promise<void> {
+    const filePath = join(this.basePath, url.replace('/uploads/', ''))
+
+    try {
+      await fs.unlink(filePath)
+    } catch (error) {
+      console.warn(`Arquivo não encontrado para deleção: ${filePath}`)
+    }
+  }
+
   private getContentType(ext: string): string {
     switch (ext) {
       case 'jpg':

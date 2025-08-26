@@ -78,6 +78,10 @@ export class EditServiceUseCase {
     }
 
     if (fileName && fileType && body) {
+      if (serviceById.imageUrl) {
+        await this.uploader.delete(serviceById.imageUrl)
+      }
+
       const { url } = await this.uploader.upload({
         fileName: `services/images/${randomUUID()}-${fileName}`,
         fileType,

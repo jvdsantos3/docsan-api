@@ -7,4 +7,5 @@ export interface UploadParams {
 export abstract class Uploader {
   abstract upload(params: UploadParams): Promise<{ url: string }>
   abstract get(url: string): Promise<{ body: Buffer; contentType: string }>
+  abstract delete(url: string): Promise<void>
 }

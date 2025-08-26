@@ -43,6 +43,7 @@ export class CreateServicesController {
             fileType: '.(jpg|jpeg|png|webp)',
           }),
         ],
+        fileIsRequired: false,
       }),
     )
     file: Express.Multer.File,
