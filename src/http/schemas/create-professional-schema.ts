@@ -70,13 +70,6 @@ const createProfessionalBodySchema = z
           path: ['cnpj'],
         })
       }
-      if (!data.cnaeId) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'CNAE é obrigatório quando classification for COMPANY',
-          path: ['cnaeId'],
-        })
-      }
     }
   })
 

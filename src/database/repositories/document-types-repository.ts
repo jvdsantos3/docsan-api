@@ -83,7 +83,8 @@ export class DocumentTypesRepository {
     order = 'asc',
     active,
     filter,
-  }: PaginationParams<Prisma.DocumentTypeOrderByRelationAggregateInput> & FetchFilters) {
+  }: PaginationParams<Prisma.DocumentTypeOrderByRelationAggregateInput> &
+    FetchFilters) {
     const where: Prisma.DocumentTypeWhereInput = {}
 
     if (typeof active === 'boolean') {
