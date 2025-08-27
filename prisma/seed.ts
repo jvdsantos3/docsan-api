@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import { seedBranchActivityAndRegistryType } from './seeds/seed-branch-registry'
 
 const prisma = new PrismaClient()
 
@@ -69,6 +70,8 @@ async function main() {
       userId: moiseis.id,
     },
   })
+
+  await seedBranchActivityAndRegistryType()
 }
 
 main()

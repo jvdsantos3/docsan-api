@@ -333,7 +333,7 @@ model RegistryType {
   actionLogs    ActionLog[]
   professionals Professional[]
 
-  BranchActivity   BranchActivity @relation(fields: [branchActivityId], references: [id])
+  BranchActivity   BranchActivity @relation(fields: [branchActivityId], references: [id], onDelete: Cascade)
   branchActivityId String
 
   @@unique([name, branchActivityId])
