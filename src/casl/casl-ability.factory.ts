@@ -10,6 +10,7 @@ import {
   BranchActivity,
   Professional,
   Service,
+  ProfessionalService,
 } from '@prisma/client'
 import { PrismaService } from '@/database/prisma.service'
 import { UserPayload } from '@/auth/jwt.strategy'
@@ -24,6 +25,7 @@ type AppSubjects =
       RegistryType: RegistryType
       Professional: Professional
       Service: Service
+      ProfessionalService: ProfessionalService
     }>
 
 export type AppAbility = PureAbility<[Action, AppSubjects], PrismaQuery>
@@ -84,7 +86,27 @@ export class CaslAbilityFactory {
         break
       }
       case 'PROFESSIONAL': {
-        cannot(Action.Manage, 'all')
+        const user = await this.prisma.user.findUnique({
+          include: {
+            professional: true,
+          },
+          where: {
+            id: payload.sub,
+          },
+        })
+
+        if (!user) {
+          throw new UnauthorizedException('User not found.')
+        }
+
+        const professional = user.professional
+
+        if (!professional) {
+          throw new UnauthorizedException('Professional not found.')
+        }
+
+        can(Action.Manage, 'ProfessionalService')
+
         // const professionalCompany =
         //   await this.prisma.professionalCompany.findUnique({
         //     where: {

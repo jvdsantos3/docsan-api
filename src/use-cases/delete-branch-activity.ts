@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { BranchActivityNotFoundError } from './errors/branch-activity-not-found-error'
+import { BranchActivityHasRelationshipsError } from './errors/branch-activity-has-relationships-error'
 import { BranchesActivityRepository } from '@/database/repositories/branches-activity-repository'
 
 interface DeleteBranchActivityUseCaseRequest {
@@ -18,6 +19,13 @@ export class DeleteBranchActivityUseCase {
 
     if (!branchActivity) {
       throw new BranchActivityNotFoundError()
+    }
+
+    if (
+      branchActivity.professionals &&
+      branchActivity.professionals.length > 0
+    ) {
+      throw new BranchActivityHasRelationshipsError()
     }
 
     await this.branchesActivityRepository.delete(branchActivity)

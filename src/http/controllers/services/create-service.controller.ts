@@ -5,7 +5,7 @@ import { PoliciesGuard } from '@/casl/policies.guard'
 import { CreateServicePolicyHandler } from '@/casl/policies/create-service.policy'
 import {
   createServiceValidationPipe,
-  type CreateServiceBodySchema,
+  CreateServiceBodySchema,
 } from '@/http/schemas/create-service-schema'
 import { CreateServiceUseCase } from '@/use-cases/create-service'
 import {

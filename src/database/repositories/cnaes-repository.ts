@@ -18,6 +18,7 @@ export class CnaesRepository {
       include: {
         actionLogs: true,
         professionals: true,
+        companies: true,
       },
       where: {
         id,

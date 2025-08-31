@@ -3,7 +3,7 @@ import { PoliciesGuard } from '@/casl/policies.guard'
 import { DeleteServicePolicyHandler } from '@/casl/policies/delete-service-policy-handler'
 import {
   deleteServiceValidationPipe,
-  type DeleteServiceParamsSchema,
+  DeleteServiceParamsSchema,
 } from '@/http/schemas/delete-service-schema'
 import { DeleteServiceUseCase } from '@/use-cases/delete-service'
 import { Controller, Delete, HttpCode, Param, UseGuards } from '@nestjs/common'

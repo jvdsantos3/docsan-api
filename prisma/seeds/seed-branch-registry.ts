@@ -1,8 +1,4 @@
-import {
-  PrismaClient,
-  type BranchActivity,
-  type RegistryType,
-} from '@prisma/client'
+import { PrismaClient, BranchActivity, RegistryType } from '@prisma/client'
 import * as XLSX from 'xlsx'
 import * as path from 'path'
 

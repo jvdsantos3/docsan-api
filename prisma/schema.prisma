@@ -25,6 +25,13 @@ enum ProfessionalStatus {
   BANNED
 }
 
+enum PaymentMethod {
+  PIX
+  BOLETO
+  DEBIT_CARD
+  CREDIT_CARD
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
@@ -402,16 +409,18 @@ model Service {
 }
 
 model ProfessionalService {
-  id String @id @default(uuid())
+  id              String          @id @default(uuid())
+  price           Int
+  paymentMethods  PaymentMethod[]
+  maxInstallments Int?            @map("max_installments")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
 
   professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
   professionalId String       @map("professional_id")
 
   service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   serviceId String  @map("service_id")
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@unique([professionalId, serviceId])
   @@map("professional_services")

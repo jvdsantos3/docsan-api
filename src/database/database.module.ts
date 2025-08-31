@@ -16,6 +16,7 @@ import { RegistryTypesRepository } from './repositories/registry-types-repositor
 import { ProfessionalStatusHistoriesRepository } from './repositories/professional-status-histories-repository'
 import { PasswordResetTokensRepository } from './repositories/password-reset-tokens-repository'
 import { ServicesRepository } from './repositories/services-repository'
+import { ProfessionalServicesRepository } from './repositories/professional-services-repository'
 
 @Module({
   providers: [
@@ -36,6 +37,7 @@ import { ServicesRepository } from './repositories/services-repository'
     ProfessionalStatusHistoriesRepository,
     PasswordResetTokensRepository,
     ServicesRepository,
+    ProfessionalServicesRepository,
   ],
   exports: [
     PrismaService,
@@ -55,6 +57,7 @@ import { ServicesRepository } from './repositories/services-repository'
     ProfessionalStatusHistoriesRepository,
     PasswordResetTokensRepository,
     ServicesRepository,
+    ProfessionalServicesRepository,
   ],
 })
 export class DatabaseModule {}
