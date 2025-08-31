@@ -9,6 +9,9 @@ import { PrismaService } from '@/database/prisma.service'
 import { UsersRepository } from '@/database/repositories/users-repository'
 import { CnaesRepository } from '@/database/repositories/cnaes-repository'
 import { CnaeNotFoundError } from './errors/cnae-not-found-error'
+import { InjectQueue } from '@nestjs/bull'
+import { QUEUE_NAMES } from '@/queue/queue.constants'
+import { Queue } from 'bull'
 
 interface RegisterCompanyUseCaseRequest {
   name: string
@@ -43,6 +46,7 @@ export class RegisterCompanyUseCase {
     private cnaesRepository: CnaesRepository,
     private hashGenerator: HashGenerator,
     private prisma: PrismaService,
+    @InjectQueue(QUEUE_NAMES.MAILS) private mailQueue: Queue,
   ) {}
 
   async execute({
@@ -83,7 +87,7 @@ export class RegisterCompanyUseCase {
 
     const hashedPassword = await this.hashGenerator.hash(password)
 
-    const company = await this.prisma.$transaction(async (prisma) => {
+    const { user, company } = await this.prisma.$transaction(async (prisma) => {
       const address = await this.addressRepository.create(
         {
           zipCode,
@@ -125,8 +129,31 @@ export class RegisterCompanyUseCase {
         prisma,
       )
 
-      return company
+      return {
+        user,
+        company,
+      }
     })
+
+    await this.mailQueue.add(
+      'send-email',
+      {
+        to: user.email,
+        subject: 'Cadastro concluído.',
+        template: 'company-registered',
+        context: {
+          name: company.name,
+        },
+      },
+      {
+        delay: 3000,
+        attempts: 3,
+        backoff: {
+          type: 'fixer',
+          delay: 30000,
+        },
+      },
+    )
 
     return {
       company,

@@ -9,6 +9,7 @@ import { MailProcessor } from './processors/mail.processor'
 @Global()
 @Module({
   imports: [
+    EnvModule,
     MailModule,
     BullModule.forRootAsync({
       imports: [EnvModule],

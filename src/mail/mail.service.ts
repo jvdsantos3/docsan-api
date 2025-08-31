@@ -1,12 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { MailerService } from '@nestjs-modules/mailer'
-
-export interface SendMailData {
-  to: string
-  subject: string
-  template: string
-  context?: Record<string, unknown>
-}
+import { SendMailData } from '@/queue/processors/mail.processor'
 
 @Injectable()
 export class MailService {

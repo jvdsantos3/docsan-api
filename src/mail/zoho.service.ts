@@ -5,6 +5,7 @@ import * as Handlebars from 'handlebars'
 import * as path from 'node:path'
 import * as fs from 'node:fs'
 import { ZohoTimeoutError } from './errors/zoho-timeout.error'
+import { SendMailData } from '@/queue/processors/mail.processor'
 
 @Injectable()
 export class ZohoService {
@@ -72,12 +73,7 @@ export class ZohoService {
     return template(context)
   }
 
-  async sendEmail(
-    to: string,
-    subject: string,
-    templateName: string,
-    context: Record<string, unknown>,
-  ) {
+  async sendEmail({ to, subject, template, context }: SendMailData) {
     try {
       const accessToken = await this.getAccessToken()
       const accountsUrl = `https://mail.zoho.com/api/accounts`
@@ -94,7 +90,7 @@ export class ZohoService {
         throw new Error('Conta Zoho não encontrada')
       }
 
-      const htmlContent = this.renderTemplate(templateName, context)
+      const htmlContent = this.renderTemplate(template, context)
 
       const sendUrl = `https://mail.zoho.com/api/accounts/${accountId}/messages`
 
