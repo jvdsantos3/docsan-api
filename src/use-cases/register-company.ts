@@ -12,6 +12,7 @@ import { CnaeNotFoundError } from './errors/cnae-not-found-error'
 import { InjectQueue } from '@nestjs/bull'
 import { QUEUE_NAMES } from '@/queue/queue.constants'
 import { Queue } from 'bull'
+import { EnvService } from '@/env/env.service'
 
 interface RegisterCompanyUseCaseRequest {
   name: string
@@ -39,6 +40,7 @@ interface RegisterCompanyUseCaseResponse {
 @Injectable()
 export class RegisterCompanyUseCase {
   constructor(
+    private env: EnvService,
     private addressRepository: AddressesRepository,
     private companiesRepository: CompaniesRepository,
     private usersRepository: UsersRepository,
@@ -135,6 +137,8 @@ export class RegisterCompanyUseCase {
       }
     })
 
+    const actionLink = `${this.env.get('CLIENT_URL')}/sign-in`
+
     await this.mailQueue.add(
       'send-email',
       {
@@ -143,6 +147,7 @@ export class RegisterCompanyUseCase {
         template: 'company-registered',
         context: {
           name: company.name,
+          actionLink,
         },
       },
       {

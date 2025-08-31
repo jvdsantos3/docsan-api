@@ -10,6 +10,7 @@ import { QUEUE_NAMES } from '@/queue/queue.constants'
 import { UserPayload } from '@/auth/jwt.strategy'
 import { UsersRepository } from '@/database/repositories/users-repository'
 import { UserNotFoundError } from './errors/user-not-found-error'
+import { EnvService } from '@/env/env.service'
 
 interface ApproveProfessionalUseCaseRequest {
   user: UserPayload
@@ -24,6 +25,7 @@ export class ApproveProfessionalUseCase {
     private usersRepository: UsersRepository,
     private professionalsRepository: ProfessionalsRepository,
     private professionalStatusHistoriesRepository: ProfessionalStatusHistoriesRepository,
+    private env: EnvService,
   ) {}
 
   async execute({
@@ -65,6 +67,8 @@ export class ApproveProfessionalUseCase {
       )
     })
 
+    const actionLink = `${this.env.get('CLIENT_URL')}/sign-in`
+
     await this.mailQueue.add(
       'send-email',
       {
@@ -73,6 +77,7 @@ export class ApproveProfessionalUseCase {
         template: 'approved-professional',
         context: {
           name: professional.name,
+          actionLink
         },
       },
       {

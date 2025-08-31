@@ -15,6 +15,7 @@ import { InjectQueue } from '@nestjs/bull'
 import { QUEUE_NAMES } from '@/queue/queue.constants'
 import { Queue } from 'bull'
 import { RegistryTypesRepository } from '@/database/repositories/registry-types-repository'
+import { EnvService } from '@/env/env.service'
 
 interface RegisterProfessionalUseCaseRequest {
   name: string
@@ -46,6 +47,7 @@ interface RegisterProfessionalUseCaseResponse {
 @Injectable()
 export class RegisterProfessionalUseCase {
   constructor(
+    private env: EnvService,
     private addressRepository: AddressesRepository,
     private usersRepository: UsersRepository,
     private professionalsRepository: ProfessionalsRepository,
@@ -213,6 +215,8 @@ export class RegisterProfessionalUseCase {
       },
     )
 
+    const actionLink = `${this.env.get('CLIENT_URL')}`
+
     await this.mailQueue.add(
       'send-email',
       {
@@ -221,6 +225,7 @@ export class RegisterProfessionalUseCase {
         template: 'professional-pending',
         context: {
           name: professional.name,
+          actionLink
         },
       },
       {

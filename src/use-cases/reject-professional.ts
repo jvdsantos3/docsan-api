@@ -9,6 +9,7 @@ import { UserNotFoundError } from './errors/user-not-found-error'
 import { InjectQueue } from '@nestjs/bull'
 import { QUEUE_NAMES } from '@/queue/queue.constants'
 import { Queue } from 'bull'
+import { EnvService } from '@/env/env.service'
 
 interface RejectProfessionalUseCaseRequest {
   user: UserPayload
@@ -24,6 +25,7 @@ export class RejectProfessionalUseCase {
     private usersRepository: UsersRepository,
     private professionalsRepository: ProfessionalsRepository,
     private professionalStatusHistoriesRepository: ProfessionalStatusHistoriesRepository,
+    private env: EnvService,
   ) {}
 
   async execute({
@@ -65,6 +67,8 @@ export class RejectProfessionalUseCase {
       )
     })
 
+    const actionLink = `${this.env.get('CLIENT_URL')}`
+
     await this.mailQueue.add(
       'send-email',
       {
@@ -74,6 +78,7 @@ export class RejectProfessionalUseCase {
         context: {
           name: professional.name,
           reason,
+          actionLink,
         },
       },
       {
