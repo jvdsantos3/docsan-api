@@ -14,8 +14,15 @@ interface FetchServiceUseCaseRequest {
   filter?: string
 }
 
+interface ImageInfo {
+  name: string
+  size: number
+  type: string
+  base64: string
+}
+
 interface FetchServiceUseCaseResponse {
-  services: PaginationResponse<Service & { imageBase64: string | null }>
+  services: PaginationResponse<Service & { image: ImageInfo | null }>
 }
 
 @Injectable()
@@ -44,15 +51,28 @@ export class FetchServiceUseCase {
       filter,
     })
 
-    const servicesWithBase64 = await Promise.all(
+    const servicesWithImageInfo = await Promise.all(
       services.data.map(async (service) => {
-        let imageBase64: string | null = null
+        let image: ImageInfo | null = null
 
         if (service.imageUrl) {
           try {
             const { body } = await this.uploader.get(service.imageUrl)
-
-            imageBase64 = body.toString('base64')
+            
+            const fileName = service.imageUrl.split('/').pop() || ''
+            const lastDotIndex = fileName.lastIndexOf('.')
+            const fileExtension = lastDotIndex > -1 ? fileName.substring(lastDotIndex + 1) : ''
+            const nameWithoutExtension = lastDotIndex > -1 ? fileName.substring(0, lastDotIndex) : fileName
+            
+            const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-/i
+            const originalName = nameWithoutExtension.replace(uuidPattern, '')
+            
+            image = {
+              name: originalName,
+              size: body.length,
+              type: fileExtension,
+              base64: body.toString('base64')
+            }
           } catch (error) {
             console.warn(
               `Erro ao carregar imagem do serviço ${service.id}:`,
@@ -63,7 +83,7 @@ export class FetchServiceUseCase {
 
         return {
           ...service,
-          imageBase64,
+          image,
         }
       }),
     )
@@ -71,7 +91,7 @@ export class FetchServiceUseCase {
     return {
       services: {
         ...services,
-        data: servicesWithBase64,
+        data: servicesWithImageInfo,
       },
     }
   }
