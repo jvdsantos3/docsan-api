@@ -4,6 +4,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter'
 import { CnaesRepository } from '@/database/repositories/cnaes-repository'
 import { CnaeNotFoundError } from './errors/cnae-not-found-error'
 import { CnaeAlreadyExistsError } from './errors/cnae-already-exists-error'
+import { CnaeHasRelationshipsError } from './errors/cnae-has-relationships-error'
 import { UserPayload } from '@/auth/jwt.strategy'
 import { CnaeEvent } from '@/events/cnae.event'
 
@@ -35,6 +36,13 @@ export class EditCnaeUseCase {
 
     if (!currentCnae) {
       throw new CnaeNotFoundError()
+    }
+
+    if (
+      (currentCnae.professionals && currentCnae.professionals.length > 0) ||
+      (currentCnae.companies && currentCnae.companies.length > 0)
+    ) {
+      throw new CnaeHasRelationshipsError()
     }
 
     const cnaeWithSameCode = await this.cnaesRepository.findByCode(code)

@@ -5,6 +5,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter'
 import { BranchesActivityRepository } from '@/database/repositories/branches-activity-repository'
 import { BranchActivityAlreadyExistsError } from './errors/branch-activity-already-exists-error'
 import { BranchActivityNotFoundError } from './errors/branch-activity-not-found-error'
+import { BranchActivityHasRelationshipsError } from './errors/branch-activity-has-relationships-error'
 import { BranchActivityEvent } from '@/events/branch-activity.event'
 
 interface EditBranchActivityUseCaseRequest {
@@ -27,13 +28,20 @@ export class EditBranchActivityUseCase {
   async execute({
     user,
     branchActivityId,
-    name
+    name,
   }: EditBranchActivityUseCaseRequest): Promise<EditBranchActivityUseCaseResponse> {
     const currentBranchActivity =
       await this.branchesActivityRepository.findById(branchActivityId)
 
     if (!currentBranchActivity) {
       throw new BranchActivityNotFoundError()
+    }
+
+    if (
+      currentBranchActivity.professionals &&
+      currentBranchActivity.professionals.length > 0
+    ) {
+      throw new BranchActivityHasRelationshipsError()
     }
 
     const branchActivityWithSameName =
@@ -45,7 +53,7 @@ export class EditBranchActivityUseCase {
 
     const newBranchActivity = await this.branchesActivityRepository.save({
       id: branchActivityId,
-      name
+      name,
     })
 
     this.eventEmitter.emit(
