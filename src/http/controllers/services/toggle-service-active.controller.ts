@@ -2,7 +2,7 @@ import { Controller, Param, Patch, UseGuards } from '@nestjs/common'
 import { ToggleServiceActiveUseCase } from '@/use-cases/toggle-service-active'
 import {
   toggleServiceActiveValidationPipe,
-  type ToggleServiceActiveSchema,
+  ToggleServiceActiveSchema,
 } from '../../schemas/toggle-service-active-schema'
 import { UpdateServicePolicyHandler } from '@/casl/policies/update-service.policy'
 import { CheckPolicies } from '@/casl/check-policies.decorator'

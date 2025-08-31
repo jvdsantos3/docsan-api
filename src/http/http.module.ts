@@ -117,6 +117,8 @@ import { ToggleServiceActiveController } from './controllers/services/toggle-ser
 import { ToggleServiceActiveUseCase } from '@/use-cases/toggle-service-active'
 import { ToggleServiceHighlightController } from './controllers/services/toggle-service-highlighted.controller'
 import { ToggleServiceHighlightUseCase } from '@/use-cases/toggle-service-highlighted'
+import { AssociateServiceController } from './controllers/services/associate-service.controller'
+import { AssociateProfessionalServiceUseCase } from '@/use-cases/associate-professional-service'
 
 @Module({
   imports: [
@@ -184,6 +186,7 @@ import { ToggleServiceHighlightUseCase } from '@/use-cases/toggle-service-highli
     DeleteServiceController,
     ToggleServiceActiveController,
     ToggleServiceHighlightController,
+    AssociateServiceController,
   ],
   providers: [
     EnvService,
@@ -242,6 +245,7 @@ import { ToggleServiceHighlightUseCase } from '@/use-cases/toggle-service-highli
     DeleteServiceUseCase,
     ToggleServiceActiveUseCase,
     ToggleServiceHighlightUseCase,
+    AssociateProfessionalServiceUseCase,
   ],
 })
 export class HttpModule {}

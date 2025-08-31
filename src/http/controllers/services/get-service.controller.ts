@@ -1,7 +1,7 @@
 import { Public } from '@/auth/public'
 import {
   getServiceValidationPipe,
-  type GetServiceParamsSchema,
+  GetServiceParamsSchema,
 } from '@/http/schemas/get-service-schema'
 import { GetServiceUseCase } from '@/use-cases/get-service'
 import { Controller, Get, Param } from '@nestjs/common'
