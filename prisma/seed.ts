@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { seedBranchActivityAndRegistryType } from './seeds/seed-branch-registry'
+import { seedDocumentTypes } from './seeds/seed-document-types'
 
 const prisma = new PrismaClient()
 
@@ -71,7 +72,10 @@ async function main() {
     },
   })
 
-  await seedBranchActivityAndRegistryType()
+  await Promise.all([
+    seedBranchActivityAndRegistryType(),
+    seedDocumentTypes(),
+  ])
 }
 
 main()

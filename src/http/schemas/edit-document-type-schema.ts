@@ -29,6 +29,7 @@ const editDocumentTypeBodySchema = z.object({
       }),
     )
     .nonempty(),
+  prompt: z.string(),
 })
 
 export const editDocumentTypeBodyValidationPipe = new ZodValidationPipe(

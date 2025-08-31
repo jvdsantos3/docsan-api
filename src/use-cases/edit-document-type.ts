@@ -18,6 +18,7 @@ interface EditDocumentTypeUseCaseRequest {
   name: string
   validityPeriod: number
   fields: Field[] | Prisma.JsonArray
+  prompt: string
 }
 
 interface EditDocumentTypeUseCaseResponse {
@@ -38,6 +39,7 @@ export class EditDocumentTypeUseCase {
     name,
     validityPeriod,
     fields,
+    prompt,
   }: EditDocumentTypeUseCaseRequest): Promise<EditDocumentTypeUseCaseResponse> {
     const currentDocumentType =
       await this.documentTypesRepository.findById(documentTypeId)
@@ -73,6 +75,7 @@ export class EditDocumentTypeUseCase {
       name,
       validityPeriod,
       metadata: fields as Prisma.JsonArray,
+      prompt,
     })
 
     this.eventEmitter.emit(

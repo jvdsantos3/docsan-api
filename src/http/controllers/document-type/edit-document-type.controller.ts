@@ -24,7 +24,7 @@ export class EditDocumentTypeController {
     @Param(editDocumentTypeParamsValidationPipe)
     { companyId, documentTypeId }: EditDocumentTypeParamsSchema,
     @Body(editDocumentTypeBodyValidationPipe)
-    { name, validityPeriod, fields }: EditDocumentTypeBodySchema,
+    { name, validityPeriod, fields, prompt }: EditDocumentTypeBodySchema,
   ) {
     await this.editDocumentTypeUseCase.execute({
       user,
@@ -33,6 +33,7 @@ export class EditDocumentTypeController {
       name,
       validityPeriod,
       fields,
+      prompt,
     })
   }
 }

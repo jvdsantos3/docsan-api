@@ -21,6 +21,7 @@ export class FetchDocumentTypesUseCase {
   constructor(private documentTypesRepository: DocumentTypesRepository) {}
 
   async execute({
+    companyId,
     page,
     limit,
     order,
@@ -28,6 +29,7 @@ export class FetchDocumentTypesUseCase {
     filter,
   }: FetchDocumentTypesUseCaseRequest): Promise<FetchDocumentTypesUseCaseResponse> {
     const documentTypes = await this.documentTypesRepository.fetchPagination({
+      companyId,
       page,
       limit,
       order,

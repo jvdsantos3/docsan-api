@@ -5,6 +5,7 @@ import { PaginationParams } from '../interfaces/pagination-params'
 import { paginate } from '../pagination'
 
 export interface FetchFilters {
+  companyId: string,
   filter?: string
   active?: boolean
 }
@@ -78,6 +79,7 @@ export class DocumentTypesRepository {
   }
 
   async fetchPagination({
+    companyId,
     page,
     limit = 15,
     order = 'asc',
@@ -85,7 +87,12 @@ export class DocumentTypesRepository {
     filter,
   }: PaginationParams<Prisma.DocumentTypeOrderByRelationAggregateInput> &
     FetchFilters) {
-    const where: Prisma.DocumentTypeWhereInput = {}
+    const where: Prisma.DocumentTypeWhereInput = {
+      OR: [
+        { companyId: null }, // Tipos padrão da aplicação
+        { companyId }, // Tipos específicos da empresa
+      ],
+    }
 
     if (typeof active === 'boolean') {
       where.isActive = active
